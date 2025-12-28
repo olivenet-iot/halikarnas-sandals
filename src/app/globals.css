@@ -489,6 +489,50 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  /* Collection Frame - Aggressive gap fix with 100dvh */
+  .collection-frame {
+    height: 100vh !important;
+    height: 100dvh !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+    width: 100% !important;
+    position: relative;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+  }
+
+  /* Snap container - eliminate all gaps */
+  .snap-container-strict {
+    display: flex;
+    flex-direction: column;
+    gap: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .snap-container-strict > * {
+    flex: 0 0 100vh;
+    flex: 0 0 100dvh;
+    margin: 0 !important;
+  }
+
+  /* Ensure no gaps in scroll-snap containers */
+  .snap-y.snap-mandatory {
+    scroll-snap-type: y mandatory;
+    gap: 0 !important;
+  }
+
+  .snap-y.snap-mandatory > * {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    margin: 0 !important;
+  }
 }
 
 /* Animated gradient for intro */

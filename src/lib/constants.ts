@@ -230,6 +230,25 @@ export const CATEGORY_OPTIONS = {
   ],
 };
 
+// Placeholder Images (Unsplash)
+export const PLACEHOLDER_IMAGES = {
+  // Editorial/Lifestyle - Mediterranean theme
+  mediterranean_beach: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80",
+  greek_architecture: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1920&q=80",
+  aegean_coast: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=1920&q=80",
+  santorini_vibes: "https://images.unsplash.com/photo-1570077188670-e3a8d3c6071d?w=1920&q=80",
+  beach_sunset: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1920&q=80",
+
+  // Craftsman/Artisan - Verified leather working images
+  leather_craft: "https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=1200&q=80",
+  leather_workshop: "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=1200&q=80",
+  artisan_hands: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1200&q=80",
+  leather_tools: "https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=1200&q=80",
+
+  // Texture
+  leather_texture: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+};
+
 // Cities in Turkey (for address form)
 export const turkishCities = [
   "Adana",

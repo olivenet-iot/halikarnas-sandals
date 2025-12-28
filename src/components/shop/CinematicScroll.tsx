@@ -91,13 +91,18 @@ export function CinematicScroll({ collections }: CinematicScrollProps) {
   }, [activeIndex, navigateToFrame]);
 
   return (
-    <div className="relative h-screen">
-      {/* Scroll Container */}
+    <div
+      className="relative h-screen bg-stone-900"
+      style={{ height: '100dvh' }}
+    >
+      {/* Scroll Container - NO GAP between frames */}
       <div
         ref={containerRef}
         className="h-screen overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
-        style={{ scrollBehavior: "smooth" }}
+        style={{ height: '100dvh', scrollBehavior: "smooth" }}
       >
+        {/* All frames have full backgrounds - no gaps */}
+
         {/* Intro Frame */}
         <IntroFrame isActive={activeIndex === 0} />
 

@@ -40,6 +40,7 @@ export function Navbar({ variant = "default" }: NavbarProps) {
 
   // Cinematic scroll (koleksiyonlar CinematicScroll container'indan)
   const cinematicScrollY = useScrollStore((state) => state.scrollY);
+  const navbarTheme = useScrollStore((state) => state.navbarTheme);
 
   // Only get cart count after hydration to prevent mismatch
   const cartItemCount = hydrated ? getTotalItems() : 0;
@@ -132,6 +133,14 @@ export function Navbar({ variant = "default" }: NavbarProps) {
   const cinematicTextStyle: CSSProperties = useMemo(() => {
     if (!isCinematic) return {};
 
+    // Light theme (light background) - use subtle shadow
+    if (navbarTheme === "light") {
+      return {
+        textShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
+      };
+    }
+
+    // Dark theme (dark background) - use glow
     return {
       textShadow: `
         0 0 20px rgba(255, 255, 255, 0.5),
@@ -140,12 +149,20 @@ export function Navbar({ variant = "default" }: NavbarProps) {
         0 2px 4px rgba(0, 0, 0, 0.5)
       `,
     };
-  }, [isCinematic]);
+  }, [isCinematic, navbarTheme]);
 
   // Cinematic mode icin active link (gold glow)
   const cinematicActiveStyle: CSSProperties = useMemo(() => {
     if (!isCinematic) return {};
 
+    // Light theme - subtle gold shadow
+    if (navbarTheme === "light") {
+      return {
+        textShadow: "0 1px 2px rgba(184, 134, 11, 0.3)",
+      };
+    }
+
+    // Dark theme - gold glow
     return {
       textShadow: `
         0 0 20px rgba(184, 134, 11, 0.6),
@@ -153,23 +170,31 @@ export function Navbar({ variant = "default" }: NavbarProps) {
         0 2px 4px rgba(0, 0, 0, 0.5)
       `,
     };
-  }, [isCinematic]);
+  }, [isCinematic, navbarTheme]);
 
   // Cinematic mode icin icon glow
   const cinematicIconStyle: CSSProperties = useMemo(() => {
     if (!isCinematic) return {};
 
+    // Light theme - no filter needed (dark icons)
+    if (navbarTheme === "light") {
+      return {};
+    }
+
+    // Dark theme - white glow
     return {
       filter: `
         drop-shadow(0 0 8px rgba(255, 255, 255, 0.4))
         drop-shadow(0 0 16px rgba(255, 255, 255, 0.2))
       `,
     };
-  }, [isCinematic]);
+  }, [isCinematic, navbarTheme]);
 
   // Determine text colors based on state
-  // Cinematic variant always uses light (white) text
-  const isDarkText = isCinematic ? false : headerState !== "transparent";
+  // Cinematic variant uses dynamic theme based on frame background
+  // navbarTheme "light" = light background → use dark text
+  // navbarTheme "dark" = dark background → use light text
+  const isDarkText = isCinematic ? navbarTheme === "light" : headerState !== "transparent";
 
   // Header classes (layout only, no background)
   const headerClasses = cn(
@@ -292,7 +317,9 @@ export function Navbar({ variant = "default" }: NavbarProps) {
                         className={cn(
                           "py-3 min-w-[200px] shadow-lg",
                           isCinematic
-                            ? "bg-black/80 backdrop-blur-md border border-white/10"
+                            ? navbarTheme === "light"
+                              ? "bg-white/95 backdrop-blur-md border border-stone-200"
+                              : "bg-black/80 backdrop-blur-md border border-white/10"
                             : "bg-white border border-luxury-stone/30"
                         )}
                       >
@@ -303,9 +330,13 @@ export function Navbar({ variant = "default" }: NavbarProps) {
                             className={cn(
                               "block px-6 py-2.5 text-sm tracking-wide transition-all duration-200",
                               isCinematic
-                                ? pathname === child.href
-                                  ? "bg-white/10 text-[#B8860B]"
-                                  : "text-white/80 hover:bg-white/10 hover:text-white"
+                                ? navbarTheme === "light"
+                                  ? pathname === child.href
+                                    ? "bg-stone-100 text-[#B8860B]"
+                                    : "text-stone-700 hover:bg-stone-100 hover:text-stone-900"
+                                  : pathname === child.href
+                                    ? "bg-white/10 text-[#B8860B]"
+                                    : "text-white/80 hover:bg-white/10 hover:text-white"
                                 : pathname === child.href
                                   ? "bg-luxury-cream text-luxury-gold"
                                   : "text-luxury-charcoal hover:bg-luxury-cream hover:text-luxury-primary"

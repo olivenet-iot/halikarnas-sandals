@@ -1,9 +1,17 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { getCollectionHeroUrl } from "@/lib/cloudinary";
+import { TIMING, EASE } from "@/lib/animations";
+import {
+  GoldDivider,
+  TextFadeIn,
+  MagneticButton,
+  ArrowIcon,
+  ChevronBounce,
+} from "@/components/ui/luxury";
 
 interface CollectionFrameProps {
   collection: {
@@ -23,34 +31,49 @@ export function CollectionFrame({
   isActive,
   index,
 }: CollectionFrameProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const heroImage = collection.bannerImage || collection.image;
 
-  // Description'dan kisa tagline cikar (ilk cumle veya 100 karakter)
+  // Parallax for background
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+
+  // Reduced parallax to prevent gaps (was ±10%, now ±2%)
+  // Minimum scale ensures image always covers frame edges
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["-2%", "2%"]);
+  const backgroundScale = useTransform(scrollYProgress, [0, 0.5, 1], [1.1, 1.05, 1.02]);
+
+  // Extract tagline from description
   const tagline = collection.description
-    ? collection.description.split(".")[0].slice(0, 100) +
-      (collection.description.length > 100 ? "..." : "")
+    ? collection.description.split(".")[0].slice(0, 120) +
+      (collection.description.length > 120 ? "..." : "")
     : null;
 
   return (
-    <section className="h-screen w-full snap-start snap-always relative flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
-      <div className="absolute inset-0">
+    <section
+      ref={containerRef}
+      className="collection-frame snap-start snap-always flex items-center justify-center overflow-hidden bg-stone-900"
+      style={{ height: '100dvh', minHeight: '100dvh', maxHeight: '100dvh', flexShrink: 0, margin: 0 }}
+    >
+      {/* Background Image with Parallax */}
+      <motion.div
+        className="absolute inset-0"
+        style={{ y: backgroundY, scale: backgroundScale }}
+      >
         {heroImage ? (
           <Image
             src={getCollectionHeroUrl(heroImage)}
             alt={collection.name}
             fill
-            className={cn(
-              "object-cover",
-              "transition-transform duration-[1.5s] ease-out",
-              isActive ? "scale-100" : "scale-110"
-            )}
+            className="object-cover"
             priority={index <= 2}
+            sizes="100vw"
           />
         ) : (
-          /* Premium fallback - dark gradient with pattern */
+          /* Premium fallback */
           <div className="absolute inset-0 bg-gradient-to-br from-stone-700 via-stone-800 to-stone-900">
-            {/* Subtle pattern overlay */}
             <div
               className="absolute inset-0 opacity-10"
               style={{
@@ -59,119 +82,93 @@ export function CollectionFrame({
             />
           </div>
         )}
+      </motion.div>
 
-        {/* Gradient Overlay */}
-        <div
-          className={cn(
-            "absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10",
-            "transition-opacity duration-700",
-            isActive ? "opacity-100" : "opacity-70"
-          )}
+      {/* Multi-layer Gradient Overlay */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Bottom gradient for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        {/* Vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.3)_100%)]" />
+        {/* Top subtle gradient */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isActive ? 1 : 0.5 }}
+          transition={{ duration: TIMING.slow }}
         />
       </div>
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-        {/* Decorative Line */}
-        <div
-          className={cn(
-            "h-[1px] bg-[#B8860B] mx-auto mb-8",
-            "transition-all duration-700 ease-out",
-            isActive ? "w-16" : "w-0"
-          )}
-          style={{ transitionDelay: "200ms" }}
-        />
+        {/* Gold Divider */}
+        <div className="flex justify-center mb-8">
+          <GoldDivider isInView={isActive} delay={0.2} />
+        </div>
 
         {/* Collection Name */}
-        <h2
-          className={cn(
-            "font-serif text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white tracking-wide mb-6",
-            "transition-all duration-700 ease-out",
-            isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          )}
-          style={{ transitionDelay: "400ms" }}
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          animate={
+            isActive
+              ? { opacity: 1, y: 0 }
+              : { opacity: 0, y: 30 }
+          }
+          transition={{ duration: TIMING.slow, ease: EASE.luxury, delay: 0.4 }}
+          className="font-serif text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-white tracking-wide mb-6"
+          style={{
+            textShadow: "0 0 60px rgba(255,255,255,0.2), 0 4px 8px rgba(0,0,0,0.5)",
+          }}
         >
           {collection.name}
-        </h2>
+        </motion.h2>
 
         {/* Tagline */}
         {tagline && (
-          <p
-            className={cn(
-              "text-lg md:text-xl lg:text-2xl text-white/80 max-w-2xl mx-auto mb-10 font-light",
-              "transition-all duration-700 ease-out",
-              isActive
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-6"
-            )}
-            style={{ transitionDelay: "600ms" }}
+          <TextFadeIn
+            isInView={isActive}
+            delay={0.6}
+            className="mb-10"
           >
-            &ldquo;{tagline}&rdquo;
-          </p>
+            <p
+              className="text-lg md:text-xl lg:text-2xl text-white/80 max-w-2xl mx-auto font-light italic"
+              style={{ textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}
+            >
+              &ldquo;{tagline}&rdquo;
+            </p>
+          </TextFadeIn>
         )}
 
         {/* CTA Button */}
-        <div
-          className={cn(
-            "transition-all duration-700 ease-out",
-            isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}
-          style={{ transitionDelay: "800ms" }}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={
+            isActive
+              ? { opacity: 1, y: 0 }
+              : { opacity: 0, y: 20 }
+          }
+          transition={{ duration: TIMING.slow, ease: EASE.luxury, delay: 0.8 }}
         >
-          <Link
+          <MagneticButton
             href={`/koleksiyonlar/${collection.slug}`}
-            className={cn(
-              "inline-flex items-center gap-3 px-8 py-4",
-              "border border-white/30 hover:border-white/60",
-              "text-white text-sm uppercase tracking-[0.2em]",
-              "transition-all duration-300",
-              "hover:bg-white/10 hover:gap-4",
-              "group"
-            )}
+            variant="outline"
+            size="lg"
+            icon={<ArrowIcon />}
           >
-            <span>Koleksiyonu Kesfet</span>
-            <svg
-              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
-            </svg>
-          </Link>
-        </div>
+            Koleksiyonu Kesfet
+          </MagneticButton>
+        </motion.div>
       </div>
 
-      {/* Scroll Down Indicator */}
-      <div
-        className={cn(
-          "absolute bottom-8 left-1/2 -translate-x-1/2",
-          "transition-opacity duration-500",
-          isActive ? "opacity-60" : "opacity-0"
-        )}
-        style={{ transitionDelay: "1200ms" }}
+      {/* Scroll Indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isActive ? 0.6 : 0 }}
+        transition={{ duration: TIMING.medium, delay: 1.2 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
-        <div className="animate-bounce">
-          <svg
-            className="w-5 h-5 text-white/60"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M19 14l-7 7m0 0l-7-7"
-            />
-          </svg>
-        </div>
-      </div>
+        <ChevronBounce theme="light" />
+      </motion.div>
     </section>
   );
 }

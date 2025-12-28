@@ -1,122 +1,189 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { TIMING, EASE } from "@/lib/animations";
+import {
+  GoldDivider,
+  TextFadeIn,
+  MagneticButton,
+  ArrowIcon,
+} from "@/components/ui/luxury";
 
 interface OutroFrameProps {
   isActive: boolean;
 }
 
 export function OutroFrame({ isActive }: OutroFrameProps) {
-  return (
-    <section className="h-screen w-full snap-start snap-always relative flex items-center justify-center overflow-hidden bg-stone-900">
-      {/* Subtle Pattern/Texture Background */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-stone-800 to-stone-950" />
-      </div>
+  const containerRef = useRef<HTMLDivElement>(null);
 
-      {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-2xl mx-auto">
-        {/* Decorative Line */}
+  // Parallax for background texture
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+
+  return (
+    <section
+      ref={containerRef}
+      className="collection-frame snap-start snap-always flex items-center justify-center overflow-hidden bg-stone-900"
+      style={{ height: '100dvh', minHeight: '100dvh', maxHeight: '100dvh', flexShrink: 0, margin: 0 }}
+    >
+      {/* Leather Texture Background with Parallax */}
+      <motion.div
+        className="absolute inset-0"
+        style={{ y: backgroundY }}
+      >
+        {/* Base gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-stone-800 via-stone-900 to-black" />
+
+        {/* Subtle leather texture pattern */}
         <div
-          className={cn(
-            "h-[1px] bg-[#B8860B] mx-auto mb-10",
-            "transition-all duration-700 ease-out",
-            isActive ? "w-16" : "w-0"
-          )}
-          style={{ transitionDelay: "200ms" }}
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          }}
         />
 
-        {/* Heading */}
-        <h2
-          className={cn(
-            "font-serif text-3xl md:text-4xl lg:text-5xl text-white mb-6",
-            "transition-all duration-700 ease-out",
-            isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-          )}
-          style={{ transitionDelay: "400ms" }}
-        >
-          Tum koleksiyonlari kesfettiniz
-        </h2>
+        {/* Gold accent gradient at edges */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(184,134,11,0.08)_0%,transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(184,134,11,0.05)_0%,transparent_40%)]" />
+      </motion.div>
 
-        {/* Subtext */}
-        <p
-          className={cn(
-            "text-white/60 text-lg mb-10",
-            "transition-all duration-700 ease-out",
-            isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}
-          style={{ transitionDelay: "600ms" }}
-        >
-          El yapimi sandalet koleksiyonlarimizi incelediniz
-        </p>
+      {/* Vignette */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]" />
 
-        {/* Primary CTA */}
-        <div
-          className={cn(
-            "mb-8",
-            "transition-all duration-700 ease-out",
-            isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}
-          style={{ transitionDelay: "800ms" }}
+      {/* Content */}
+      <div className="relative z-10 text-center px-4 max-w-3xl mx-auto">
+        {/* Top Decorative Element */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={isActive ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+          transition={{ duration: TIMING.slow, ease: EASE.luxury }}
+          className="mb-8"
         >
-          <Link
-            href="/kadin"
-            className={cn(
-              "inline-flex items-center gap-3 px-10 py-4",
-              "bg-[#B8860B] hover:bg-[#9A7209]",
-              "text-white text-sm uppercase tracking-[0.2em]",
-              "transition-all duration-300",
-              "group"
-            )}
-          >
-            <span>Alisverise Basla</span>
-            <svg
-              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
-            </svg>
-          </Link>
+          <div className="flex items-center justify-center gap-4">
+            <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[#B8860B]/60" />
+            <div className="w-2 h-2 rotate-45 border border-[#B8860B]/60" />
+            <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-[#B8860B]/60" />
+          </div>
+        </motion.div>
+
+        {/* Gold Divider */}
+        <div className="flex justify-center mb-8">
+          <GoldDivider variant="wide" isInView={isActive} delay={0.2} />
         </div>
 
+        {/* Heading */}
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          animate={
+            isActive
+              ? { opacity: 1, y: 0 }
+              : { opacity: 0, y: 30 }
+          }
+          transition={{ duration: TIMING.slow, ease: EASE.luxury, delay: 0.4 }}
+          className="font-serif text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white mb-6"
+          style={{
+            textShadow: "0 0 60px rgba(255,255,255,0.1), 0 4px 8px rgba(0,0,0,0.5)",
+          }}
+        >
+          Tum koleksiyonlari kesfettiniz
+        </motion.h2>
+
+        {/* Subtext */}
+        <TextFadeIn
+          isInView={isActive}
+          delay={0.6}
+          className="mb-12"
+        >
+          <p
+            className="text-lg md:text-xl text-white/60 max-w-xl mx-auto font-light"
+            style={{ textShadow: "0 2px 4px rgba(0,0,0,0.5)" }}
+          >
+            El yapimi sandalet koleksiyonlarimizi incelediniz.
+            Simdi alisverise baslayin.
+          </p>
+        </TextFadeIn>
+
+        {/* Primary CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={
+            isActive
+              ? { opacity: 1, y: 0 }
+              : { opacity: 0, y: 20 }
+          }
+          transition={{ duration: TIMING.slow, ease: EASE.luxury, delay: 0.8 }}
+          className="mb-12"
+        >
+          <MagneticButton
+            href="/kadin"
+            variant="primary"
+            size="lg"
+            icon={<ArrowIcon />}
+          >
+            Alisverise Basla
+          </MagneticButton>
+        </motion.div>
+
+        {/* Bottom Gold Divider */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isActive ? 1 : 0 }}
+          transition={{ duration: TIMING.medium, delay: 1.0 }}
+          className="flex justify-center mb-8"
+        >
+          <div className="h-[1px] w-24 bg-gradient-to-r from-transparent via-[#B8860B]/40 to-transparent" />
+        </motion.div>
+
         {/* Secondary Links */}
-        <div
-          className={cn(
-            "flex items-center justify-center gap-6 text-sm",
-            "transition-all duration-700 ease-out",
-            isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          )}
-          style={{ transitionDelay: "1000ms" }}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={
+            isActive
+              ? { opacity: 1, y: 0 }
+              : { opacity: 0, y: 10 }
+          }
+          transition={{ duration: TIMING.medium, ease: EASE.luxury, delay: 1.2 }}
+          className="flex items-center justify-center gap-8 text-sm"
         >
           <Link
             href="/hakkimizda"
-            className="text-white/50 hover:text-white transition-colors"
+            className="text-white/40 hover:text-[#B8860B] transition-colors duration-300 uppercase tracking-[0.15em]"
           >
             Hakkimizda
           </Link>
-          <span className="text-white/30">·</span>
+          <span className="w-1 h-1 bg-[#B8860B]/40 rounded-full" />
           <Link
             href="/iletisim"
-            className="text-white/50 hover:text-white transition-colors"
+            className="text-white/40 hover:text-[#B8860B] transition-colors duration-300 uppercase tracking-[0.15em]"
           >
             Iletisim
           </Link>
-          <span className="text-white/30">·</span>
+          <span className="w-1 h-1 bg-[#B8860B]/40 rounded-full" />
           <Link
             href="/sss"
-            className="text-white/50 hover:text-white transition-colors"
+            className="text-white/40 hover:text-[#B8860B] transition-colors duration-300 uppercase tracking-[0.15em]"
           >
             SSS
           </Link>
-        </div>
+        </motion.div>
+
+        {/* Brand Mark */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isActive ? 0.3 : 0 }}
+          transition={{ duration: TIMING.slow, delay: 1.5 }}
+          className="mt-16"
+        >
+          <p className="text-xs uppercase tracking-[0.3em] text-white/30">
+            Halikarnas
+          </p>
+        </motion.div>
       </div>
     </section>
   );
