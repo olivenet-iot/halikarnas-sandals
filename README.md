@@ -1,36 +1,126 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Halikarnas Sandals
 
-## Getting Started
+Premium el yapimi deri sandalet e-ticaret platformu. Bodrum/Turkiye merkezli bir zanaat markasi icin gelistirilmistir.
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+| Katman | Teknoloji |
+|--------|-----------|
+| Framework | Next.js 14 (App Router) |
+| Language | TypeScript |
+| Database | PostgreSQL + Prisma ORM |
+| Auth | NextAuth.js v5 |
+| State | Zustand |
+| Styling | Tailwind CSS + shadcn/ui |
+| Forms | React Hook Form + Zod |
+| Images | Cloudinary |
+
+## Kurulum
+
+### Gereksinimler
+
+- Node.js 18+
+- PostgreSQL 14+
+- npm veya pnpm
+
+### Adimlar
+
+1. **Repository'yi klonlayin**
+   ```bash
+   git clone https://github.com/your-username/halikarnas-sandals.git
+   cd halikarnas-sandals
+   ```
+
+2. **Bagimliliklari yukleyin**
+   ```bash
+   npm install
+   ```
+
+3. **Environment degiskenlerini ayarlayin**
+   ```bash
+   cp .env.example .env
+   ```
+   `.env` dosyasini kendi degerlerinizle doldurun.
+
+4. **Veritabanini olusturun**
+   ```bash
+   npx prisma migrate dev
+   npx prisma db seed
+   ```
+
+5. **Gelistirme sunucusunu baslatin**
+   ```bash
+   npm run dev
+   ```
+
+   [http://localhost:3000](http://localhost:3000) adresinde acilir.
+
+## Proje Yapisi
+
+```
+src/
+├── app/                   # Next.js App Router
+│   ├── (shop)/            # Public sayfalar
+│   ├── (auth)/            # Auth sayfalari
+│   ├── admin/             # Admin paneli
+│   └── api/               # API Routes
+├── components/
+│   ├── ui/                # shadcn/ui componentleri
+│   ├── layout/            # Navbar, Footer
+│   ├── shop/              # Urun kartlari, filtreler
+│   └── admin/             # Admin componentleri
+├── lib/
+│   ├── db.ts              # Prisma client
+│   ├── auth.ts            # NextAuth config
+│   └── utils.ts           # Yardimci fonksiyonlar
+├── stores/                # Zustand state management
+└── hooks/                 # Custom React hooks
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Komutlar
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Development
+npm run dev
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Production build
+npm run build
+npm start
 
-## Learn More
+# Linting
+npm run lint
 
-To learn more about Next.js, take a look at the following resources:
+# Database
+npx prisma migrate dev     # Migration olustur
+npx prisma db seed         # Seed data yukle
+npx prisma studio          # DB GUI
+npx prisma generate        # Client generate
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment Degiskenleri
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`.env.example` dosyasina bakin. Gerekli degiskenler:
 
-## Deploy on Vercel
+| Degisken | Aciklama |
+|----------|----------|
+| `DATABASE_URL` | PostgreSQL baglanti URL'i |
+| `NEXTAUTH_SECRET` | NextAuth sifreleme anahtari |
+| `NEXTAUTH_URL` | Uygulama URL'i |
+| `CLOUDINARY_*` | Cloudinary API bilgileri |
+| `RESEND_API_KEY` | Email servisi (opsiyonel) |
+| `GOOGLE_*` | Google OAuth (opsiyonel) |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Ozellikler
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Urun katalog yonetimi
+- Sepet ve checkout
+- Kullanici hesaplari
+- Admin paneli
+- Koleksiyon yonetimi
+- Kupon sistemi
+- SEO optimizasyonu
+- Responsive tasarim
+
+## Lisans
+
+Bu proje ozel bir projedir. Izinsiz kullanim ve dagitim yasaktir.
