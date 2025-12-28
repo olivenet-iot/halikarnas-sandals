@@ -36,7 +36,12 @@ function getInitials(name: string | null | undefined): string {
   return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 }
 
-export function UserMenu() {
+interface UserMenuProps {
+  variant?: "default" | "cinematic";
+}
+
+export function UserMenu({ variant = "default" }: UserMenuProps) {
+  const isCinematic = variant === "cinematic";
   const pathname = usePathname();
   const { user, isLoading, isAuthenticated, isAdmin } = useCurrentUser();
   const [scrollY, setScrollY] = useState(0);
@@ -45,16 +50,18 @@ export function UserMenu() {
   const isScrolled = scrollY > 50;
 
   useEffect(() => {
+    if (isCinematic) return; // Cinematic modda window scroll dinleme
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isCinematic]);
 
   // Determine if we need light (white) or dark text
-  const isLightMode = isHomepage && !isScrolled;
+  // Cinematic mode always uses light mode
+  const isLightMode = isCinematic || (isHomepage && !isScrolled);
 
   const iconClasses = cn(
     "transition-all duration-300",
@@ -63,14 +70,26 @@ export function UserMenu() {
       : "text-luxury-primary hover:text-luxury-primary/70"
   );
 
+  // Cinematic icon glow style
+  const cinematicIconStyle: CSSProperties = useMemo(() => {
+    if (!isCinematic) return {};
+    return {
+      filter: `
+        drop-shadow(0 0 8px rgba(255, 255, 255, 0.4))
+        drop-shadow(0 0 16px rgba(255, 255, 255, 0.2))
+      `,
+    };
+  }, [isCinematic]);
+
   const glowStyle: CSSProperties = useMemo(() => {
+    if (isCinematic) return cinematicIconStyle;
     if (isLightMode) {
       return {
         textShadow: "0 0 30px rgba(255,255,255,0.6), 0 2px 8px rgba(0,0,0,0.5)",
       };
     }
     return {};
-  }, [isLightMode]);
+  }, [isLightMode, isCinematic, cinematicIconStyle]);
 
   if (isLoading) {
     return (

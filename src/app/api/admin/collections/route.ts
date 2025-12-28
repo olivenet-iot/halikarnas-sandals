@@ -8,7 +8,12 @@ const collectionSchema = z.object({
   slug: z.string().min(1, "Slug gerekli"),
   description: z.string().optional(),
   image: z.string().optional(),
+  bannerImage: z.string().optional(),
   isActive: z.boolean().optional(),
+  isFeatured: z.boolean().optional(),
+  position: z.number().optional(),
+  metaTitle: z.string().optional(),
+  metaDescription: z.string().optional(),
 });
 
 // GET - List all collections
@@ -65,7 +70,12 @@ export async function POST(request: NextRequest) {
         slug: validatedData.slug,
         description: validatedData.description || null,
         image: validatedData.image || null,
+        bannerImage: validatedData.bannerImage || null,
         isActive: validatedData.isActive ?? true,
+        isFeatured: validatedData.isFeatured ?? false,
+        position: validatedData.position ?? 0,
+        metaTitle: validatedData.metaTitle || null,
+        metaDescription: validatedData.metaDescription || null,
       },
     });
 

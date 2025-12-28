@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cart-store";
 import { useUIStore } from "@/stores/ui-store";
+import { useScrollStore } from "@/stores/scroll-store";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useHydrated } from "@/hooks/useHydrated";
 import { UserMenu } from "./UserMenu";
@@ -22,25 +23,40 @@ import { NAV_ITEMS } from "@/lib/constants";
 
 type HeaderState = "transparent" | "glass" | "solid";
 
-export function Navbar() {
+interface NavbarProps {
+  variant?: "default" | "cinematic";
+}
+
+export function Navbar({ variant = "default" }: NavbarProps) {
+  const isCinematic = variant === "cinematic";
   const pathname = usePathname();
-  const [scrollY, setScrollY] = useState(0);
+  const [windowScrollY, setWindowScrollY] = useState(0);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const hydrated = useHydrated();
 
   const { openCart, getTotalItems } = useCartStore();
   const { openMobileMenu, openSearch } = useUIStore();
   const { isAuthenticated } = useCurrentUser();
+
+  // Cinematic scroll (koleksiyonlar CinematicScroll container'indan)
+  const cinematicScrollY = useScrollStore((state) => state.scrollY);
+
   // Only get cart count after hydration to prevent mismatch
   const cartItemCount = hydrated ? getTotalItems() : 0;
 
   // Check if we're on the homepage for transparent header
   const isHomepage = pathname === "/";
+
+  // Hangi scroll kaynagini kullanacagimizi belirle
+  const scrollY = isCinematic ? cinematicScrollY : windowScrollY;
   const isScrolled = scrollY > 50;
 
+  // Window scroll listener (sadece default variant icin)
   useEffect(() => {
+    if (isCinematic) return; // Cinematic modda window scroll dinleme
+
     const handleScroll = () => {
-      setScrollY(window.scrollY);
+      setWindowScrollY(window.scrollY);
     };
 
     // Initial check
@@ -48,25 +64,36 @@ export function Navbar() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isCinematic]);
 
   // Determine header state
   const headerState: HeaderState = useMemo(() => {
+    // Cinematic variant - HER ZAMAN transparent
+    if (isCinematic) {
+      return "transparent";
+    }
     if (!isHomepage) return "solid";
     if (isScrolled) return "glass";
     return "transparent";
-  }, [isHomepage, isScrolled]);
+  }, [isHomepage, isScrolled, isCinematic]);
 
   // Header inline styles for glassmorphism (vendor prefixes)
   const headerStyle: CSSProperties = useMemo(() => {
+    // Cinematic variant - HER ZAMAN transparent, glass yok
+    if (isCinematic) {
+      return {
+        background: "transparent",
+      };
+    }
+
+    // Default variant
     switch (headerState) {
       case "glass":
         return {
-          background: "rgba(255, 255, 255, 0.25)",
+          background: "rgba(255, 255, 255, 0.8)",
           backdropFilter: "blur(16px) saturate(180%)",
           WebkitBackdropFilter: "blur(16px) saturate(180%)",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.3)",
-          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08)",
+          borderBottom: "1px solid rgba(0, 0, 0, 0.05)",
         };
       case "solid":
         return {
@@ -79,7 +106,7 @@ export function Navbar() {
           background: "transparent",
         };
     }
-  }, [headerState]);
+  }, [headerState, isCinematic]);
 
   // Text glow style for transparent state
   const textGlowStyle: CSSProperties = useMemo(() => {
@@ -101,8 +128,48 @@ export function Navbar() {
     return {};
   }, [headerState]);
 
+  // Cinematic mode text glow style (okunabilirlik icin)
+  const cinematicTextStyle: CSSProperties = useMemo(() => {
+    if (!isCinematic) return {};
+
+    return {
+      textShadow: `
+        0 0 20px rgba(255, 255, 255, 0.5),
+        0 0 40px rgba(255, 255, 255, 0.3),
+        0 0 60px rgba(255, 255, 255, 0.1),
+        0 2px 4px rgba(0, 0, 0, 0.5)
+      `,
+    };
+  }, [isCinematic]);
+
+  // Cinematic mode icin active link (gold glow)
+  const cinematicActiveStyle: CSSProperties = useMemo(() => {
+    if (!isCinematic) return {};
+
+    return {
+      textShadow: `
+        0 0 20px rgba(184, 134, 11, 0.6),
+        0 0 40px rgba(184, 134, 11, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.5)
+      `,
+    };
+  }, [isCinematic]);
+
+  // Cinematic mode icin icon glow
+  const cinematicIconStyle: CSSProperties = useMemo(() => {
+    if (!isCinematic) return {};
+
+    return {
+      filter: `
+        drop-shadow(0 0 8px rgba(255, 255, 255, 0.4))
+        drop-shadow(0 0 16px rgba(255, 255, 255, 0.2))
+      `,
+    };
+  }, [isCinematic]);
+
   // Determine text colors based on state
-  const isDarkText = headerState !== "transparent";
+  // Cinematic variant always uses light (white) text
+  const isDarkText = isCinematic ? false : headerState !== "transparent";
 
   // Header classes (layout only, no background)
   const headerClasses = cn(
@@ -135,6 +202,10 @@ export function Navbar() {
     const isActive = pathname === href || pathname.startsWith(href + "/");
 
     if (isActive) {
+      // Cinematic variant uses gold accent on white text
+      if (isCinematic) {
+        return "text-[#B8860B] border-b border-[#B8860B] pb-1";
+      }
       if (headerState === "transparent") {
         return "text-white border-b border-white pb-1";
       }
@@ -155,7 +226,7 @@ export function Navbar() {
             className={cn("md:hidden", iconClasses)}
             onClick={openMobileMenu}
             aria-label="Menüyü aç"
-            style={textGlowStyle}
+            style={isCinematic ? cinematicIconStyle : textGlowStyle}
           >
             <Menu className="h-6 w-6" />
           </Button>
@@ -164,7 +235,7 @@ export function Navbar() {
           <Link
             href="/"
             className={cn(logoClasses, "hover:opacity-80")}
-            style={logoGlowStyle}
+            style={isCinematic ? cinematicTextStyle : logoGlowStyle}
           >
             HALIKARNAS
           </Link>
@@ -186,7 +257,15 @@ export function Navbar() {
                     "flex items-center gap-1 text-sm font-medium tracking-wide uppercase transition-all duration-300",
                     getNavItemClasses(item.href)
                   )}
-                  style={headerState === "transparent" ? textGlowStyle : {}}
+                  style={
+                    isCinematic
+                      ? pathname === item.href || pathname.startsWith(item.href + "/")
+                        ? cinematicActiveStyle
+                        : cinematicTextStyle
+                      : headerState === "transparent"
+                        ? textGlowStyle
+                        : {}
+                  }
                 >
                   {item.label}
                   {item.children && (
@@ -209,16 +288,27 @@ export function Navbar() {
                       transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
                       className="absolute top-full left-1/2 -translate-x-1/2 pt-4"
                     >
-                      <div className="bg-white border border-luxury-stone/30 py-3 min-w-[200px] shadow-lg">
+                      <div
+                        className={cn(
+                          "py-3 min-w-[200px] shadow-lg",
+                          isCinematic
+                            ? "bg-black/80 backdrop-blur-md border border-white/10"
+                            : "bg-white border border-luxury-stone/30"
+                        )}
+                      >
                         {item.children.map((child) => (
                           <Link
                             key={child.href}
                             href={child.href}
                             className={cn(
                               "block px-6 py-2.5 text-sm tracking-wide transition-all duration-200",
-                              pathname === child.href
-                                ? "bg-luxury-cream text-luxury-gold"
-                                : "text-luxury-charcoal hover:bg-luxury-cream hover:text-luxury-primary"
+                              isCinematic
+                                ? pathname === child.href
+                                  ? "bg-white/10 text-[#B8860B]"
+                                  : "text-white/80 hover:bg-white/10 hover:text-white"
+                                : pathname === child.href
+                                  ? "bg-luxury-cream text-luxury-gold"
+                                  : "text-luxury-charcoal hover:bg-luxury-cream hover:text-luxury-primary"
                             )}
                           >
                             {child.label}
@@ -241,7 +331,7 @@ export function Navbar() {
               onClick={openSearch}
               aria-label="Ara"
               className={iconClasses}
-              style={textGlowStyle}
+              style={isCinematic ? cinematicIconStyle : textGlowStyle}
             >
               <Search className="h-5 w-5" />
             </Button>
@@ -252,18 +342,19 @@ export function Navbar() {
               size="icon"
               asChild
               className={cn("hidden sm:flex", iconClasses)}
+              style={isCinematic ? cinematicIconStyle : undefined}
             >
               <Link
                 href={isAuthenticated ? "/hesabim/favorilerim" : "/giris?callbackUrl=/hesabim/favorilerim"}
                 aria-label="Favorilerim"
-                style={textGlowStyle}
+                style={!isCinematic ? textGlowStyle : undefined}
               >
                 <Heart className="h-5 w-5" />
               </Link>
             </Button>
 
             {/* User Account */}
-            <UserMenu />
+            <UserMenu variant={isCinematic ? "cinematic" : "default"} />
 
             {/* Cart */}
             <Button
@@ -272,7 +363,7 @@ export function Navbar() {
               onClick={openCart}
               aria-label="Sepetim"
               className={cn("relative", iconClasses)}
-              style={textGlowStyle}
+              style={isCinematic ? cinematicIconStyle : textGlowStyle}
             >
               <ShoppingBag className="h-5 w-5" />
               {cartItemCount > 0 && (

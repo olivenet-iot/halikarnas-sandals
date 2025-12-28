@@ -35,6 +35,10 @@ interface Collection {
   image: string | null;
   bannerImage: string | null;
   isActive: boolean;
+  isFeatured: boolean;
+  position: number;
+  metaTitle: string | null;
+  metaDescription: string | null;
   _count?: { products: number };
 }
 
@@ -169,6 +173,10 @@ export default function CollectionsPage() {
     image: "",
     bannerImage: "",
     isActive: true,
+    isFeatured: false,
+    position: 0,
+    metaTitle: "",
+    metaDescription: "",
   });
 
   const { toast } = useToast();
@@ -197,7 +205,18 @@ export default function CollectionsPage() {
 
   const openCreateDialog = () => {
     setEditingCollection(null);
-    setFormData({ name: "", slug: "", description: "", image: "", bannerImage: "", isActive: true });
+    setFormData({
+      name: "",
+      slug: "",
+      description: "",
+      image: "",
+      bannerImage: "",
+      isActive: true,
+      isFeatured: false,
+      position: 0,
+      metaTitle: "",
+      metaDescription: "",
+    });
     setIsDialogOpen(true);
   };
 
@@ -210,6 +229,10 @@ export default function CollectionsPage() {
       image: collection.image || "",
       bannerImage: collection.bannerImage || "",
       isActive: collection.isActive,
+      isFeatured: collection.isFeatured,
+      position: collection.position,
+      metaTitle: collection.metaTitle || "",
+      metaDescription: collection.metaDescription || "",
     });
     setIsDialogOpen(true);
   };
@@ -372,6 +395,11 @@ export default function CollectionsPage() {
                     <Badge variant={collection.isActive ? "default" : "secondary"}>
                       {collection.isActive ? "Aktif" : "Pasif"}
                     </Badge>
+                    {collection.isFeatured && (
+                      <Badge variant="outline" className="border-amber-500 text-amber-600">
+                        Öne Çıkan
+                      </Badge>
+                    )}
                   </div>
                   <p className="text-sm text-gray-500 mt-1">/{collection.slug}</p>
                 </div>
@@ -515,18 +543,76 @@ export default function CollectionsPage() {
                 </div>
               )}
             </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="isActive"
-                checked={formData.isActive}
-                onCheckedChange={(checked) =>
-                  setFormData((prev) => ({ ...prev, isActive: checked as boolean }))
-                }
-              />
-              <Label htmlFor="isActive" className="font-normal cursor-pointer">
-                Aktif
-              </Label>
+            {/* Status & Position Row */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="isActive"
+                    checked={formData.isActive}
+                    onCheckedChange={(checked) =>
+                      setFormData((prev) => ({ ...prev, isActive: checked as boolean }))
+                    }
+                  />
+                  <Label htmlFor="isActive" className="font-normal cursor-pointer">
+                    Aktif
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="isFeatured"
+                    checked={formData.isFeatured}
+                    onCheckedChange={(checked) =>
+                      setFormData((prev) => ({ ...prev, isFeatured: checked as boolean }))
+                    }
+                  />
+                  <Label htmlFor="isFeatured" className="font-normal cursor-pointer">
+                    Öne Çıkan
+                  </Label>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="position">Sıralama</Label>
+                <Input
+                  id="position"
+                  type="number"
+                  min="0"
+                  value={formData.position}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, position: parseInt(e.target.value) || 0 }))
+                  }
+                />
+              </div>
             </div>
+
+            {/* SEO Section */}
+            <div className="space-y-3 pt-2 border-t">
+              <p className="text-sm font-medium text-gray-700">SEO Ayarları</p>
+              <div className="space-y-2">
+                <Label htmlFor="metaTitle">Meta Başlık</Label>
+                <Input
+                  id="metaTitle"
+                  placeholder="Sayfa başlığı (boş bırakılırsa koleksiyon adı kullanılır)"
+                  value={formData.metaTitle}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, metaTitle: e.target.value }))
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="metaDescription">Meta Açıklama</Label>
+                <Textarea
+                  id="metaDescription"
+                  placeholder="Arama motorlarında görünecek açıklama"
+                  rows={2}
+                  value={formData.metaDescription}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, metaDescription: e.target.value }))
+                  }
+                />
+              </div>
+            </div>
+
             <div className="flex gap-3 pt-4">
               <Button
                 type="button"

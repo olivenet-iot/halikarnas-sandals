@@ -8,7 +8,12 @@ const collectionSchema = z.object({
   slug: z.string().min(1, "Slug gerekli").optional(),
   description: z.string().optional().nullable(),
   image: z.string().optional().nullable(),
+  bannerImage: z.string().optional().nullable(),
   isActive: z.boolean().optional(),
+  isFeatured: z.boolean().optional(),
+  position: z.number().optional(),
+  metaTitle: z.string().optional().nullable(),
+  metaDescription: z.string().optional().nullable(),
 });
 
 // PATCH - Update collection
