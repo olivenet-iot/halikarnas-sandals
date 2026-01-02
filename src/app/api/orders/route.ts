@@ -228,13 +228,26 @@ export async function POST(request: NextRequest) {
         district: shippingInfo.districtName,
       },
       paymentMethod: paymentMethod === "cash_on_delivery" ? "Kapıda Ödeme" : "Kredi Kartı",
+      trackingToken: order.trackingToken!,
     });
 
-    await sendEmail({
-      to: shippingInfo.email,
-      subject: emailTemplate.subject,
-      html: emailTemplate.html,
-    });
+    // Send order confirmation email - log but don't block order creation
+    try {
+      console.log("📧 Sending order confirmation email to:", shippingInfo.email);
+      const emailResult = await sendEmail({
+        to: shippingInfo.email,
+        subject: emailTemplate.subject,
+        html: emailTemplate.html,
+      });
+
+      if (emailResult.success) {
+        console.log("✅ Order confirmation email sent successfully:", emailResult.messageId);
+      } else {
+        console.error("❌ Failed to send order confirmation email:", emailResult.error);
+      }
+    } catch (emailError) {
+      console.error("❌ Email sending exception:", emailError);
+    }
 
     return NextResponse.json({
       success: true,

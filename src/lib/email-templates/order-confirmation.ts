@@ -14,6 +14,7 @@ export interface OrderEmailData {
     district: string;
   };
   paymentMethod: string;
+  trackingToken: string;
 }
 
 export function orderConfirmationEmail(data: OrderEmailData) {
@@ -111,7 +112,7 @@ export function orderConfirmationEmail(data: OrderEmailData) {
             </div>
 
             <p style="text-align: center;">
-              <a href="${BASE_URL}/hesabim/siparislerim" class="button">Siparişinizi Takip Edin</a>
+              <a href="${BASE_URL}/siparis/${data.trackingToken}" class="button">Siparişinizi Takip Edin</a>
             </p>
           </div>
           <div class="footer">

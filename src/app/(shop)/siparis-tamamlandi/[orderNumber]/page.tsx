@@ -178,7 +178,7 @@ export default async function SiparisTamamlandiPage({ params }: PageProps) {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button variant="outline" size="lg" asChild>
-            <Link href="/hesabim/siparislerim">Siparişlerimi Görüntüle</Link>
+            <Link href={`/siparis/${order.trackingToken}`}>Siparişimi Takip Et</Link>
           </Button>
           <Button className="btn-primary" size="lg" asChild>
             <Link href="/kadin">Alışverişe Devam Et</Link>

@@ -121,6 +121,11 @@ export function Footer() {
               </h3>
               <ul className="space-y-3">
                 <li>
+                  <Link href="/siparis-takip" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
+                    Sipariş Takip
+                  </Link>
+                </li>
+                <li>
                   <Link href="/sss" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
                     Sıkça Sorulan Sorular
                   </Link>

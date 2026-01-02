@@ -400,6 +400,7 @@ model Order {
   adminNote      String? @db.Text
   trackingNumber String?
   carrier        String?
+  trackingToken  String? @unique @default(uuid())
 
   // Timestamps
   createdAt   DateTime  @default(now())
@@ -419,6 +420,7 @@ model Order {
   @@index([status])
   @@index([orderNumber])
   @@index([createdAt])
+  @@index([trackingToken])
 }
 
 model OrderItem {

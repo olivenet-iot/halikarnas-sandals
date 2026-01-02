@@ -27,6 +27,7 @@ interface CheckoutState {
   paymentMethod: PaymentMethod;
   acceptedTerms: boolean;
   acceptedKvkk: boolean;
+  isOrderCompleted: boolean;
 
   // Actions
   setStep: (step: CheckoutStep) => void;
@@ -36,6 +37,7 @@ interface CheckoutState {
   setPaymentMethod: (method: PaymentMethod) => void;
   setAcceptedTerms: (accepted: boolean) => void;
   setAcceptedKvkk: (accepted: boolean) => void;
+  setOrderCompleted: (completed: boolean) => void;
   reset: () => void;
 
   // Computed
@@ -50,6 +52,7 @@ const initialState = {
   paymentMethod: "cash_on_delivery" as PaymentMethod,
   acceptedTerms: false,
   acceptedKvkk: false,
+  isOrderCompleted: false,
 };
 
 export const useCheckoutStore = create<CheckoutState>()(
@@ -91,8 +94,20 @@ export const useCheckoutStore = create<CheckoutState>()(
         set({ acceptedKvkk: accepted });
       },
 
+      setOrderCompleted: (completed) => {
+        set({ isOrderCompleted: completed });
+      },
+
       reset: () => {
-        set(initialState);
+        // Reset checkout state but preserve isOrderCompleted to prevent redirect race condition
+        set({
+          currentStep: 1 as CheckoutStep,
+          shippingInfo: null,
+          paymentMethod: "cash_on_delivery" as PaymentMethod,
+          acceptedTerms: false,
+          acceptedKvkk: false,
+          // isOrderCompleted is intentionally NOT reset here
+        });
       },
 
       canProceedToPayment: () => {

@@ -173,7 +173,8 @@ export async function PATCH(
           existingOrder.shippingName || "Değerli Müşterimiz",
           existingOrder.orderNumber,
           validatedData.trackingNumber,
-          validatedData.carrier
+          validatedData.carrier,
+          existingOrder.trackingToken || ""
         );
 
         await sendEmail({

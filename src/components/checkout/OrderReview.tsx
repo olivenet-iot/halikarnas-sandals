@@ -5,18 +5,15 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ChevronLeft,
+  ArrowLeft,
   Loader2,
   MapPin,
   CreditCard,
   ShoppingBag,
-  FileText,
   Shield,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { MagneticButton } from "@/components/ui/luxury/MagneticButton";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import { useCartStore } from "@/stores/cart-store";
 import { useCheckoutStore } from "@/stores/checkout-store";
 import { formatPrice } from "@/lib/utils";
@@ -48,6 +45,7 @@ export function OrderReview({ onBack }: OrderReviewProps) {
     acceptedKvkk,
     setAcceptedTerms,
     setAcceptedKvkk,
+    setOrderCompleted,
     reset: resetCheckout,
   } = useCheckoutStore();
 
@@ -85,6 +83,9 @@ export function OrderReview({ onBack }: OrderReviewProps) {
       const data = await response.json();
 
       if (data.success) {
+        // Set order completed flag BEFORE clearing cart to prevent redirect race condition
+        setOrderCompleted(true);
+
         // Clear cart and checkout state
         clearCart();
         resetCheckout();
@@ -94,14 +95,14 @@ export function OrderReview({ onBack }: OrderReviewProps) {
       } else {
         toast({
           title: "Hata",
-          description: data.error || "Sipariş oluşturulurken bir hata oluştu.",
+          description: data.error || "Siparis olusturulurken bir hata olustu.",
           variant: "destructive",
         });
       }
     } catch {
       toast({
         title: "Hata",
-        description: "Sipariş oluşturulurken bir hata oluştu.",
+        description: "Siparis olusturulurken bir hata olustu.",
         variant: "destructive",
       });
     } finally {
@@ -112,14 +113,14 @@ export function OrderReview({ onBack }: OrderReviewProps) {
   return (
     <div className="space-y-6">
       {/* Shipping Address Summary */}
-      <div className="bg-sand-50 rounded-lg p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <MapPin className="h-5 w-5 text-aegean-600" />
-          <h3 className="font-semibold text-leather-800">Teslimat Adresi</h3>
+      <div className="bg-stone-50 p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <MapPin className="h-5 w-5 text-[#B8860B]" />
+          <h3 className="font-medium text-stone-800">Teslimat Adresi</h3>
         </div>
         {shippingInfo && (
-          <div className="text-body-sm text-leather-600 space-y-1">
-            <p className="font-medium">
+          <div className="text-sm text-stone-600 space-y-1">
+            <p className="font-medium text-stone-800">
               {shippingInfo.firstName} {shippingInfo.lastName}
             </p>
             <p>
@@ -137,28 +138,28 @@ export function OrderReview({ onBack }: OrderReviewProps) {
       </div>
 
       {/* Payment Method Summary */}
-      <div className="bg-sand-50 rounded-lg p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <CreditCard className="h-5 w-5 text-aegean-600" />
-          <h3 className="font-semibold text-leather-800">Ödeme Yöntemi</h3>
+      <div className="bg-stone-50 p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <CreditCard className="h-5 w-5 text-[#B8860B]" />
+          <h3 className="font-medium text-stone-800">Odeme Yontemi</h3>
         </div>
-        <p className="text-body-sm text-leather-600">
+        <p className="text-sm text-stone-600">
           {paymentMethod === "cash_on_delivery"
-            ? "Kapıda Ödeme (Nakit veya Kredi Kartı)"
-            : "Kredi/Banka Kartı"}
+            ? "Kapida Odeme (Nakit veya Kredi Karti)"
+            : "Kredi/Banka Karti"}
         </p>
       </div>
 
       {/* Order Items Summary */}
-      <div className="bg-sand-50 rounded-lg p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <ShoppingBag className="h-5 w-5 text-aegean-600" />
-          <h3 className="font-semibold text-leather-800">Sipariş Ürünleri</h3>
+      <div className="bg-stone-50 p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <ShoppingBag className="h-5 w-5 text-[#B8860B]" />
+          <h3 className="font-medium text-stone-800">Siparis Urunleri</h3>
         </div>
         <div className="space-y-3">
           {items.map((item) => (
             <div key={item.variantId} className="flex gap-3">
-              <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-white flex-shrink-0">
+              <div className="relative w-16 h-16 overflow-hidden bg-white flex-shrink-0">
                 {item.image ? (
                   <Image
                     src={item.image}
@@ -168,18 +169,18 @@ export function OrderReview({ onBack }: OrderReviewProps) {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <ShoppingBag className="h-6 w-6 text-sand-300" />
+                    <ShoppingBag className="h-6 w-6 text-stone-300" />
                   </div>
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-body-sm font-medium text-leather-800 line-clamp-1">
+                <p className="text-sm font-medium text-stone-800 line-clamp-1">
                   {item.name}
                 </p>
-                <p className="text-body-xs text-leather-500">
+                <p className="text-xs text-stone-500">
                   {item.colorName} / {item.size} / x{item.quantity}
                 </p>
-                <p className="text-body-sm font-semibold text-leather-800 mt-1">
+                <p className="text-sm font-medium text-stone-800 mt-1">
                   {formatPrice(item.price * item.quantity)}
                 </p>
               </div>
@@ -188,7 +189,7 @@ export function OrderReview({ onBack }: OrderReviewProps) {
         </div>
       </div>
 
-      <Separator />
+      <div className="w-full h-px bg-stone-200" />
 
       {/* Terms & Conditions */}
       <div className="space-y-4">
@@ -197,17 +198,18 @@ export function OrderReview({ onBack }: OrderReviewProps) {
             id="terms"
             checked={acceptedTerms}
             onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+            className="mt-0.5 data-[state=checked]:bg-[#B8860B] data-[state=checked]:border-[#B8860B]"
           />
-          <Label htmlFor="terms" className="text-body-sm text-leather-600">
+          <label htmlFor="terms" className="text-sm text-stone-600 cursor-pointer">
             <Link
               href="/mesafeli-satis-sozlesmesi"
-              className="text-aegean-600 hover:underline"
+              className="text-[#B8860B] hover:underline"
               target="_blank"
             >
-              Mesafeli Satış Sözleşmesi
+              Mesafeli Satis Sozlesmesi
             </Link>
-            &apos;ni okudum ve onaylıyorum. *
-          </Label>
+            &apos;ni okudum ve onayliyorum. *
+          </label>
         </div>
 
         <div className="flex items-start gap-3">
@@ -215,60 +217,56 @@ export function OrderReview({ onBack }: OrderReviewProps) {
             id="kvkk"
             checked={acceptedKvkk}
             onCheckedChange={(checked) => setAcceptedKvkk(checked as boolean)}
+            className="mt-0.5 data-[state=checked]:bg-[#B8860B] data-[state=checked]:border-[#B8860B]"
           />
-          <Label htmlFor="kvkk" className="text-body-sm text-leather-600">
+          <label htmlFor="kvkk" className="text-sm text-stone-600 cursor-pointer">
             <Link
               href="/kvkk"
-              className="text-aegean-600 hover:underline"
+              className="text-[#B8860B] hover:underline"
               target="_blank"
             >
-              KVKK Aydınlatma Metni
+              KVKK Aydinlatma Metni
             </Link>
-            &apos;ni okudum ve anladım. *
-          </Label>
+            &apos;ni okudum ve anladim. *
+          </label>
         </div>
       </div>
 
       {/* Security Note */}
-      <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-center gap-2 text-body-sm text-green-700">
+      <div className="bg-green-50 border border-green-200 p-4 flex items-center gap-3 text-sm text-green-700">
         <Shield className="h-5 w-5 text-green-600 flex-shrink-0" />
         <span>
-          Siparişiniz SSL şifreleme ile güvence altındadır. Bilgileriniz
-          korunmaktadır.
+          Siparisiniz SSL sifreleme ile guvence altindadir. Bilgileriniz
+          korunmaktadir.
         </span>
       </div>
 
       {/* Actions */}
       <div className="flex justify-between pt-4">
-        <Button
+        <button
           type="button"
-          variant="outline"
-          size="lg"
           onClick={onBack}
           disabled={isSubmitting}
+          className="inline-flex items-center gap-2 text-stone-600 hover:text-stone-800 transition-colors disabled:opacity-50"
         >
-          <ChevronLeft className="h-4 w-4 mr-2" />
-          Geri
-        </Button>
-        <Button
-          type="button"
-          className="btn-primary"
-          size="lg"
+          <ArrowLeft className="h-4 w-4" />
+          <span className="text-sm uppercase tracking-wide">Geri</span>
+        </button>
+        <MagneticButton
           onClick={handlePlaceOrder}
-          disabled={!canPlaceOrder || isSubmitting}
+          variant="primary"
+          size="lg"
+          className={!canPlaceOrder || isSubmitting ? "opacity-50 cursor-not-allowed" : ""}
         >
           {isSubmitting ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              İşleniyor...
-            </>
+            <span className="flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Isleniyor...
+            </span>
           ) : (
-            <>
-              Siparişi Tamamla
-              <FileText className="h-4 w-4 ml-2" />
-            </>
+            "Siparisi Tamamla"
           )}
-        </Button>
+        </MagneticButton>
       </div>
     </div>
   );

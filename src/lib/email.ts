@@ -28,9 +28,9 @@ export async function sendEmail({
   html: string;
   text?: string;
 }) {
-  // In development or when no API key is set, just log the email
-  if (process.env.NODE_ENV === "development" || !process.env.RESEND_API_KEY) {
-    console.log("📧 EMAIL PREVIEW:");
+  // When no API key is set, just log the email preview
+  if (!process.env.RESEND_API_KEY) {
+    console.log("📧 EMAIL PREVIEW (no API key):");
     console.log("To:", to);
     console.log("Subject:", subject);
     console.log("HTML:", html.substring(0, 500) + "...");

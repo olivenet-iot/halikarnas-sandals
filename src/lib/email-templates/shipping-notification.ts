@@ -4,7 +4,8 @@ export function shippingNotificationEmail(
   customerName: string,
   orderNumber: string,
   trackingNumber: string,
-  carrier: string
+  carrier: string,
+  trackingToken: string
 ) {
   const trackingUrls: Record<string, string> = {
     MNG: `https://www.mngkargo.com.tr/takip?no=${trackingNumber}`,
@@ -66,7 +67,7 @@ export function shippingNotificationEmail(
             </div>
 
             <p style="text-align: center;">
-              <a href="${BASE_URL}/hesabim/siparislerim" style="color: #1E5F74;">Siparişinizi Görüntüleyin →</a>
+              <a href="${BASE_URL}/siparis/${trackingToken}" style="color: #1E5F74;">Siparişinizi Görüntüleyin →</a>
             </p>
           </div>
           <div class="footer">
