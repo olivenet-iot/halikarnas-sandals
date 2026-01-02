@@ -8,25 +8,34 @@ import { formatPrice, formatDate } from "@/lib/utils";
 import { notFound } from "next/navigation";
 
 interface PageProps {
-  params: Promise<{ orderNumber: string }>;
+  params: Promise<{ token: string }>;
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { orderNumber } = await params;
+  const { token } = await params;
+
+  // Fetch order to get orderNumber for metadata
+  const order = await db.order.findUnique({
+    where: { trackingToken: token },
+    select: { orderNumber: true },
+  });
+
   return {
-    title: `Sipariş Tamamlandı - ${orderNumber} | Halikarnas Sandals`,
+    title: order
+      ? `Sipariş Tamamlandı - ${order.orderNumber} | Halikarnas Sandals`
+      : "Sipariş Bulunamadı | Halikarnas Sandals",
     description: "Siparişiniz başarıyla oluşturuldu.",
   };
 }
 
 export default async function SiparisTamamlandiPage({ params }: PageProps) {
-  const { orderNumber } = await params;
+  const { token } = await params;
 
-  // Fetch order from database
+  // Fetch order from database using trackingToken (secure, non-guessable)
   const order = await db.order.findUnique({
-    where: { orderNumber },
+    where: { trackingToken: token },
     include: {
       items: true,
     },

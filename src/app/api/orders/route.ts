@@ -252,6 +252,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       orderNumber: order.orderNumber,
+      trackingToken: order.trackingToken,
       orderId: order.id,
     });
   } catch (error) {

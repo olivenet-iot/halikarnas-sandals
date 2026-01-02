@@ -90,8 +90,8 @@ export function OrderReview({ onBack }: OrderReviewProps) {
         clearCart();
         resetCheckout();
 
-        // Redirect to success page
-        router.push(`/siparis-tamamlandi/${data.orderNumber}`);
+        // Redirect to success page using trackingToken for security
+        router.push(`/siparis-tamamlandi/${data.trackingToken}`);
       } else {
         toast({
           title: "Hata",
