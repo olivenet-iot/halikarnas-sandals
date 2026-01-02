@@ -450,13 +450,14 @@ export default function CollectionsPage() {
 
       {/* Create/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-h-[85vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>
               {editingCollection ? "Koleksiyonu Düzenle" : "Yeni Koleksiyon"}
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+            <div className="flex-1 overflow-y-auto space-y-4 pr-2">
             <div className="space-y-2">
               <Label htmlFor="name">Koleksiyon Adı *</Label>
               <Input
@@ -612,8 +613,10 @@ export default function CollectionsPage() {
                 />
               </div>
             </div>
+            </div>
 
-            <div className="flex gap-3 pt-4">
+            {/* Sticky Footer */}
+            <div className="flex gap-3 pt-4 mt-4 border-t shrink-0">
               <Button
                 type="button"
                 variant="outline"

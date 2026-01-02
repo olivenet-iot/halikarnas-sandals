@@ -1,8 +1,10 @@
 import { HeroSection } from "@/components/home/HeroSection";
-import { BrandPromise } from "@/components/home/BrandPromise";
+import { FeaturedProducts } from "@/components/home/FeaturedProducts";
+import { CategoryCards } from "@/components/home/CategoryCards";
+import { FeaturedCollection } from "@/components/home/FeaturedCollection";
 import { BestSellers } from "@/components/home/BestSellers";
-import { FeaturedCategories } from "@/components/home/FeaturedCategories";
 import { CraftsmanshipMini } from "@/components/home/CraftsmanshipMini";
+import { BrandPromise } from "@/components/home/BrandPromise";
 import { Newsletter } from "@/components/home/Newsletter";
 
 export default async function Home() {
@@ -11,19 +13,25 @@ export default async function Home() {
       {/* 1. Hero - Full screen immersive */}
       <HeroSection />
 
-      {/* 2. Brand Promise Strip - Right after hero */}
-      <BrandPromise />
+      {/* 2. Featured Products - Seçtiklerimiz carousel */}
+      <FeaturedProducts />
 
-      {/* 3. Best Sellers - Featured products */}
+      {/* 3. Category Cards - Kadın/Erkek */}
+      <CategoryCards />
+
+      {/* 4. Featured Collection - Quote format */}
+      <FeaturedCollection />
+
+      {/* 5. Best Sellers - Featured products */}
       <BestSellers />
 
-      {/* 4. Featured Categories - Editorial layout */}
-      <FeaturedCategories />
-
-      {/* 5. Craftsmanship - Immersive story */}
+      {/* 6. Craftsmanship - Immersive story */}
       <CraftsmanshipMini />
 
-      {/* 6. Newsletter - Luxury minimal */}
+      {/* 7. Brand Promise Strip */}
+      <BrandPromise />
+
+      {/* 8. Newsletter - Luxury minimal */}
       <Newsletter />
     </div>
   );

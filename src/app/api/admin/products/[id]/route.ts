@@ -120,20 +120,69 @@ export async function PATCH(
 
     // Update product with transaction
     const product = await db.$transaction(async (tx) => {
-      // Update variants if provided
+      // Update variants if provided (upsert pattern - siparişte kullanılanları koru)
       if (validatedData.variants) {
-        // Delete old variants and create new ones
-        await tx.productVariant.deleteMany({ where: { productId: id } });
-        await tx.productVariant.createMany({
-          data: validatedData.variants.map((v) => ({
-            productId: id,
-            size: v.size,
-            color: v.color || null,
-            colorHex: v.colorHex || null,
-            stock: v.stock,
-            sku: v.sku,
-          })),
+        // Mevcut variant ID'lerini al
+        const existingVariants = await tx.productVariant.findMany({
+          where: { productId: id },
+          select: { id: true },
         });
+        const existingIds = existingVariants.map((v) => v.id);
+
+        // Gelen variant'ları işle
+        for (const variant of validatedData.variants) {
+          if (variant.id && existingIds.includes(variant.id)) {
+            // Mevcut variant - güncelle
+            await tx.productVariant.update({
+              where: { id: variant.id },
+              data: {
+                size: variant.size,
+                color: variant.color || null,
+                colorHex: variant.colorHex || null,
+                stock: variant.stock,
+                sku: variant.sku,
+              },
+            });
+          } else if (!variant.id) {
+            // Yeni variant - oluştur
+            await tx.productVariant.create({
+              data: {
+                productId: id,
+                size: variant.size,
+                color: variant.color || null,
+                colorHex: variant.colorHex || null,
+                stock: variant.stock,
+                sku: variant.sku,
+              },
+            });
+          }
+        }
+
+        // Silinmesi gereken variant'ları kontrol et
+        const incomingIds = validatedData.variants
+          .filter((v) => v.id)
+          .map((v) => v.id as string);
+        const toDeleteIds = existingIds.filter((id) => !incomingIds.includes(id));
+
+        for (const variantId of toDeleteIds) {
+          // Siparişte kullanılıyor mu kontrol et
+          const orderItemCount = await tx.orderItem.count({
+            where: { variantId },
+          });
+
+          if (orderItemCount === 0) {
+            // Siparişte kullanılmıyor - silebiliriz
+            await tx.productVariant.delete({
+              where: { id: variantId },
+            });
+          } else {
+            // Siparişte kullanılıyor - stok'u 0 yap, silme
+            await tx.productVariant.update({
+              where: { id: variantId },
+              data: { stock: 0 },
+            });
+          }
+        }
       }
 
       // Update images if provided
@@ -216,7 +265,7 @@ export async function PATCH(
   }
 }
 
-// DELETE - Delete product
+// DELETE - Delete product (soft delete if used in orders)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -235,10 +284,55 @@ export async function DELETE(
       return NextResponse.json({ error: "Ürün bulunamadı" }, { status: 404 });
     }
 
-    // Delete product (cascades to variants, images, etc.)
-    await db.product.delete({ where: { id } });
+    // Siparişte kullanılıyor mu kontrol et
+    const orderItemCount = await db.orderItem.count({
+      where: { productId: id },
+    });
 
-    return NextResponse.json({ success: true });
+    if (orderItemCount > 0) {
+      // Siparişte kullanılıyorsa ARCHIVED yap (soft delete)
+      await db.product.update({
+        where: { id },
+        data: { status: "ARCHIVED" },
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: `Bu ürün ${orderItemCount} siparişte kullanıldığı için arşivlendi.`,
+        archived: true,
+      });
+    }
+
+    // Siparişte kullanılmıyorsa tamamen sil
+    await db.$transaction(async (tx) => {
+      // İlişkili kayıtları sil
+      await tx.productImage.deleteMany({ where: { productId: id } });
+      await tx.wishlistItem.deleteMany({ where: { productId: id } });
+      await tx.collectionProduct.deleteMany({ where: { productId: id } });
+
+      // CartItem'lar variant üzerinden bağlı, önce onları temizle
+      const variants = await tx.productVariant.findMany({
+        where: { productId: id },
+        select: { id: true },
+      });
+      if (variants.length > 0) {
+        await tx.cartItem.deleteMany({
+          where: { variantId: { in: variants.map((v) => v.id) } },
+        });
+      }
+
+      // Variant'ları sil
+      await tx.productVariant.deleteMany({ where: { productId: id } });
+
+      // Ürünü sil
+      await tx.product.delete({ where: { id } });
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: "Ürün başarıyla silindi.",
+      archived: false,
+    });
   } catch (error) {
     console.error("Delete product error:", error);
     return NextResponse.json(

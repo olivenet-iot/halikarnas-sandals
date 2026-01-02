@@ -1,6 +1,14 @@
 export { HeroSection } from "./HeroSection";
+export { FeaturedProducts } from "./FeaturedProducts";
+export { FeaturedProductsCarousel } from "./FeaturedProductsCarousel";
+export { NewArrivals } from "./NewArrivals";
+export { NewArrivalsCarousel } from "./NewArrivalsCarousel";
+export { CategoryCards } from "./CategoryCards";
+export { FeaturedCollection } from "./FeaturedCollection";
 export { FeaturedCategories } from "./FeaturedCategories";
 export { BestSellers } from "./BestSellers";
+export { CraftsmanshipMini } from "./CraftsmanshipMini";
+export { BrandPromise } from "./BrandPromise";
 export { BrandStory } from "./BrandStory";
 export { Features } from "./Features";
 export { Newsletter } from "./Newsletter";

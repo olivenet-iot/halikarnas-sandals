@@ -98,7 +98,7 @@ export function HeroSection() {
                   hover:bg-luxury-gold hover:text-luxury-primary
                 "
               >
-                <span>Koleksiyonu Keşfet</span>
+                <span>Alışverişe Başla</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
               </span>
             </Link>

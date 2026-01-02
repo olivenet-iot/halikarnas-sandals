@@ -208,10 +208,6 @@ export const NAV_ITEMS = [
     ],
   },
   {
-    label: "Koleksiyonlar",
-    href: "/koleksiyonlar",
-  },
-  {
     label: "Hakkımızda",
     href: "/hakkimizda",
   },
