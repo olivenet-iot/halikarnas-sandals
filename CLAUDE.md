@@ -281,47 +281,84 @@ interface UIStore {
 
 ## Design System
 
-### Renkler (Tailwind)
+**Detayli bilgi:** `.claude/skills/halikarnas-design-system.md`
+
+### Renkler (Luxury Palette - KULLAN)
+
+| Token | Hex | Kullanim |
+|-------|-----|----------|
+| `luxury-primary` | #1e3a3a | Primary actions, headings |
+| `luxury-primary-light` | #2d5555 | Hover states |
+| `luxury-gold` | #c9a962 | Premium CTAs, dividers |
+| `luxury-terracotta` | #e07d4c | Accent, sale badges |
+| `luxury-cream` | #faf9f6 | Page backgrounds |
+| `luxury-ivory` | #f5f4f0 | Section backgrounds |
+| `luxury-stone` | #e8e6e1 | Borders, subtle backgrounds |
+| `luxury-charcoal` | #2d2d2d | Text, dark elements |
+
+### Legacy Renkler (DEPRECATED - KULLANMA)
 
 ```
-sand:       #D4B896  (Ana renk - kum tonu)
-aegean:     #1E5F74  (Accent - Ege mavisi)
-terracotta: #C17E61  (Secondary - toprak)
-leather:    #4A3728  (Text - deri kahve)
+sand-*      -> luxury-cream/ivory/stone kullan
+leather-*   -> luxury-charcoal kullan
+aegean-*    -> luxury-primary kullan
+terracotta-* -> luxury-terracotta kullan
 ```
-
-Tailwind class ornekleri:
-- `bg-sand-100`, `text-sand-600`
-- `bg-aegean-500`, `hover:bg-aegean-600`
-- `text-leather-900`, `text-leather-600`
-- `bg-terracotta-500`
 
 ### Typography
 
-```css
---font-cormorant: Cormorant Garamond (serif) -> font-heading
---font-inter: Inter (sans-serif) -> font-body
---font-cinzel: Cinzel (display) -> font-accent
+```
+font-serif / font-heading: Cormorant Garamond (basliklar)
+font-sans / font-body: Inter / DM Sans (body text)
+font-accent / font-display: Cinzel (luxury labels)
+```
+
+### Animation System
+
+```typescript
+import { TIMING, EASE, fadeInUp, staggerContainer } from "@/lib/animations";
+
+// TIMING: instant (0.15s), fast (0.3s), medium (0.5s), slow (0.7s), cinematic (1.5s)
+// EASE: luxury [0.4, 0, 0.2, 1], smooth, bounce, spring
+```
+
+### Luxury Components
+
+```typescript
+import { GoldDivider, MagneticButton, TextReveal, ParallaxImage } from "@/components/ui/luxury";
 ```
 
 ### Component Patterns
 
 ```tsx
-// Primary Button
-<Button className="bg-aegean-500 hover:bg-aegean-600 text-white">
+// Primary Button (Luxury)
+<MagneticButton variant="primary">Kesfet</MagneticButton>
 
-// Secondary Button
-<Button variant="outline" className="border-leather-300">
+// Standard Button
+<Button className="bg-luxury-primary hover:bg-luxury-primary-light text-white">
 
 // Card
-<Card className="bg-white rounded-lg shadow-soft border">
+<Card className="bg-luxury-ivory border-luxury-stone rounded-lg shadow-soft">
 
 // Section Container
-<section className="container py-16 md:py-24">
+<section className="bg-luxury-cream py-16 md:py-24">
 
 // Page Title
-<h1 className="text-3xl md:text-4xl font-bold text-leather-900">
+<h1 className="font-serif text-3xl md:text-4xl text-luxury-charcoal">
+
+// Gold Divider
+<GoldDivider />
+
+// Luxury Label
+<span className="font-display text-xs tracking-[0.3em] uppercase text-luxury-gold">
 ```
+
+### ANTI-PATTERNS
+
+- Parallax Y > ±3% kullanma (frame gap yaratir)
+- `min-h-screen` + padding ile scroll-snap bozulur
+- `SheetFooter` yerine manuel div kullan
+- Form input'larda `forwardRef` zorunlu (react-hook-form)
 
 ---
 

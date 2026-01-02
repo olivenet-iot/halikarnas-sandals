@@ -100,40 +100,58 @@ export function AddToCartButton({ productId }: { productId: string }) {
 
 ## Styling Guidelines
 
-### Renk Sistemi
+**Detayli bilgi:** `.claude/skills/halikarnas-design-system.md`
+
+### Renk Sistemi (Luxury Palette)
 
 ```tsx
-// Primary (Aegean)
-<Button className="bg-aegean-500 hover:bg-aegean-600 text-white">
-<Link className="text-aegean-600 hover:text-aegean-700">
+// Primary
+<Button className="bg-luxury-primary hover:bg-luxury-primary-light text-white">
+<Link className="text-luxury-primary hover:text-luxury-gold">
 
-// Secondary (Sand)
-<div className="bg-sand-50">
-<Button variant="outline" className="border-sand-300 hover:bg-sand-100">
+// Backgrounds
+<div className="bg-luxury-cream">      // Page background
+<div className="bg-luxury-ivory">      // Section background
+<div className="bg-luxury-stone">      // Subtle background
 
-// Text (Leather)
-<h1 className="text-leather-900">  // Basliklar
-<p className="text-leather-600">   // Body text
-<span className="text-leather-400"> // Muted text
+// Text
+<h1 className="text-luxury-charcoal">         // Basliklar
+<p className="text-luxury-charcoal/80">       // Body text
+<span className="text-luxury-charcoal/60">    // Muted text
+<span className="text-luxury-charcoal/40">    // Very muted
 
-// Accent (Terracotta)
-<Badge className="bg-terracotta-500"> // Sale badge
+// Gold Accents
+<span className="text-luxury-gold">           // Accent text
+<MagneticButton variant="primary">            // Gold CTA
+
+// Sale/Accent
+<Badge className="bg-luxury-terracotta text-white">
 ```
 
 ### Typography
 
 ```tsx
-// Headings
-<h1 className="text-3xl md:text-4xl font-bold font-heading text-leather-900">
-<h2 className="text-2xl md:text-3xl font-bold text-leather-900">
-<h3 className="text-xl font-semibold text-leather-900">
+// Hero title (full-screen pages)
+<h1 className="font-serif text-5xl md:text-7xl text-luxury-charcoal tracking-tight">
+
+// Page title
+<h1 className="font-serif text-3xl md:text-4xl text-luxury-charcoal">
+
+// Section title
+<h2 className="font-serif text-2xl md:text-3xl text-luxury-charcoal">
+
+// Subsection
+<h3 className="font-serif text-xl md:text-2xl text-luxury-charcoal">
 
 // Body
-<p className="text-body-md text-leather-600">
-<p className="text-body-sm text-leather-500">
+<p className="text-luxury-charcoal/80 leading-relaxed">
+<p className="text-sm text-luxury-charcoal/60">
+
+// Luxury label (gold, uppercase)
+<span className="font-display text-xs tracking-[0.3em] uppercase text-luxury-gold">
 
 // Labels
-<label className="text-sm font-medium text-leather-700">
+<label className="text-sm font-medium text-luxury-charcoal">
 ```
 
 ### Layout Patterns
@@ -158,17 +176,41 @@ export function AddToCartButton({ productId }: { productId: string }) {
 ### Card Pattern
 
 ```tsx
-<Card className="bg-white rounded-lg shadow-soft border overflow-hidden">
-  <CardHeader className="p-4 border-b">
-    <CardTitle>Baslik</CardTitle>
+<Card className="bg-luxury-ivory border-luxury-stone rounded-lg shadow-soft overflow-hidden">
+  <CardHeader className="p-4 border-b border-luxury-stone">
+    <CardTitle className="font-serif text-luxury-charcoal">Baslik</CardTitle>
   </CardHeader>
   <CardContent className="p-4">
-    Icerik
+    <p className="text-luxury-charcoal/80">Icerik</p>
   </CardContent>
-  <CardFooter className="p-4 border-t bg-sand-50">
+  <CardFooter className="p-4 border-t border-luxury-stone bg-luxury-cream">
     Footer
   </CardFooter>
 </Card>
+```
+
+### Section Pattern
+
+```tsx
+<section className="py-16 md:py-24 bg-luxury-cream">
+  <div className="container max-w-7xl mx-auto px-4">
+    {/* Section Header */}
+    <div className="text-center mb-12">
+      <span className="font-display text-xs tracking-[0.3em] uppercase text-luxury-gold mb-4 block">
+        Kategori
+      </span>
+      <h2 className="font-serif text-2xl md:text-3xl text-luxury-charcoal mb-4">
+        Baslik
+      </h2>
+      <GoldDivider className="mx-auto" />
+    </div>
+
+    {/* Content */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Items */}
+    </div>
+  </div>
+</section>
 ```
 
 ---
@@ -468,45 +510,142 @@ import Image from "next/image";
 
 ## Animation (Framer Motion)
 
+**Detayli bilgi:** `.claude/skills/halikarnas-design-system.md`
+
+### Import
+
 ```tsx
 import { motion } from "framer-motion";
+import {
+  TIMING,
+  EASE,
+  fadeInUp,
+  staggerContainer,
+  goldLine,
+  letterSpacingReveal,
+} from "@/lib/animations";
+```
 
-// Fade in
+### Pre-built Variants Kullanimi (Tercih Edilen)
+
+```tsx
+// Fade in up (viewport triggered)
+<motion.div
+  variants={fadeInUp}
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true }}
+>
+  Content
+</motion.div>
+
+// Staggered list
+<motion.div
+  variants={staggerContainer}
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true }}
+>
+  {items.map((item) => (
+    <motion.div key={item.id} variants={fadeInUp}>
+      {item.name}
+    </motion.div>
+  ))}
+</motion.div>
+
+// Gold line reveal
+<motion.div variants={goldLine}>
+  <GoldDivider />
+</motion.div>
+```
+
+### Manuel Animation (Gerektiginde)
+
+```tsx
+// Fade in with luxury easing
 <motion.div
   initial={{ opacity: 0 }}
   animate={{ opacity: 1 }}
-  transition={{ duration: 0.3 }}
+  transition={{ duration: TIMING.medium, ease: EASE.luxury }}
 >
 
 // Slide up
 <motion.div
   initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  transition={{ duration: TIMING.slow, ease: EASE.luxury }}
+  viewport={{ once: true }}
 >
+```
 
-// Stagger children
-<motion.div
-  initial="hidden"
-  animate="visible"
-  variants={{
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
-  }}
->
-  {items.map((item) => (
-    <motion.div
-      key={item.id}
-      variants={{
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0 },
-      }}
-    >
-      {item.name}
-    </motion.div>
-  ))}
-</motion.div>
+### TIMING & EASE Constants
+
+```tsx
+// Timing
+TIMING.instant  // 0.15s - micro-interactions
+TIMING.fast     // 0.3s  - hovers
+TIMING.medium   // 0.5s  - overlays
+TIMING.slow     // 0.7s  - sections
+TIMING.cinematic // 1.5s - hero
+
+// Easing
+EASE.luxury     // [0.4, 0, 0.2, 1] - premium feel
+EASE.smooth     // [0.25, 0.1, 0.25, 1]
+EASE.bounce     // bouncy effect
+EASE.spring     // physics-based
+```
+
+---
+
+## Luxury Components
+
+**Detayli bilgi:** `.claude/skills/halikarnas-design-system.md`
+
+### Import
+
+```tsx
+import {
+  GoldDivider,
+  MagneticButton,
+  TextReveal,
+  TextFadeIn,
+  ParallaxImage,
+  ScrollIndicator,
+  EditorialQuote,
+} from "@/components/ui/luxury";
+```
+
+### Kullanim Ornekleri
+
+```tsx
+// Gold divider
+<GoldDivider />
+<GoldDivider variant="wide" />
+<GoldDivider className="mx-auto" />
+
+// Magnetic button (gold, premium feel)
+<MagneticButton variant="primary">Kesfet</MagneticButton>
+<MagneticButton variant="outline" href="/koleksiyonlar">
+  Koleksiyonlar
+</MagneticButton>
+
+// Text animations
+<TextReveal text="Premium El Yapimi" />
+<TextFadeIn>Paragraf metni...</TextFadeIn>
+
+// Parallax image
+<ParallaxImage
+  src="/hero.jpg"
+  alt="Hero"
+  parallaxAmount={0.3}
+/>
+
+// Scroll indicator (for scroll-snap pages)
+<ScrollIndicator currentFrame={2} totalFrames={7} />
+
+// Editorial quote
+<EditorialQuote
+  quote="Luxury is in each detail."
+  author="Hubert de Givenchy"
+/>
 ```

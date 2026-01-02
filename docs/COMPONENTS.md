@@ -402,6 +402,215 @@ Tum shadcn/ui componentleri `src/components/ui/` altindadir.
 
 ---
 
+## Luxury Components
+
+**Detayli bilgi:** `.claude/skills/halikarnas-design-system.md`
+
+Premium animasyon iceren componentler. Collection ve brand sayfalari icin.
+
+**Path:** `src/components/ui/luxury/`
+
+### GoldDivider
+
+Animasyonlu altin dekoratif cizgi.
+
+```tsx
+import { GoldDivider } from "@/components/ui/luxury";
+
+// Basic
+<GoldDivider />
+
+// Variants
+<GoldDivider variant="default" />  // 4rem width
+<GoldDivider variant="wide" />     // 6rem width
+<GoldDivider variant="full" />     // max width
+
+// Centered
+<GoldDivider className="mx-auto" />
+
+// Without animation
+<GoldDivider animated={false} />
+
+// With delay
+<GoldDivider delay={0.3} />
+```
+
+---
+
+### MagneticButton
+
+Manyetik hover efektli buton. Premium CTA'lar icin.
+
+```tsx
+import { MagneticButton, ArrowIcon } from "@/components/ui/luxury";
+
+// Primary (gold background)
+<MagneticButton variant="primary">Kesfet</MagneticButton>
+
+// Outline
+<MagneticButton variant="outline">Detaylar</MagneticButton>
+
+// Ghost
+<MagneticButton variant="ghost">Daha Fazla</MagneticButton>
+
+// With icon
+<MagneticButton icon={<ArrowIcon />}>Devam Et</MagneticButton>
+
+// As link
+<MagneticButton href="/koleksiyonlar">Koleksiyonlar</MagneticButton>
+
+// Sizes
+<MagneticButton size="default">Default</MagneticButton>
+<MagneticButton size="lg">Large</MagneticButton>
+<MagneticButton size="xl">Extra Large</MagneticButton>
+```
+
+---
+
+### TextReveal
+
+Text animasyonlari. Luxury sayfalari icin.
+
+```tsx
+import { TextReveal, TextFadeIn, LetterSpacingReveal } from "@/components/ui/luxury";
+
+// Word-by-word reveal
+<TextReveal text="Premium El Yapimi Sandaletler" />
+
+// Fade in paragraph
+<TextFadeIn>
+  Uzun paragraf metni burada yer alir...
+</TextFadeIn>
+
+// Letter spacing reveal (hero titles icin)
+<LetterSpacingReveal>AEGEAN</LetterSpacingReveal>
+```
+
+---
+
+### ParallaxImage
+
+Parallax scroll efektli gorsel.
+
+```tsx
+import { ParallaxImage, ParallaxLayeredImage } from "@/components/ui/luxury";
+
+// Basic parallax
+<ParallaxImage
+  src="/images/hero.jpg"
+  alt="Hero image"
+  parallaxAmount={0.3}  // 0.1 to 1.0
+/>
+
+// With Ken Burns effect
+<ParallaxImage
+  src="/images/hero.jpg"
+  alt="Hero"
+  kenBurns={true}
+/>
+
+// With overlay
+<ParallaxImage
+  src="/images/hero.jpg"
+  alt="Hero"
+  overlay="gradient"  // "none" | "bottom" | "full" | "vignette" | "gradient"
+/>
+
+// Layered (foreground + background)
+<ParallaxLayeredImage
+  backgroundSrc="/bg.jpg"
+  foregroundSrc="/product.png"
+/>
+```
+
+---
+
+### ScrollIndicator
+
+Scroll-snap sayfalar icin ilerleme gostergesi.
+
+```tsx
+import { ScrollIndicator, ChevronBounce } from "@/components/ui/luxury";
+
+// Full progress indicator
+<ScrollIndicator
+  currentFrame={2}
+  totalFrames={7}
+/>
+
+// Simple bouncing chevron
+<ChevronBounce />
+
+// Variants
+<ScrollIndicator variant="arrow" />
+<ScrollIndicator variant="mouse" />
+<ScrollIndicator variant="line" />
+```
+
+---
+
+### EditorialQuote
+
+Editorial stil alintilar.
+
+```tsx
+import { EditorialQuote, EditorialText } from "@/components/ui/luxury";
+
+<EditorialQuote
+  quote="Luxury is in each detail."
+  author="Hubert de Givenchy"
+/>
+
+<EditorialText>
+  Editorial paragraf metni...
+  Birden fazla satir olabilir.
+</EditorialText>
+```
+
+---
+
+### VideoBackground
+
+Video veya gradient arka plan.
+
+```tsx
+import { VideoBackground, AnimatedGradientBackground } from "@/components/ui/luxury";
+
+// Video background
+<VideoBackground
+  src="/videos/hero.mp4"
+  poster="/images/hero-poster.jpg"
+  overlay="gradient"
+/>
+
+// Animated gradient (video fallback)
+<AnimatedGradientBackground />
+```
+
+---
+
+### ProductShowcase
+
+Luxury stil urun kartlari.
+
+```tsx
+import { ProductCardLuxury, ProductGridLuxury } from "@/components/ui/luxury";
+
+// Single card
+<ProductCardLuxury
+  product={product}
+  size="medium"  // "small" | "medium" | "large"
+/>
+
+// Grid layout
+<ProductGridLuxury
+  products={products}
+  layout="masonry"  // "masonry" | "uniform" | "featured"
+/>
+```
+
+---
+
 ## Component Patterns
 
 ### Loading State
@@ -537,27 +746,46 @@ export function MyForm() {
 <Button size="icon"><Icon /></Button>
 ```
 
-### Common Classes
+### Common Classes (Luxury Tokens)
 
 ```tsx
+// Page background
+<div className="bg-luxury-cream min-h-screen">
+
 // Container
-<div className="container py-8 md:py-12">
+<div className="container max-w-7xl mx-auto px-4 py-8 md:py-12">
 
 // Card
-<div className="bg-white rounded-lg shadow-soft border p-6">
+<div className="bg-luxury-ivory border-luxury-stone rounded-lg shadow-soft p-6">
 
 // Section title
-<h2 className="text-2xl md:text-3xl font-bold text-leather-900 mb-6">
+<h2 className="font-serif text-2xl md:text-3xl text-luxury-charcoal mb-6">
 
 // Body text
-<p className="text-leather-600">
+<p className="text-luxury-charcoal/80">
 
 // Link
-<a className="text-aegean-600 hover:underline">
+<a className="text-luxury-primary hover:text-luxury-gold">
+
+// Luxury label
+<span className="font-display text-xs tracking-[0.3em] uppercase text-luxury-gold">
+
+// Gold divider
+<GoldDivider className="mx-auto my-8" />
 
 // Grid layouts
-<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
 
 // Flex center
 <div className="flex items-center justify-center">
+```
+
+### Legacy Classes (DEPRECATED)
+
+```tsx
+// DO NOT USE - Migrate to luxury tokens
+text-leather-*  -> text-luxury-charcoal
+bg-sand-*       -> bg-luxury-cream/ivory/stone
+text-aegean-*   -> text-luxury-primary
+bg-aegean-*     -> bg-luxury-primary
 ```
