@@ -27,6 +27,8 @@ interface MagneticButtonProps {
   icon?: React.ReactNode;
   /** Aria label */
   "aria-label"?: string;
+  /** Button type (for form submission) */
+  type?: "button" | "submit" | "reset";
 }
 
 export function MagneticButton({
@@ -40,12 +42,13 @@ export function MagneticButton({
   className,
   icon,
   "aria-label": ariaLabel,
+  type = "button",
 }: MagneticButtonProps) {
-  const buttonRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!buttonRef.current) return;
 
     const rect = buttonRef.current.getBoundingClientRect();
@@ -80,8 +83,9 @@ export function MagneticButton({
   };
 
   const buttonContent = (
-    <motion.div
+    <motion.button
       ref={buttonRef}
+      type={type}
       animate={{ x: position.x, y: position.y }}
       transition={{ type: "spring", stiffness: 150, damping: 15 }}
       onMouseMove={handleMouseMove}
@@ -92,7 +96,7 @@ export function MagneticButton({
         "relative inline-flex items-center justify-center gap-3",
         "uppercase tracking-[0.2em] font-medium",
         "transition-colors duration-300",
-        "overflow-hidden group",
+        "overflow-hidden group cursor-pointer border-none",
         variantStyles[variant],
         sizeStyles[size],
         className
@@ -125,7 +129,7 @@ export function MagneticButton({
           {icon}
         </motion.span>
       )}
-    </motion.div>
+    </motion.button>
   );
 
   if (href) {

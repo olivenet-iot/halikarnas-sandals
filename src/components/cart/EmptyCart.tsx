@@ -1,23 +1,63 @@
 "use client";
 
-import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { ShoppingBag, ArrowRight } from "lucide-react";
+import { GoldDivider } from "@/components/ui/luxury/GoldDivider";
+import { MagneticButton } from "@/components/ui/luxury/MagneticButton";
+import { EASE } from "@/lib/animations";
 
 export function EmptyCart() {
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-      <div className="w-24 h-24 rounded-full bg-sand-100 flex items-center justify-center mb-6">
-        <ShoppingBag className="h-12 w-12 text-sand-400" />
-      </div>
-      <h2 className="text-heading-4 text-leather-800 mb-2">Sepetiniz Boş</h2>
-      <p className="text-body-md text-leather-500 mb-8 max-w-md">
-        Sepetinizde henüz ürün bulunmuyor. Hemen alışverişe başlayarak el yapımı
-        hakiki deri sandaletlerimizi keşfedin!
-      </p>
-      <Button asChild className="btn-primary" size="lg">
-        <Link href="/kadin">Alışverişe Başla</Link>
-      </Button>
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: EASE.luxury }}
+      className="text-center py-24"
+    >
+      {/* Icon */}
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.5, ease: EASE.luxury }}
+        className="w-24 h-24 mx-auto mb-8 rounded-full bg-stone-100 flex items-center justify-center"
+      >
+        <ShoppingBag className="h-10 w-10 text-stone-400" />
+      </motion.div>
+
+      <GoldDivider variant="default" className="mx-auto mb-8" />
+
+      <motion.h2
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+        className="font-serif text-2xl text-stone-800 mb-4"
+      >
+        Sepetiniz Bos
+      </motion.h2>
+
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+        className="text-stone-600 max-w-md mx-auto mb-10"
+      >
+        Henuz sepetinize urun eklemediniz. Koleksiyonlarimizi kesfederek el yapimi hakiki deri sandaletlerimizi inceleyin.
+      </motion.p>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+      >
+        <MagneticButton
+          href="/koleksiyonlar"
+          variant="primary"
+          size="lg"
+          icon={<ArrowRight className="w-4 h-4" />}
+        >
+          Koleksiyonlari Kesfet
+        </MagneticButton>
+      </motion.div>
+    </motion.div>
   );
 }

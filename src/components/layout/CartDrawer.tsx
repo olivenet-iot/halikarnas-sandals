@@ -10,7 +10,6 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetFooter,
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -134,7 +133,7 @@ export function CartDrawer() {
 
   return (
     <Sheet open={isOpen} onOpenChange={closeCart}>
-      <SheetContent className="w-full sm:max-w-lg flex flex-col p-0">
+      <SheetContent className="w-full sm:max-w-lg flex flex-col p-0" hideClose>
         <SheetHeader className="p-4 border-b border-sand-200">
           <div className="flex items-center justify-between">
             <SheetTitle className="flex items-center gap-2 font-accent text-xl text-leather-800">
@@ -219,9 +218,9 @@ export function CartDrawer() {
             </ScrollArea>
 
             {/* Footer */}
-            <SheetFooter className="p-4 border-t border-sand-200 flex-col gap-4">
+            <div className="mt-auto p-4 border-t border-sand-200 flex flex-col gap-4">
               {/* Subtotal */}
-              <div className="w-full space-y-2">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between text-body-md">
                   <span className="text-leather-600">Ara Toplam</span>
                   <span className="font-semibold text-leather-800">
@@ -243,7 +242,7 @@ export function CartDrawer() {
               <Separator />
 
               {/* Total */}
-              <div className="w-full flex items-center justify-between">
+              <div className="flex items-center justify-between">
                 <span className="text-body-lg font-semibold text-leather-800">
                   Toplam
                 </span>
@@ -253,7 +252,7 @@ export function CartDrawer() {
               </div>
 
               {/* Actions */}
-              <div className="w-full space-y-2">
+              <div className="space-y-2">
                 <Button asChild className="w-full btn-primary" size="lg">
                   <Link href="/odeme" onClick={closeCart}>
                     Ödemeye Geç
@@ -275,12 +274,12 @@ export function CartDrawer() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-leather-500 hover:text-red-500"
+                className="text-leather-500 hover:text-red-500 self-center"
                 onClick={clearCart}
               >
                 Sepeti Temizle
               </Button>
-            </SheetFooter>
+            </div>
           </>
         ) : (
           /* Empty Cart State */

@@ -1,9 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { ShieldCheck, Truck } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { ShieldCheck, Truck, ArrowRight, RotateCcw } from "lucide-react";
+import { MagneticButton } from "@/components/ui/luxury/MagneticButton";
 import { CouponInput } from "./CouponInput";
 import {
   useCartStore,
@@ -35,64 +33,48 @@ export function CartSummary({
   const hasItems = items.length > 0;
 
   return (
-    <div className="bg-sand-50 rounded-xl p-6 sticky top-24">
-      <h2 className="text-heading-5 font-accent text-leather-800 mb-4">
-        Sipariş Özeti
+    <div className="bg-white border border-stone-200 p-6 md:p-8 sticky top-24">
+      <h2 className="font-serif text-xl text-stone-800 mb-6">
+        Siparis Ozeti
       </h2>
 
-      {/* Item count */}
-      <p className="text-body-sm text-leather-500 mb-4">
-        {items.length} ürün, {items.reduce((sum, item) => sum + item.quantity, 0)}{" "}
-        adet
-      </p>
-
-      <Separator className="mb-4" />
-
       {/* Price breakdown */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between text-body-md">
-          <span className="text-leather-600">Ara Toplam</span>
-          <span className="font-medium text-leather-800">
-            {formatPrice(subtotal)}
-          </span>
+      <div className="space-y-4 text-sm">
+        <div className="flex justify-between">
+          <span className="text-stone-500">Ara Toplam</span>
+          <span className="font-medium text-stone-800">{formatPrice(subtotal)}</span>
         </div>
 
-        <div className="flex items-center justify-between text-body-md">
-          <span className="text-leather-600">Kargo</span>
-          <span className="font-medium text-leather-800">
+        <div className="flex justify-between">
+          <span className="text-stone-500">Kargo</span>
+          <span className="font-medium">
             {shipping === 0 ? (
-              <span className="text-green-600">Ücretsiz</span>
+              <span className="text-green-600">Ucretsiz</span>
             ) : (
-              formatPrice(shipping)
+              <span className="text-stone-800">{formatPrice(shipping)}</span>
             )}
           </span>
         </div>
 
         {discount > 0 && (
-          <div className="flex items-center justify-between text-body-md">
-            <span className="text-green-600">
-              İndirim
+          <div className="flex justify-between text-green-600">
+            <span>
+              Indirim
               {coupon && (
-                <span className="text-body-xs ml-1">({coupon.code})</span>
+                <span className="text-xs ml-1">({coupon.code})</span>
               )}
             </span>
-            <span className="font-medium text-green-600">
-              -{formatPrice(discount)}
-            </span>
+            <span className="font-medium">-{formatPrice(discount)}</span>
           </div>
         )}
       </div>
 
-      <Separator className="my-4" />
+      <div className="w-full h-px bg-stone-200 my-6" />
 
       {/* Total */}
-      <div className="flex items-center justify-between mb-6">
-        <span className="text-body-lg font-semibold text-leather-800">
-          Toplam
-        </span>
-        <span className="text-heading-5 font-bold text-leather-900">
-          {formatPrice(total)}
-        </span>
+      <div className="flex justify-between items-center mb-6">
+        <span className="text-lg font-medium text-stone-800">Toplam</span>
+        <span className="font-serif text-2xl text-stone-800">{formatPrice(total)}</span>
       </div>
 
       {/* Coupon Input */}
@@ -104,20 +86,20 @@ export function CartSummary({
 
       {/* Free Shipping Progress */}
       {hasItems && remainingForFreeShipping > 0 && (
-        <div className="bg-white rounded-lg p-3 mb-6">
-          <div className="flex items-center gap-2 text-body-sm text-leather-600 mb-2">
+        <div className="bg-stone-50 p-4 mb-6">
+          <div className="flex items-center gap-2 text-sm text-stone-600 mb-2">
             <Truck className="h-4 w-4" />
             <span>
-              Ücretsiz kargoya{" "}
-              <span className="font-semibold text-aegean-600">
+              Ucretsiz kargoya{" "}
+              <span className="font-semibold text-[#B8860B]">
                 {formatPrice(remainingForFreeShipping)}
               </span>{" "}
-              kaldı!
+              kaldi!
             </span>
           </div>
-          <div className="h-2 bg-sand-200 rounded-full overflow-hidden">
+          <div className="h-1.5 bg-stone-200 overflow-hidden">
             <div
-              className="h-full bg-aegean-500 rounded-full transition-all duration-500"
+              className="h-full bg-[#B8860B] transition-all duration-500"
               style={{
                 width: `${Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100)}%`,
               }}
@@ -127,28 +109,41 @@ export function CartSummary({
       )}
 
       {hasItems && remainingForFreeShipping <= 0 && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-6 flex items-center gap-2 text-body-sm text-green-700">
+        <div className="bg-green-50 border border-green-200 p-3 mb-6 flex items-center gap-2 text-sm text-green-700">
           <Truck className="h-4 w-4 text-green-600" />
-          Ücretsiz kargo hakkı kazandınız!
+          Ucretsiz kargo hakki kazandiniz!
         </div>
       )}
 
       {/* Checkout Button */}
       {showCheckoutButton && (
         <>
-          <Button
-            asChild
-            className="w-full btn-primary"
+          <MagneticButton
+            href="/odeme"
+            variant="primary"
             size="lg"
-            disabled={!hasItems}
+            className="w-full"
+            icon={<ArrowRight className="w-4 h-4" />}
           >
-            <Link href="/odeme">Ödemeye Geç</Link>
-          </Button>
+            Odemeye Gec
+          </MagneticButton>
 
-          {/* Security Badge */}
-          <div className="mt-4 flex items-center justify-center gap-2 text-body-xs text-leather-500">
-            <ShieldCheck className="h-4 w-4 text-green-600" />
-            <span>256-bit SSL ile güvenli ödeme</span>
+          {/* Trust Badges */}
+          <div className="mt-6 pt-6 border-t border-stone-100">
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div className="flex flex-col items-center gap-1">
+                <ShieldCheck className="h-5 w-5 text-green-600" />
+                <span className="text-xs text-stone-500">Guvenli Odeme</span>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <Truck className="h-5 w-5 text-[#B8860B]" />
+                <span className="text-xs text-stone-500">Hizli Kargo</span>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <RotateCcw className="h-5 w-5 text-stone-500" />
+                <span className="text-xs text-stone-500">14 Gun Iade</span>
+              </div>
+            </div>
           </div>
         </>
       )}

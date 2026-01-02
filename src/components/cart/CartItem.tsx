@@ -2,9 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { Minus, Plus, X, ShoppingBag } from "lucide-react";
 import { useCartStore, CartItem as CartItemType } from "@/stores/cart-store";
 import { formatPrice, getProductUrl } from "@/lib/utils";
 import {
@@ -37,147 +35,128 @@ export function CartItem({ item, compact = false }: CartItemProps) {
   });
 
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, x: -100 }}
-      className="flex gap-4 py-4"
-    >
-      {/* Product Image */}
-      <Link href={productUrl} className="flex-shrink-0">
-        <div
-          className="relative rounded-lg overflow-hidden bg-sand-100"
-          style={{ width: imageSize, height: imageSize }}
-        >
-          {item.image ? (
-            <Image
-              src={item.image}
-              alt={item.name}
-              fill
-              className="object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <ShoppingBag className="h-8 w-8 text-sand-300" />
-            </div>
-          )}
-        </div>
-      </Link>
-
-      {/* Product Info */}
-      <div className="flex-1 min-w-0">
-        <Link
-          href={productUrl}
-          className={`font-medium text-leather-800 hover:text-aegean-600 transition-colors line-clamp-2 ${
-            compact ? "text-body-sm" : "text-body-md"
-          }`}
-        >
-          {item.name}
+    <div className="bg-white border border-stone-200 p-5 md:p-6 group hover:border-[#B8860B]/30 transition-colors duration-300">
+      <div className="flex gap-5 md:gap-6">
+        {/* Product Image */}
+        <Link href={productUrl} className="flex-shrink-0">
+          <div
+            className="relative overflow-hidden bg-stone-100"
+            style={{ width: imageSize, height: compact ? imageSize : imageSize * 1.25 }}
+          >
+            {item.image ? (
+              <Image
+                src={item.image}
+                alt={item.name}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <ShoppingBag className="h-8 w-8 text-stone-300" />
+              </div>
+            )}
+          </div>
         </Link>
 
-        <div className="mt-1 flex flex-wrap items-center gap-2 text-body-sm text-leather-500">
-          {item.color && (
-            <>
-              <span
-                className="w-4 h-4 rounded-full border border-sand-300"
-                style={{ backgroundColor: item.color }}
-              />
-              <span>{item.colorName}</span>
-              <span className="text-sand-300">|</span>
-            </>
-          )}
-          <span>Beden: {item.size}</span>
-        </div>
-
-        {/* Price */}
-        <div className="mt-2">
-          {item.compareAtPrice && item.compareAtPrice > item.price && (
-            <span className="text-body-xs text-leather-400 line-through mr-2">
-              {formatPrice(item.compareAtPrice)}
-            </span>
-          )}
-          <span
-            className={`font-semibold text-leather-800 ${
-              compact ? "text-body-sm" : "text-body-md"
-            }`}
+        {/* Product Info */}
+        <div className="flex-1 min-w-0">
+          <Link
+            href={productUrl}
+            className="font-serif text-lg text-stone-800 hover:text-[#B8860B] transition-colors line-clamp-2"
           >
-            {formatPrice(item.price)}
-          </span>
-        </div>
+            {item.name}
+          </Link>
 
-        {/* Quantity Controls */}
-        <div className="mt-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              className={compact ? "h-7 w-7" : "h-8 w-8"}
-              onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
-              disabled={item.quantity <= 1}
-            >
-              <Minus className={compact ? "h-3 w-3" : "h-4 w-4"} />
-            </Button>
-            <span
-              className={`w-8 text-center font-medium ${
-                compact ? "text-body-sm" : "text-body-md"
-              }`}
-            >
-              {item.quantity}
-            </span>
-            <Button
-              variant="outline"
-              size="icon"
-              className={compact ? "h-7 w-7" : "h-8 w-8"}
-              onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
-              disabled={item.quantity >= item.maxQuantity}
-            >
-              <Plus className={compact ? "h-3 w-3" : "h-4 w-4"} />
-            </Button>
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-stone-500">
+            {item.color && (
+              <>
+                <span
+                  className="w-4 h-4 rounded-full border border-stone-300"
+                  style={{ backgroundColor: item.color }}
+                />
+                <span>{item.colorName}</span>
+                <span className="text-stone-300">|</span>
+              </>
+            )}
+            <span>Beden: {item.size}</span>
           </div>
 
-          {/* Subtotal */}
-          <span
-            className={`font-semibold text-leather-800 ${
-              compact ? "text-body-md" : "text-body-lg"
-            }`}
-          >
-            {formatPrice(item.price * item.quantity)}
-          </span>
-        </div>
-      </div>
+          {/* Price */}
+          <div className="mt-3">
+            {item.compareAtPrice && item.compareAtPrice > item.price && (
+              <span className="text-sm text-stone-400 line-through mr-2">
+                {formatPrice(item.compareAtPrice)}
+              </span>
+            )}
+            <span className="font-serif text-lg text-stone-800">
+              {formatPrice(item.price)}
+            </span>
+          </div>
 
-      {/* Remove Button */}
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-leather-400 hover:text-red-500 flex-shrink-0"
-            aria-label="Ürünü kaldır"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Ürünü Kaldır</AlertDialogTitle>
-            <AlertDialogDescription>
-              {item.name} ürününü sepetinizden kaldırmak istediğinize emin
-              misiniz?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>İptal</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => removeItem(item.variantId)}
-              className="bg-red-500 hover:bg-red-600"
+          {/* Quantity Controls */}
+          <div className="mt-4 flex items-center justify-between">
+            <div className="flex items-center border border-stone-200">
+              <button
+                onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
+                disabled={item.quantity <= 1}
+                className="p-2 hover:bg-stone-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-label="Azalt"
+              >
+                <Minus className="h-4 w-4 text-stone-600" />
+              </button>
+              <span className="w-10 text-center font-medium text-stone-800">
+                {item.quantity}
+              </span>
+              <button
+                onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
+                disabled={item.quantity >= item.maxQuantity}
+                className="p-2 hover:bg-stone-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-label="Artir"
+              >
+                <Plus className="h-4 w-4 text-stone-600" />
+              </button>
+            </div>
+
+            {/* Subtotal */}
+            <span className="font-serif text-xl text-[#B8860B]">
+              {formatPrice(item.price * item.quantity)}
+            </span>
+          </div>
+        </div>
+
+        {/* Remove Button */}
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <button
+              className="self-start p-1 text-stone-400 hover:text-stone-600 transition-colors"
+              aria-label="Urunu kaldir"
             >
-              Kaldır
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </motion.div>
+              <X className="h-5 w-5" />
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="bg-white">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="font-serif text-xl text-stone-800">
+                Urunu Kaldir
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-stone-600">
+                {item.name} urununu sepetinizden kaldirmak istediginize emin misiniz?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="border-stone-200 text-stone-600 hover:bg-stone-100">
+                Iptal
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => removeItem(item.variantId)}
+                className="bg-red-500 hover:bg-red-600 text-white"
+              >
+                Kaldir
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    </div>
   );
 }
