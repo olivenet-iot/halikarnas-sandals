@@ -1,7 +1,5 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, CreditCard, Banknote } from "lucide-react";
-import { MagneticButton } from "@/components/ui/luxury/MagneticButton";
 import { useCheckoutStore } from "@/stores/checkout-store";
 import { cn } from "@/lib/utils";
 
@@ -10,133 +8,103 @@ interface PaymentFormProps {
   onBack: () => void;
 }
 
+const paymentOptions = [
+  {
+    id: "cash_on_delivery" as const,
+    label: "Kapida Odeme",
+    description: "Teslimat sirasinda nakit veya kredi karti ile odeme",
+    disabled: false,
+  },
+  {
+    id: "card" as const,
+    label: "Kredi / Banka Karti",
+    description: "Visa, Mastercard, Troy ile guvenli odeme",
+    disabled: true,
+  },
+];
+
 export function PaymentForm({ onNext, onBack }: PaymentFormProps) {
   const { paymentMethod, setPaymentMethod } = useCheckoutStore();
 
-  const handleContinue = () => {
-    onNext();
-  };
-
   return (
-    <div className="space-y-6">
+    <div>
+      {/* Section Heading */}
+      <h2 className="font-serif font-light text-2xl md:text-3xl text-v2-text-primary">
+        Odeme Yontemi
+      </h2>
+      <div className="border-b border-v2-border-subtle mt-4 mb-8" />
+
+      {/* Payment Options */}
       <div>
-        <h3 className="text-sm uppercase tracking-[0.15em] text-stone-500 font-medium mb-6">
-          Odeme Yontemi Secin
-        </h3>
+        {paymentOptions.map((option) => {
+          const isSelected = paymentMethod === option.id;
 
-        <div className="space-y-4">
-          {/* Credit Card - Placeholder */}
-          <button
-            type="button"
-            onClick={() => setPaymentMethod("card")}
-            className={cn(
-              "w-full text-left p-5 border-2 transition-all duration-300",
-              paymentMethod === "card"
-                ? "border-[#B8860B] bg-[#B8860B]/5"
-                : "border-stone-200 hover:border-stone-300"
-            )}
-          >
-            <div className="flex items-start gap-4">
-              <div
+          return (
+            <button
+              key={option.id}
+              type="button"
+              onClick={() => {
+                if (!option.disabled) setPaymentMethod(option.id);
+              }}
+              className={cn(
+                "flex items-center gap-4 w-full text-left border-b border-v2-border-subtle py-5 transition-colors",
+                option.disabled && "opacity-40 cursor-not-allowed pointer-events-none"
+              )}
+            >
+              {/* Radio */}
+              <span
                 className={cn(
-                  "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5",
-                  paymentMethod === "card"
-                    ? "border-[#B8860B]"
-                    : "border-stone-300"
+                  "w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0",
+                  isSelected ? "border-v2-text-primary" : "border-v2-text-muted"
                 )}
               >
-                {paymentMethod === "card" && (
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#B8860B]" />
+                {isSelected && (
+                  <span className="w-2 h-2 rounded-full bg-v2-text-primary" />
                 )}
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <CreditCard className="h-5 w-5 text-stone-600" />
-                  <span className="font-medium text-stone-800">
-                    Kredi / Banka Karti
-                  </span>
-                </div>
-                <p className="text-sm text-stone-500">
-                  Visa, Mastercard, Troy ile guvenli odeme
-                </p>
+              </span>
 
-                {paymentMethod === "card" && (
-                  <div className="mt-4 p-6 bg-white border border-stone-200">
-                    <div className="flex items-center justify-center py-6 text-center">
-                      <div>
-                        <CreditCard className="h-10 w-10 text-stone-300 mx-auto mb-3" />
-                        <p className="text-sm text-stone-500">
-                          Kredi karti odeme entegrasyonu yakinda eklenecek
-                        </p>
-                        <p className="text-xs text-stone-400 mt-1">
-                          Simdilik kapida odeme secenegini kullanabilirsiniz
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
+              {/* Label + Description */}
+              <div className="flex-1 min-w-0">
+                <span
+                  className={cn(
+                    "block text-sm font-medium",
+                    isSelected ? "text-v2-text-primary" : "text-v2-text-muted"
+                  )}
+                >
+                  {option.label}
+                </span>
+                <span className="block text-xs text-v2-text-muted mt-0.5">
+                  {option.description}
+                </span>
               </div>
-            </div>
-          </button>
 
-          {/* Cash on Delivery */}
-          <button
-            type="button"
-            onClick={() => setPaymentMethod("cash_on_delivery")}
-            className={cn(
-              "w-full text-left p-5 border-2 transition-all duration-300",
-              paymentMethod === "cash_on_delivery"
-                ? "border-[#B8860B] bg-[#B8860B]/5"
-                : "border-stone-200 hover:border-stone-300"
-            )}
-          >
-            <div className="flex items-start gap-4">
-              <div
-                className={cn(
-                  "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5",
-                  paymentMethod === "cash_on_delivery"
-                    ? "border-[#B8860B]"
-                    : "border-stone-300"
-                )}
-              >
-                {paymentMethod === "cash_on_delivery" && (
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#B8860B]" />
-                )}
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <Banknote className="h-5 w-5 text-stone-600" />
-                  <span className="font-medium text-stone-800">
-                    Kapida Odeme
-                  </span>
-                </div>
-                <p className="text-sm text-stone-500">
-                  Teslimat sirasinda nakit veya kredi karti ile odeme yapin
-                </p>
-              </div>
-            </div>
-          </button>
-        </div>
+              {/* Disabled badge */}
+              {option.disabled && (
+                <span className="text-xs italic text-v2-text-muted ml-auto">
+                  Yakinda
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
-      <div className="flex justify-between pt-6">
+      {/* Actions */}
+      <div className="flex justify-between items-center pt-8">
         <button
           type="button"
           onClick={onBack}
-          className="inline-flex items-center gap-2 text-stone-600 hover:text-stone-800 transition-colors"
+          className="text-v2-text-muted hover:text-v2-text-primary underline underline-offset-4 text-sm transition-colors"
         >
-          <ArrowLeft className="h-4 w-4" />
-          <span className="text-sm uppercase tracking-wide">Geri</span>
+          ← Geri
         </button>
-        <MagneticButton
-          onClick={handleContinue}
-          variant="primary"
-          size="lg"
-          icon={<ArrowRight className="w-4 h-4" />}
-          className={paymentMethod === "card" ? "opacity-50 cursor-not-allowed" : ""}
+        <button
+          type="button"
+          onClick={onNext}
+          className="border border-v2-text-primary text-v2-text-primary bg-transparent hover:bg-v2-text-primary hover:text-white px-8 py-3 text-sm tracking-wide uppercase transition-colors"
         >
-          Devam Et
-        </MagneticButton>
+          Devam Et →
+        </button>
       </div>
     </div>
   );

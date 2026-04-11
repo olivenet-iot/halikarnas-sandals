@@ -4,27 +4,19 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Loader2,
-  MapPin,
-  CreditCard,
-  ShoppingBag,
-  Shield,
-} from "lucide-react";
-import { MagneticButton } from "@/components/ui/luxury/MagneticButton";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Loader2, ShoppingBag } from "lucide-react";
 import { useCartStore } from "@/stores/cart-store";
-import { useCheckoutStore } from "@/stores/checkout-store";
+import { useCheckoutStore, CheckoutStep } from "@/stores/checkout-store";
 import { useShippingConfig } from "@/components/providers/ShippingConfigProvider";
 import { formatPrice } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
 interface OrderReviewProps {
   onBack: () => void;
+  setStep: (step: CheckoutStep) => void;
 }
 
-export function OrderReview({ onBack }: OrderReviewProps) {
+export function OrderReview({ onBack, setStep }: OrderReviewProps) {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -85,14 +77,9 @@ export function OrderReview({ onBack }: OrderReviewProps) {
       const data = await response.json();
 
       if (data.success) {
-        // Set order completed flag BEFORE clearing cart to prevent redirect race condition
         setOrderCompleted(true);
-
-        // Clear cart and checkout state
         clearCart();
         resetCheckout();
-
-        // Redirect to success page using trackingToken for security
         router.push(`/siparis-tamamlandi/${data.trackingToken}`);
       } else {
         toast({
@@ -113,16 +100,30 @@ export function OrderReview({ onBack }: OrderReviewProps) {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Shipping Address Summary */}
-      <div className="bg-stone-50 p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <MapPin className="h-5 w-5 text-[#B8860B]" />
-          <h3 className="font-medium text-stone-800">Teslimat Adresi</h3>
+    <div>
+      {/* Section Heading */}
+      <h2 className="font-serif font-light text-2xl md:text-3xl text-v2-text-primary">
+        Siparis Onayi
+      </h2>
+      <div className="border-b border-v2-border-subtle mt-4 mb-8" />
+
+      {/* Shipping Address */}
+      <div className="border-b border-v2-border-subtle py-8">
+        <div className="flex items-center justify-between mb-4">
+          <span className="font-inter text-xs uppercase tracking-[0.15em] text-v2-text-muted">
+            Teslimat Adresi
+          </span>
+          <button
+            type="button"
+            onClick={() => setStep(1)}
+            className="text-v2-text-muted hover:text-v2-text-primary underline underline-offset-4 text-xs transition-colors"
+          >
+            Duzenle
+          </button>
         </div>
         {shippingInfo && (
-          <div className="text-sm text-stone-600 space-y-1">
-            <p className="font-medium text-stone-800">
+          <div className="text-sm text-v2-text-muted space-y-1">
+            <p className="font-medium text-v2-text-primary">
               {shippingInfo.firstName} {shippingInfo.lastName}
             </p>
             <p>
@@ -139,29 +140,39 @@ export function OrderReview({ onBack }: OrderReviewProps) {
         )}
       </div>
 
-      {/* Payment Method Summary */}
-      <div className="bg-stone-50 p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <CreditCard className="h-5 w-5 text-[#B8860B]" />
-          <h3 className="font-medium text-stone-800">Odeme Yontemi</h3>
+      {/* Payment Method */}
+      <div className="border-b border-v2-border-subtle py-8">
+        <div className="flex items-center justify-between mb-4">
+          <span className="font-inter text-xs uppercase tracking-[0.15em] text-v2-text-muted">
+            Odeme Yontemi
+          </span>
+          <button
+            type="button"
+            onClick={() => setStep(2)}
+            className="text-v2-text-muted hover:text-v2-text-primary underline underline-offset-4 text-xs transition-colors"
+          >
+            Duzenle
+          </button>
         </div>
-        <p className="text-sm text-stone-600">
+        <p className="text-sm text-v2-text-muted">
           {paymentMethod === "cash_on_delivery"
             ? "Kapida Odeme (Nakit veya Kredi Karti)"
             : "Kredi/Banka Karti"}
         </p>
       </div>
 
-      {/* Order Items Summary */}
-      <div className="bg-stone-50 p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <ShoppingBag className="h-5 w-5 text-[#B8860B]" />
-          <h3 className="font-medium text-stone-800">Siparis Urunleri</h3>
-        </div>
-        <div className="space-y-3">
-          {items.map((item) => (
-            <div key={item.variantId} className="flex gap-3">
-              <div className="relative w-16 h-16 overflow-hidden bg-white flex-shrink-0">
+      {/* Order Items */}
+      <div className="border-b border-v2-border-subtle py-8">
+        <span className="font-inter text-xs uppercase tracking-[0.15em] text-v2-text-muted block mb-4">
+          Siparis Urunleri
+        </span>
+        <div>
+          {items.map((item, index) => (
+            <div
+              key={item.variantId}
+              className={`flex gap-4 py-4 ${index < items.length - 1 ? "border-b border-v2-border-subtle" : ""}`}
+            >
+              <div className="relative w-[60px] h-[60px] overflow-hidden bg-v2-bg-primary flex-shrink-0">
                 {item.image ? (
                   <Image
                     src={item.image}
@@ -171,41 +182,40 @@ export function OrderReview({ onBack }: OrderReviewProps) {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <ShoppingBag className="h-6 w-6 text-stone-300" />
+                    <ShoppingBag className="h-5 w-5 text-v2-text-muted" />
                   </div>
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-stone-800 line-clamp-1">
+                <p className="text-sm font-medium text-v2-text-primary line-clamp-1">
                   {item.name}
                 </p>
-                <p className="text-xs text-stone-500">
+                <p className="text-xs text-v2-text-muted mt-1">
                   {item.colorName} / {item.size} / x{item.quantity}
                 </p>
-                <p className="text-sm font-medium text-stone-800 mt-1">
-                  {formatPrice(item.price * item.quantity)}
-                </p>
               </div>
+              <p className="text-sm font-medium text-v2-text-primary flex-shrink-0">
+                {formatPrice(item.price * item.quantity)}
+              </p>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="w-full h-px bg-stone-200" />
-
       {/* Terms & Conditions */}
-      <div className="space-y-4">
+      <div className="space-y-4 py-8">
         <div className="flex items-start gap-3">
-          <Checkbox
+          <input
+            type="checkbox"
             id="terms"
             checked={acceptedTerms}
-            onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
-            className="mt-0.5 data-[state=checked]:bg-[#B8860B] data-[state=checked]:border-[#B8860B]"
+            onChange={(e) => setAcceptedTerms(e.target.checked)}
+            className="w-4 h-4 mt-0.5 accent-[#1C1917]"
           />
-          <label htmlFor="terms" className="text-sm text-stone-600 cursor-pointer">
+          <label htmlFor="terms" className="text-sm text-v2-text-muted cursor-pointer">
             <Link
               href="/mesafeli-satis-sozlesmesi"
-              className="text-[#B8860B] hover:underline"
+              className="text-v2-text-primary underline underline-offset-2"
               target="_blank"
             >
               Mesafeli Satis Sozlesmesi
@@ -215,16 +225,17 @@ export function OrderReview({ onBack }: OrderReviewProps) {
         </div>
 
         <div className="flex items-start gap-3">
-          <Checkbox
+          <input
+            type="checkbox"
             id="kvkk"
             checked={acceptedKvkk}
-            onCheckedChange={(checked) => setAcceptedKvkk(checked as boolean)}
-            className="mt-0.5 data-[state=checked]:bg-[#B8860B] data-[state=checked]:border-[#B8860B]"
+            onChange={(e) => setAcceptedKvkk(e.target.checked)}
+            className="w-4 h-4 mt-0.5 accent-[#1C1917]"
           />
-          <label htmlFor="kvkk" className="text-sm text-stone-600 cursor-pointer">
+          <label htmlFor="kvkk" className="text-sm text-v2-text-muted cursor-pointer">
             <Link
               href="/kvkk"
-              className="text-[#B8860B] hover:underline"
+              className="text-v2-text-primary underline underline-offset-2"
               target="_blank"
             >
               KVKK Aydinlatma Metni
@@ -234,31 +245,21 @@ export function OrderReview({ onBack }: OrderReviewProps) {
         </div>
       </div>
 
-      {/* Security Note */}
-      <div className="bg-green-50 border border-green-200 p-4 flex items-center gap-3 text-sm text-green-700">
-        <Shield className="h-5 w-5 text-green-600 flex-shrink-0" />
-        <span>
-          Siparisiniz SSL sifreleme ile guvence altindadir. Bilgileriniz
-          korunmaktadir.
-        </span>
-      </div>
-
       {/* Actions */}
-      <div className="flex justify-between pt-4">
+      <div className="flex justify-between items-center pt-4">
         <button
           type="button"
           onClick={onBack}
           disabled={isSubmitting}
-          className="inline-flex items-center gap-2 text-stone-600 hover:text-stone-800 transition-colors disabled:opacity-50"
+          className="text-v2-text-muted hover:text-v2-text-primary underline underline-offset-4 text-sm transition-colors disabled:opacity-50"
         >
-          <ArrowLeft className="h-4 w-4" />
-          <span className="text-sm uppercase tracking-wide">Geri</span>
+          ← Geri
         </button>
-        <MagneticButton
+        <button
+          type="button"
           onClick={handlePlaceOrder}
-          variant="primary"
-          size="lg"
-          className={!canPlaceOrder || isSubmitting ? "opacity-50 cursor-not-allowed" : ""}
+          disabled={!canPlaceOrder || isSubmitting}
+          className="bg-v2-text-primary text-white hover:opacity-90 px-8 py-3 text-sm tracking-wide uppercase transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? (
             <span className="flex items-center gap-2">
@@ -266,9 +267,9 @@ export function OrderReview({ onBack }: OrderReviewProps) {
               Isleniyor...
             </span>
           ) : (
-            "Siparisi Tamamla"
+            "Siparisi Tamamla →"
           )}
-        </MagneticButton>
+        </button>
       </div>
     </div>
   );
