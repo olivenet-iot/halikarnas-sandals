@@ -39,7 +39,7 @@ export function SecimProductGridClient({ products }: SecimProductGridClientProps
       </div>
 
       {/* Asymmetric 3-product grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12">
+      <div className="grid grid-cols-1 md:grid-cols-12 md:grid-rows-2 gap-8 lg:gap-12 max-w-[1200px] mx-auto">
         {displayProducts.map((product, index) => {
           const url = getProductUrl({
             sku: product.sku,
@@ -60,14 +60,14 @@ export function SecimProductGridClient({ products }: SecimProductGridClientProps
               href={url}
               className={`group block w-full ${
                 isHero
-                  ? "md:col-span-2 lg:col-span-6 lg:row-span-2"
-                  : "lg:col-span-6"
+                  ? "md:col-span-7 md:row-span-2"
+                  : "md:col-span-5"
               }`}
             >
               {/* Image */}
               <div
                 className={`relative overflow-hidden bg-v2-bg-primary ${
-                  isHero ? "aspect-[3/4]" : "aspect-[4/5]"
+                  isHero ? "aspect-[3/4] md:aspect-auto md:h-full" : "aspect-[4/5]"
                 }`}
               >
                 <Image

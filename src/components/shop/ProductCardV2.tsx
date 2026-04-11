@@ -110,7 +110,7 @@ export function ProductCardV2({
           <h3 className="font-serif font-normal text-sm tracking-[-0.01em] text-v2-text-muted">
             {name}
           </h3>
-          <div className="flex items-baseline gap-3 mt-1">
+          <div className="flex items-baseline gap-3 mt-2">
             <span className="font-inter text-sm text-v2-text-primary">
               {formatPrice(price)}
             </span>

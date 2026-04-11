@@ -37,7 +37,7 @@ export function BrandStoryTeaser() {
         <div className="hidden md:block md:col-span-6 md:col-start-7">
           <div className="relative aspect-[4/5] overflow-hidden">
             <Image
-              src="https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?w=800&q=80"
+              src="https://res.cloudinary.com/dxqmfpa8g/image/upload/v1775908391/halikarnas/home/DSC08111_2_c23tu3.webp"
               alt="Deri işçiliği detayı"
               fill
               className="object-cover"

@@ -230,10 +230,6 @@ export function ProductDetailV2({
     });
 
     setAddedToCart(true);
-    toast({
-      title: "Sepete Eklendi",
-      description: `${product.name} sepetinize eklendi.`
-    });
     setTimeout(() => setAddedToCart(false), 1500);
   };
 
