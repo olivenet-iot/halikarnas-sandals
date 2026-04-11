@@ -21,12 +21,12 @@ interface SecimProductGridClientProps {
 }
 
 export function SecimProductGridClient({ products }: SecimProductGridClientProps) {
-  const displayProducts = products.slice(0, 3);
+  const displayProducts = products.slice(0, 4);
 
   return (
     <section className="section-v2 container-v2">
       {/* Section heading + "See all" link */}
-      <div className="flex items-end justify-between mb-16 lg:mb-20">
+      <div className="flex items-end justify-between mb-12 md:mb-16">
         <h2 className="font-serif font-light text-v2-section-sm md:text-v2-section text-v2-text-primary">
           Atölyeden
         </h2>
@@ -38,9 +38,9 @@ export function SecimProductGridClient({ products }: SecimProductGridClientProps
         </Link>
       </div>
 
-      {/* Asymmetric 3-product grid */}
-      <div className="grid grid-cols-1 md:grid-cols-12 md:grid-rows-2 gap-8 lg:gap-12 max-w-[1200px] mx-auto">
-        {displayProducts.map((product, index) => {
+      {/* Equal 4-column product grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
+        {displayProducts.map((product) => {
           const url = getProductUrl({
             sku: product.sku,
             gender: product.gender,
@@ -52,30 +52,20 @@ export function SecimProductGridClient({ products }: SecimProductGridClientProps
             product.images[0]?.url || "/images/product-placeholder.jpg";
           const hoverImage = product.images[1]?.url;
 
-          const isHero = index === 0;
-
           return (
             <Link
               key={product.id}
               href={url}
-              className={`group block w-full ${
-                isHero
-                  ? "md:col-span-7 md:row-span-2"
-                  : "md:col-span-5"
-              }`}
+              className="group block w-full"
             >
               {/* Image */}
-              <div
-                className={`relative overflow-hidden bg-v2-bg-primary ${
-                  isHero ? "aspect-[3/4] md:aspect-auto md:h-full" : "aspect-[4/5]"
-                }`}
-              >
+              <div className="relative overflow-hidden bg-v2-bg-primary aspect-[4/5]">
                 <Image
                   src={mainImage}
                   alt={product.name}
                   fill
                   className={`object-cover transition-all duration-[400ms] ease-out group-hover:opacity-90 ${hoverImage ? "group-hover:opacity-0" : ""}`}
-                  sizes={isHero ? "(max-width: 1024px) 100vw, 50vw" : "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 50vw"}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 />
                 {hoverImage && (
                   <Image
@@ -83,7 +73,7 @@ export function SecimProductGridClient({ products }: SecimProductGridClientProps
                     alt={`${product.name} - 2`}
                     fill
                     className="object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-[400ms] ease-out"
-                    sizes={isHero ? "(max-width: 1024px) 100vw, 50vw" : "(max-width: 768px) 100vw, 50vw"}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
                 )}
               </div>
@@ -93,7 +83,7 @@ export function SecimProductGridClient({ products }: SecimProductGridClientProps
                 <h3 className="font-serif font-normal text-sm tracking-[-0.01em] text-v2-text-muted">
                   {product.name}
                 </h3>
-                <div className="flex items-baseline gap-3 mt-1">
+                <div className="flex items-baseline gap-3 mt-2">
                   <span className="font-inter text-sm text-v2-text-primary">
                     {formatPrice(product.price)}
                   </span>
