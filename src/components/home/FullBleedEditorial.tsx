@@ -2,21 +2,17 @@ import Image from "next/image";
 
 export function FullBleedEditorial() {
   return (
-    <section className="relative w-full h-[45vh] md:h-[55vh] overflow-hidden">
-      {/* TODO: GERÇEK GÖRSEL — PLACEHOLDER_editorial-atelier.jpg dosyasını grep'leyip değiştirin */}
+    <section className="relative w-full h-[60vh] md:h-[70vh] min-h-[500px] overflow-hidden">
       <Image
-        src="/images/placeholder/PLACEHOLDER_editorial-atelier.jpg"
+        src="https://res.cloudinary.com/dxqmfpa8g/image/upload/v1775908391/halikarnas/home/DSC08111_2_c23tu3.webp"
         alt="Halikarnas atölyesi"
         fill
-        className="object-cover"
+        className="object-cover object-[center_75%]"
         sizes="100vw"
       />
 
-      {/* Single line overlay text — bottom-left */}
-      <p
-        className="absolute bottom-6 left-6 md:bottom-12 md:left-16 font-serif font-light text-lg md:text-xl text-white"
-        style={{ textShadow: "0 1px 4px rgba(0,0,0,0.35)" }}
-      >
+      {/* Centered statement text */}
+      <p className="absolute inset-0 flex items-center justify-center font-serif italic font-light text-3xl md:text-5xl lg:text-6xl text-white/90">
         Her dikiş, bir usta eli.
       </p>
     </section>

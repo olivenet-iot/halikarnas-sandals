@@ -87,8 +87,8 @@ export function ProductCardV2({
             alt={name}
             fill
             className={cn(
-              "object-cover transition-all duration-[800ms] ease-out",
-              "group-hover:scale-[1.02]",
+              "object-cover transition-all duration-[400ms] ease-out",
+              "group-hover:opacity-90",
               hoverImage && "group-hover:opacity-0"
             )}
             sizes="(max-width: 768px) 100vw, 50vw"
@@ -107,7 +107,7 @@ export function ProductCardV2({
 
         {/* Info */}
         <div className="mt-4">
-          <h3 className="font-inter text-v2-caps uppercase text-v2-text-muted">
+          <h3 className="font-serif font-normal text-sm tracking-[-0.01em] text-v2-text-muted">
             {name}
           </h3>
           <div className="flex items-baseline gap-3 mt-1">

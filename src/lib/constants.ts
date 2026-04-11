@@ -158,7 +158,8 @@ export const paymentStatusLabels: Record<string, string> = {
   REFUNDED: "İade Edildi",
 };
 
-// Shipping Configuration
+// @deprecated — Use useShippingConfig() from ShippingConfigProvider instead.
+// Values are now managed via SiteSetting DB + /api/settings endpoint.
 export const shippingConfig = {
   freeShippingThreshold: 500, // TRY
   standardShippingCost: 29.90, // TRY

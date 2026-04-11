@@ -95,7 +95,7 @@ export default function RootLayout({
         <WebsiteJsonLd searchUrl="/arama" />
       </head>
       <body
-        className={`${inter.variable} ${dmSans.variable} ${cormorant.variable} ${cinzel.variable} font-body antialiased bg-luxury-cream`}
+        className={`${inter.variable} ${dmSans.variable} ${cormorant.variable} ${cinzel.variable} font-body antialiased bg-v2-bg-primary`}
       >
         <AuthProvider>
           {children}

@@ -276,11 +276,11 @@ export function ProductDetailV2({
   // --- Button text ---
 
   const getButtonText = () => {
-    if (addedToCart) return "EKLENDI \u2713";
-    if (isAllOutOfStock) return "STOKTA YOK";
-    if (!selectedSize) return "BEDEN SE\u00c7\u0130N";
-    if (!isInStock) return "STOKTA YOK";
-    return "SEPETE EKLE";
+    if (addedToCart) return "Eklendi \u2713";
+    if (isAllOutOfStock) return "Stokta Yok";
+    if (!selectedSize) return "Beden Se\u00e7in";
+    if (!isInStock) return "Stokta Yok";
+    return "Sepete Ekle";
   };
 
   const isButtonDisabled =
@@ -362,10 +362,10 @@ export function ProductDetailV2({
               onClick={handleAddToCart}
               disabled={isButtonDisabled}
               className={cn(
-                "hidden md:block w-full py-4 font-inter text-sm tracking-[0.15em] uppercase transition-opacity duration-300",
+                "hidden md:block max-w-sm py-4 px-8 font-inter text-sm transition-all duration-[400ms]",
                 addedToCart
-                  ? "bg-v2-text-primary text-white"
-                  : "bg-v2-text-primary text-white hover:opacity-90",
+                  ? "bg-v2-text-primary text-white border border-v2-text-primary"
+                  : "border border-v2-text-primary text-v2-text-primary bg-transparent hover:bg-v2-text-primary hover:text-white",
                 isButtonDisabled &&
                   !addedToCart &&
                   "opacity-40 cursor-not-allowed"
@@ -375,11 +375,11 @@ export function ProductDetailV2({
             </button>
 
             {/* Wishlist Link */}
-            <div className="text-center mt-4">
+            <div className="mt-4">
               <button
                 onClick={handleWishlistClick}
                 disabled={isWishlistLoading}
-                className="inline-flex items-center gap-1.5 font-inter text-xs tracking-[0.15em] uppercase text-v2-text-muted link-underline-v2 disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 font-inter text-xs text-v2-text-muted link-underline-v2 disabled:opacity-50"
               >
                 {isWishlistLoading ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -428,7 +428,7 @@ export function ProductDetailV2({
                 product.heelHeight) && (
                 <dl className="space-y-2">
                   {product.material && (
-                    <div className="flex justify-between py-1.5">
+                    <div className="flex justify-between py-3 border-b border-v2-border-subtle">
                       <dt className="font-inter text-sm text-v2-text-muted">
                         Materyal
                       </dt>
@@ -438,7 +438,7 @@ export function ProductDetailV2({
                     </div>
                   )}
                   {product.soleType && (
-                    <div className="flex justify-between py-1.5">
+                    <div className="flex justify-between py-3 border-b border-v2-border-subtle">
                       <dt className="font-inter text-sm text-v2-text-muted">
                         Taban
                       </dt>
@@ -448,7 +448,7 @@ export function ProductDetailV2({
                     </div>
                   )}
                   {product.heelHeight && (
-                    <div className="flex justify-between py-1.5">
+                    <div className="flex justify-between py-3 border-b border-v2-border-subtle">
                       <dt className="font-inter text-sm text-v2-text-muted">
                         {"Topuk Y\u00fcksekli\u011fi"}
                       </dt>
@@ -467,26 +467,22 @@ export function ProductDetailV2({
             <h3 className="font-inter text-v2-label uppercase tracking-[0.2em] text-v2-text-muted mb-4">
               {"Kargo & \u0130ade"}
             </h3>
-            <div className="space-y-4 font-inter text-v2-body text-v2-text-muted leading-[1.7]">
+            <div className="space-y-4 font-inter text-sm text-v2-text-muted leading-[1.7]">
               <div>
-                <p className="text-v2-text-primary text-sm font-medium mb-1">
+                <p className="text-v2-text-primary font-medium mb-1">
                   Kargo
                 </p>
-                <ul className="space-y-1 text-sm">
-                  <li>{"500 TL ve \u00fczeri sipari\u015flerde \u00fccretsiz kargo."}</li>
-                  <li>{"Standart teslimat: 3\u20135 i\u015f g\u00fcn\u00fc."}</li>
-                  <li>{"14:00\u2019e kadar verilen sipari\u015fler ayn\u0131 g\u00fcn kargoya teslim edilir."}</li>
-                </ul>
+                <p>
+                  {"T\u00fcrkiye i\u00e7i \u00fccretsiz kargo. Sipari\u015finiz 3\u20135 i\u015f g\u00fcn\u00fc i\u00e7inde kargoya verilir."}
+                </p>
               </div>
               <div>
-                <p className="text-v2-text-primary text-sm font-medium mb-1">
-                  {"\u0130ade & De\u011fi\u015fim"}
+                <p className="text-v2-text-primary font-medium mb-1">
+                  {"\u0130ade"}
                 </p>
-                <ul className="space-y-1 text-sm">
-                  <li>{"Teslim tarihinden itibaren 15 g\u00fcn i\u00e7inde ko\u015fulsuz iade."}</li>
-                  <li>{"\u00dcr\u00fcn kullan\u0131lmam\u0131\u015f ve orijinal ambalaj\u0131nda olmal\u0131d\u0131r."}</li>
-                  <li>{"\u0130ade kargo \u00fccretsizdir."}</li>
-                </ul>
+                <p>
+                  {"15 g\u00fcn i\u00e7inde kullan\u0131lmam\u0131\u015f \u00fcr\u00fcnlerde ko\u015fulsuz iade."}
+                </p>
               </div>
             </div>
           </div>
@@ -503,15 +499,6 @@ export function ProductDetailV2({
             </div>
           )}
 
-          {/* Degerlendirmeler */}
-          <div>
-            <h3 className="font-inter text-v2-label uppercase tracking-[0.2em] text-v2-text-muted mb-4">
-{"De\u011ferlendirmeler"}
-            </h3>
-            <p className="font-inter text-sm text-v2-text-muted">
-              {"Hen\u00fcz de\u011ferlendirme yok."}
-            </p>
-          </div>
         </div>
       </motion.section>
 
@@ -526,7 +513,7 @@ export function ProductDetailV2({
           className="container-v2 section-v2 border-t border-v2-border-subtle"
         >
           <h2 className="font-serif font-light text-v2-section-sm md:text-v2-section text-v2-text-primary mb-10 md:mb-16">
-{"Bunlar\u0131 da be\u011fenebilirsiniz"}
+{"At\u00f6lyeden Di\u011ferleri"}
           </h2>
           <ProductGridV2 products={relatedProducts} />
         </motion.section>
@@ -539,11 +526,11 @@ export function ProductDetailV2({
         disabled={isButtonDisabled}
         disabledReason={
           isAllOutOfStock
-            ? "STOKTA YOK"
+            ? "Stokta Yok"
             : !selectedSize
-            ? "BEDEN SE\u00c7\u0130N"
+            ? "Beden Se\u00e7in"
             : !isInStock
-            ? "STOKTA YOK"
+            ? "Stokta Yok"
             : undefined
         }
       />

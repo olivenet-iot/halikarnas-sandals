@@ -26,7 +26,7 @@ export function SizeSelectorV2({
           <span className="font-inter text-v2-label uppercase tracking-[0.2em] text-v2-text-muted">
             Beden:
           </span>
-          <span className="font-inter text-v2-label uppercase tracking-[0.2em] text-v2-text-primary">
+          <span className="font-inter text-v2-label tracking-[0.2em] text-v2-text-primary">
             {selectedSize || "Se\u00e7iniz"}
           </span>
         </div>
@@ -53,7 +53,7 @@ export function SizeSelectorV2({
               className={cn(
                 "relative min-w-[48px] h-12 px-3 border font-inter text-sm transition-all rounded-none",
                 isSelected
-                  ? "bg-v2-text-primary text-white border-v2-text-primary"
+                  ? "bg-transparent text-v2-text-primary border-2 border-v2-text-primary"
                   : hasStock
                   ? "border-v2-border-subtle text-v2-text-primary bg-transparent hover:border-v2-text-primary"
                   : "border-v2-border-subtle/50 text-v2-text-muted/40 cursor-not-allowed line-through"

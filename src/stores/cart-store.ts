@@ -48,15 +48,9 @@ interface CartState {
   // Computed
   getTotalItems: () => number;
   getSubtotal: () => number;
-  getShippingCost: () => number;
   getDiscount: () => number;
-  getTotal: () => number;
   getItemByVariantId: (variantId: string) => CartItem | undefined;
 }
-
-// Constants
-const FREE_SHIPPING_THRESHOLD = 500;
-const SHIPPING_COST = 49.9;
 
 export const useCartStore = create<CartState>()(
   persist(
@@ -155,24 +149,6 @@ export const useCartStore = create<CartState>()(
         );
       },
 
-      getShippingCost: () => {
-        const subtotal = get().getSubtotal();
-        const discount = get().getDiscount();
-        const totalAfterDiscount = subtotal - discount;
-
-        // Free shipping for orders above threshold
-        if (totalAfterDiscount >= FREE_SHIPPING_THRESHOLD) {
-          return 0;
-        }
-
-        // No shipping cost if cart is empty
-        if (get().items.length === 0) {
-          return 0;
-        }
-
-        return SHIPPING_COST;
-      },
-
       getDiscount: () => {
         const { coupon } = get();
         if (!coupon) return 0;
@@ -195,13 +171,6 @@ export const useCartStore = create<CartState>()(
         return Math.min(discount, subtotal);
       },
 
-      getTotal: () => {
-        const subtotal = get().getSubtotal();
-        const shipping = get().getShippingCost();
-        const discount = get().getDiscount();
-        return subtotal + shipping - discount;
-      },
-
       getItemByVariantId: (variantId) => {
         return get().items.find((item) => item.variantId === variantId);
       },
@@ -216,5 +185,3 @@ export const useCartStore = create<CartState>()(
   )
 );
 
-// Export constants for use in other components
-export { FREE_SHIPPING_THRESHOLD, SHIPPING_COST };

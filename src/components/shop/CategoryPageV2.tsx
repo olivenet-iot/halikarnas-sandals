@@ -206,7 +206,7 @@ export function CategoryPageV2({
   return (
     <div className="bg-v2-bg-primary min-h-screen">
       {/* Header */}
-      <div className="pt-[100px] md:pt-[120px] pb-8 max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24">
+      <div className="pt-[100px] md:pt-[120px] pb-12 md:pb-16 max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24">
         <h1 className="font-serif font-light text-4xl md:text-5xl lg:text-[4rem] text-v2-text-primary">
           {title}
         </h1>
@@ -218,7 +218,7 @@ export function CategoryPageV2({
 
         {/* Subcategory pills */}
         {categories.length > 0 && (
-          <div className="flex gap-2 mt-8 overflow-x-auto pb-2 -mx-1 px-1 hide-scrollbar">
+          <div className="flex gap-8 md:gap-10 mt-8 overflow-x-auto pb-2 -mx-1 px-1 hide-scrollbar">
             {categories.map((cat) => {
               const isActive = selectedCategories.includes(cat.slug);
               return (
@@ -226,10 +226,10 @@ export function CategoryPageV2({
                   key={cat.id}
                   onClick={() => toggleCategory(cat.slug)}
                   className={cn(
-                    "shrink-0 px-4 py-2 font-inter text-xs tracking-[0.1em] uppercase border transition-colors duration-200 rounded-full",
+                    "shrink-0 pb-1 font-inter text-sm transition-colors duration-300",
                     isActive
-                      ? "bg-v2-text-primary text-v2-bg-primary border-v2-text-primary"
-                      : "border-v2-border-subtle text-v2-text-muted hover:border-v2-text-muted"
+                      ? "text-v2-text-primary border-b border-v2-accent"
+                      : "text-v2-text-muted hover:text-v2-text-primary"
                   )}
                 >
                   {cat.name}
@@ -246,7 +246,6 @@ export function CategoryPageV2({
         <div className="mb-8">
           <FilterToolbarV2
             gender={gender}
-            totalCount={filteredProducts.length}
           />
         </div>
 

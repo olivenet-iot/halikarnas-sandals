@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ShieldCheck, Truck, Lock } from "lucide-react";
+import { ShieldCheck, Truck, Lock } from "lucide-react";
 import { CheckoutSteps } from "./CheckoutSteps";
 import { CheckoutSummary } from "./CheckoutSummary";
 import { ShippingForm } from "./ShippingForm";
@@ -24,7 +24,7 @@ export function CheckoutPage() {
     if (isOrderCompleted) return;
 
     if (items.length === 0) {
-      router.push("/sepet");
+      router.push("/");
     }
   }, [items, router, isOrderCompleted]);
 
@@ -36,14 +36,7 @@ export function CheckoutPage() {
     <div className="min-h-screen bg-[#FAF9F6]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <Link
-            href="/sepet"
-            className="inline-flex items-center gap-2 text-stone-600 hover:text-stone-800 transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span className="text-sm uppercase tracking-wide">Sepete Don</span>
-          </Link>
+        <div className="flex items-center justify-end mb-4">
           <Link href="/" className="font-serif text-xl tracking-wide text-stone-800">
             HALIKARNAS
           </Link>

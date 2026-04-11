@@ -21,16 +21,26 @@ interface SecimProductGridClientProps {
 }
 
 export function SecimProductGridClient({ products }: SecimProductGridClientProps) {
+  const displayProducts = products.slice(0, 3);
+
   return (
     <section className="section-v2 container-v2">
-      {/* Section heading */}
-      <h2 className="font-serif font-light text-v2-section-sm md:text-v2-section text-v2-text-primary mb-10 md:mb-16">
-        Atölyeden
-      </h2>
+      {/* Section heading + "See all" link */}
+      <div className="flex items-end justify-between mb-16 lg:mb-20">
+        <h2 className="font-serif font-light text-v2-section-sm md:text-v2-section text-v2-text-primary">
+          Atölyeden
+        </h2>
+        <Link
+          href="/kadin"
+          className="font-inter text-xs tracking-[0.15em] uppercase text-v2-text-primary link-underline-v2"
+        >
+          Tümünü Gör &rarr;
+        </Link>
+      </div>
 
-      {/* 2-column grid, wide gap */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-10 lg:gap-12">
-        {products.map((product) => {
+      {/* Asymmetric 3-product grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12">
+        {displayProducts.map((product, index) => {
           const url = getProductUrl({
             sku: product.sku,
             gender: product.gender,
@@ -42,31 +52,45 @@ export function SecimProductGridClient({ products }: SecimProductGridClientProps
             product.images[0]?.url || "/images/product-placeholder.jpg";
           const hoverImage = product.images[1]?.url;
 
+          const isHero = index === 0;
+
           return (
-            <Link key={product.id} href={url} className="group block w-full">
+            <Link
+              key={product.id}
+              href={url}
+              className={`group block w-full ${
+                isHero
+                  ? "md:col-span-2 lg:col-span-6 lg:row-span-2"
+                  : "lg:col-span-6"
+              }`}
+            >
               {/* Image */}
-              <div className="relative aspect-[3/4] overflow-hidden bg-v2-bg-primary">
+              <div
+                className={`relative overflow-hidden bg-v2-bg-primary ${
+                  isHero ? "aspect-[3/4]" : "aspect-[4/5]"
+                }`}
+              >
                 <Image
                   src={mainImage}
                   alt={product.name}
                   fill
-                  className={`object-cover transition-all duration-[800ms] ease-out group-hover:scale-[1.02] ${hoverImage ? "group-hover:opacity-0" : ""}`}
-                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className={`object-cover transition-all duration-[400ms] ease-out group-hover:opacity-90 ${hoverImage ? "group-hover:opacity-0" : ""}`}
+                  sizes={isHero ? "(max-width: 1024px) 100vw, 50vw" : "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 50vw"}
                 />
                 {hoverImage && (
                   <Image
                     src={hoverImage}
                     alt={`${product.name} - 2`}
                     fill
-                    className="object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-[800ms] ease-out"
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-[400ms] ease-out"
+                    sizes={isHero ? "(max-width: 1024px) 100vw, 50vw" : "(max-width: 768px) 100vw, 50vw"}
                   />
                 )}
               </div>
 
               {/* Info */}
               <div className="mt-4">
-                <h3 className="font-inter text-v2-caps uppercase text-v2-text-muted">
+                <h3 className="font-serif font-normal text-sm tracking-[-0.01em] text-v2-text-muted">
                   {product.name}
                 </h3>
                 <div className="flex items-baseline gap-3 mt-1">
@@ -84,16 +108,6 @@ export function SecimProductGridClient({ products }: SecimProductGridClientProps
             </Link>
           );
         })}
-      </div>
-
-      {/* "See all" underline link */}
-      <div className="mt-16 md:mt-24">
-        <Link
-          href="/kadin"
-          className="font-inter text-xs tracking-[0.15em] uppercase text-v2-text-primary link-underline-v2"
-        >
-          Tümünü Gör &rarr;
-        </Link>
       </div>
     </section>
   );

@@ -3,16 +3,18 @@
 import Image from "next/image";
 import { ShoppingBag, ShieldCheck } from "lucide-react";
 import { useCartStore } from "@/stores/cart-store";
+import { useShippingConfig } from "@/components/providers/ShippingConfigProvider";
 import { formatPrice } from "@/lib/utils";
 
 export function CheckoutSummary() {
-  const { items, coupon, getSubtotal, getShippingCost, getDiscount, getTotal } =
-    useCartStore();
+  const { items, coupon, getSubtotal, getDiscount } = useCartStore();
+  const { freeShippingThreshold, shippingCost } = useShippingConfig();
 
   const subtotal = getSubtotal();
-  const shipping = getShippingCost();
   const discount = getDiscount();
-  const total = getTotal();
+  const afterDiscount = subtotal - discount;
+  const shipping = items.length === 0 ? 0 : afterDiscount >= freeShippingThreshold ? 0 : shippingCost;
+  const total = afterDiscount + shipping;
 
   return (
     <div className="bg-white border border-stone-200 p-6 md:p-8 sticky top-24">

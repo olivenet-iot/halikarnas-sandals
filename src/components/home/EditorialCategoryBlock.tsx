@@ -27,12 +27,12 @@ export function EditorialCategoryBlock() {
         <div className="flex flex-col gap-4 md:gap-6">
           {/* Men image (top ~55%) */}
           <Link href="/erkek" className="group block">
-            <div className="relative h-[300px] md:h-[55%] min-h-[280px] overflow-hidden">
+            <div className="relative h-[400px] md:h-[65%] min-h-[350px] overflow-hidden">
               <Image
                 src="https://res.cloudinary.com/dxqmfpa8g/image/upload/v1775908098/halikarnas/home/erkek1_vki4pb.webp"
                 alt="Erkek sandaletleri"
                 fill
-                className="object-cover transition-transform duration-[800ms] ease-out group-hover:scale-[1.02]"
+                className="object-cover object-bottom transition-transform duration-[800ms] ease-out group-hover:scale-[1.02]"
                 sizes="(max-width: 768px) 100vw, 35vw"
               />
             </div>

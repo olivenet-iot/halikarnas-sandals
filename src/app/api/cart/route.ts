@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 export async function GET(request: NextRequest) {
   try {
     const sessionId = request.cookies.get("sessionId")?.value;
+    // Will be resolved in checkout V2 refactor turn
     // TODO: Get userId from auth session when implemented
     const userId = null;
 

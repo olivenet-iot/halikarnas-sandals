@@ -16,6 +16,7 @@ import { MagneticButton } from "@/components/ui/luxury/MagneticButton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCartStore } from "@/stores/cart-store";
 import { useCheckoutStore } from "@/stores/checkout-store";
+import { useShippingConfig } from "@/components/providers/ShippingConfigProvider";
 import { formatPrice } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
@@ -32,11 +33,11 @@ export function OrderReview({ onBack }: OrderReviewProps) {
     items,
     coupon,
     getSubtotal,
-    getShippingCost,
     getDiscount,
-    getTotal,
     clearCart,
   } = useCartStore();
+
+  const { freeShippingThreshold, shippingCost: shippingRate } = useShippingConfig();
 
   const {
     shippingInfo,
@@ -50,9 +51,10 @@ export function OrderReview({ onBack }: OrderReviewProps) {
   } = useCheckoutStore();
 
   const subtotal = getSubtotal();
-  const shipping = getShippingCost();
   const discount = getDiscount();
-  const total = getTotal();
+  const afterDiscount = subtotal - discount;
+  const shipping = items.length === 0 ? 0 : afterDiscount >= freeShippingThreshold ? 0 : shippingRate;
+  const total = afterDiscount + shipping;
 
   const canPlaceOrder = acceptedTerms && acceptedKvkk;
 
