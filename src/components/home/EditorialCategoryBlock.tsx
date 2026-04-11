@@ -9,9 +9,8 @@ export function EditorialCategoryBlock() {
         <div>
           <Link href="/kadin" className="group block">
             <div className="relative h-[400px] md:h-[650px] overflow-hidden">
-              {/* TODO: GERÇEK GÖRSEL — PLACEHOLDER_category-women.jpg dosyasını grep'leyip değiştirin */}
               <Image
-                src="/images/placeholder/PLACEHOLDER_category-women.jpg"
+                src="https://res.cloudinary.com/dxqmfpa8g/image/upload/v1766897985/halikarnas/home/kadin-koleksiyonu_l0rkzo.webp"
                 alt="Kadın sandaletleri"
                 fill
                 className="object-cover transition-transform duration-[800ms] ease-out group-hover:scale-[1.02]"
@@ -29,9 +28,8 @@ export function EditorialCategoryBlock() {
           {/* Men image (top ~55%) */}
           <Link href="/erkek" className="group block">
             <div className="relative h-[300px] md:h-[55%] min-h-[280px] overflow-hidden">
-              {/* TODO: GERÇEK GÖRSEL — PLACEHOLDER_category-men.jpg dosyasını grep'leyip değiştirin */}
               <Image
-                src="/images/placeholder/PLACEHOLDER_category-men.jpg"
+                src="https://res.cloudinary.com/dxqmfpa8g/image/upload/v1766897986/halikarnas/home/erkek-koleksiyonu_wgvz9u.webp"
                 alt="Erkek sandaletleri"
                 fill
                 className="object-cover transition-transform duration-[800ms] ease-out group-hover:scale-[1.02]"
