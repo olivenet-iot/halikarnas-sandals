@@ -52,34 +52,44 @@ const config: Config = {
           "5": "hsl(var(--chart-5))",
         },
 
-        // Luxury Brand Colors
+        // V2 Design System Colors — new redesign palette
+        v2: {
+          "bg-primary": "#FAF7F2",
+          "bg-dark": "#2A2A26",
+          "text-primary": "#1C1917",
+          "text-muted": "#6B6560",
+          accent: "#8B6F47",
+          "border-subtle": "#E8E2D8",
+        },
+
+        // @deprecated — migrating to v2-* tokens, will be removed in next cleanup pass
         luxury: {
-          // Primary - Dark Petrol (Aegean)
+          // @deprecated — use v2-text-primary or v2-bg-dark instead
           primary: {
             DEFAULT: "#1e3a3a",
             light: "#2d5555",
             dark: "#152a2a",
           },
-          // Secondary - Gold (Craftsmanship)
+          // @deprecated — use v2-accent instead
           gold: {
             DEFAULT: "#c9a962",
             light: "#d4b87a",
             dark: "#b89a52",
           },
-          // Accent - Terracotta (Mediterranean)
+          // @deprecated — use v2-accent instead
           terracotta: {
             DEFAULT: "#e07d4c",
             light: "#e89670",
             dark: "#c96a3c",
           },
-          // Neutrals
+          // @deprecated — use v2-bg-primary, v2-border-subtle instead
           cream: "#faf9f6",
           ivory: "#f5f4f0",
           stone: "#e8e6e1",
           charcoal: "#2d2d2d",
         },
 
-        // Halikarnas Brand Colors (legacy support)
+        // @deprecated — migrating to v2-* tokens, will be removed in next cleanup pass
         sand: {
           50: "#FAF8F5",
           100: "#F5F0E8",
@@ -92,6 +102,7 @@ const config: Config = {
           800: "#604B31",
           900: "#433322",
         },
+        // @deprecated — migrating to v2-* tokens, will be removed in next cleanup pass
         aegean: {
           50: "#E8F4F6",
           100: "#C5E4E9",
@@ -104,6 +115,7 @@ const config: Config = {
           800: "#113A4B",
           900: "#0D2E3D",
         },
+        // @deprecated — migrating to v2-* tokens, will be removed in next cleanup pass
         terracotta: {
           50: "#FCF5F2",
           100: "#F8E7E0",
@@ -116,6 +128,7 @@ const config: Config = {
           800: "#6D4432",
           900: "#503224",
         },
+        // @deprecated — migrating to v2-* tokens, will be removed in next cleanup pass
         leather: {
           50: "#F5F3F2",
           100: "#E8E4E2",
@@ -128,24 +141,40 @@ const config: Config = {
           800: "#4A3728",
           900: "#2D2926",
         },
+        // @deprecated — migrating to v2-* tokens, will be removed in next cleanup pass
         olive: {
           gold: "#A68B5B",
         },
+        // @deprecated — migrating to v2-* tokens, will be removed in next cleanup pass
         sea: {
           foam: "#A8C4C4",
         },
       },
       fontFamily: {
+        // V2 Design System
+        inter: ["var(--font-inter)", "system-ui", "sans-serif"],
         // Luxury typography
         serif: ["var(--font-cormorant)", "Georgia", "serif"],
         sans: ["var(--font-dm-sans)", "system-ui", "sans-serif"],
+        // @deprecated — use font-serif instead
         display: ["var(--font-cinzel)", "Georgia", "serif"],
         // Legacy aliases
         heading: ["var(--font-cormorant)", "Georgia", "serif"],
         body: ["var(--font-dm-sans)", "system-ui", "sans-serif"],
+        // @deprecated — use font-serif instead
         accent: ["var(--font-cinzel)", "Georgia", "serif"],
       },
       fontSize: {
+        // V2 Design System typography
+        "v2-hero": ["7rem", { lineHeight: "1.05", letterSpacing: "-0.01em" }],
+        "v2-hero-md": ["5rem", { lineHeight: "1.05", letterSpacing: "-0.01em" }],
+        "v2-hero-sm": ["2.5rem", { lineHeight: "1.1", letterSpacing: "-0.01em" }],
+        "v2-section": ["3.5rem", { lineHeight: "1.15", letterSpacing: "-0.01em" }],
+        "v2-section-sm": ["2rem", { lineHeight: "1.2" }],
+        "v2-body": ["1rem", { lineHeight: "1.7" }],
+        "v2-label": ["0.6875rem", { lineHeight: "1.4", letterSpacing: "0.2em" }],
+        "v2-caps": ["0.625rem", { lineHeight: "1.4", letterSpacing: "0.1em" }],
+        // Legacy typography
         "display-1": ["4.5rem", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
         "display-2": ["3.75rem", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
         "heading-1": ["3rem", { lineHeight: "1.2", letterSpacing: "-0.01em" }],
@@ -159,6 +188,12 @@ const config: Config = {
         caption: ["0.75rem", { lineHeight: "1.4" }],
       },
       spacing: {
+        // V2 Design System spacing
+        "v2-section": "10rem",
+        "v2-section-mobile": "6.25rem",
+        "v2-gap": "5rem",
+        "v2-gap-sm": "3rem",
+        // Legacy spacing
         section: "6rem",
         "section-lg": "8rem",
       },

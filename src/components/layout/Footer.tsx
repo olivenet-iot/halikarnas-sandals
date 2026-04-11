@@ -1,43 +1,113 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { Instagram, Facebook, Twitter, Mail, Phone, MapPin } from "lucide-react";
+import { Instagram, Facebook, Twitter, Mail, Phone, MapPin, Loader2 } from "lucide-react";
 
 export function Footer() {
-  return (
-    <footer className="bg-luxury-primary text-white">
-      {/* Ana Footer */}
-      <div className="container mx-auto px-6 py-16 lg:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
+  // Newsletter form state (absorbed from Newsletter.tsx)
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
-          {/* Sol - Brand */}
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        setStatus("success");
+        setEmail("");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  return (
+    <footer className="bg-[#2A2A26] text-white">
+      {/* Newsletter row */}
+      <div className="border-b border-white/10">
+        <div className="container-v2 py-12 md:py-16">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <h3 className="font-serif font-light text-xl md:text-2xl text-white">
+              Atölyeden haberler ve erken erişim
+            </h3>
+
+            {status === "success" ? (
+              <p className="font-inter text-sm text-white/70">
+                Teşekkürler, kayıt tamamlandı.
+              </p>
+            ) : (
+              <form
+                onSubmit={handleNewsletterSubmit}
+                className="flex items-center gap-4"
+              >
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="E-posta adresiniz"
+                  required
+                  className="bg-transparent border-b border-white/30 text-white placeholder:text-white/40 font-inter text-sm py-2 px-0 w-64 focus:outline-none focus:border-white/60 transition-colors"
+                />
+                <button
+                  type="submit"
+                  disabled={status === "loading"}
+                  className="font-inter text-xs tracking-[0.15em] uppercase text-white link-underline-v2 shrink-0"
+                >
+                  {status === "loading" ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    "Abone Ol"
+                  )}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Main footer */}
+      <div className="container-v2 py-12 md:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8">
+          {/* Brand column */}
           <div className="lg:col-span-4">
-            <h2 className="font-display text-2xl tracking-[0.15em] mb-6">
-              HALİKARNAS
-            </h2>
-            <p className="text-white/70 text-sm leading-relaxed mb-8 max-w-sm">
-              Antik Halikarnas&apos;ın zarafetini modern çizgilerle buluşturan,
-              usta ellerde şekillenen el yapımı hakiki deri sandaletler.
+            <Link
+              href="/"
+              className="font-serif font-normal tracking-[0.25em] text-lg text-white inline-block mb-6"
+            >
+              HALIKARNAS
+            </Link>
+            <p className="text-white/60 font-inter text-sm leading-relaxed mb-6 max-w-xs">
+              El yapımı hakiki deri sandaletler. Bodrum atölyemizden, sizin hikayenize.
             </p>
 
-            {/* İletişim Bilgileri */}
-            <div className="space-y-3 mb-8">
+            {/* Contact */}
+            <div className="space-y-2 mb-6">
               <a
                 href="mailto:info@halikarnassandals.com"
-                className="flex items-center gap-3 text-white/70 hover:text-luxury-gold text-sm transition-colors duration-300"
+                className="flex items-center gap-3 text-white/60 hover:text-white font-inter text-sm transition-colors"
               >
-                <Mail className="w-4 h-4" />
+                <Mail className="w-4 h-4" strokeWidth={1.5} />
                 info@halikarnassandals.com
               </a>
               <a
                 href="tel:+902521234567"
-                className="flex items-center gap-3 text-white/70 hover:text-luxury-gold text-sm transition-colors duration-300"
+                className="flex items-center gap-3 text-white/60 hover:text-white font-inter text-sm transition-colors"
               >
-                <Phone className="w-4 h-4" />
+                <Phone className="w-4 h-4" strokeWidth={1.5} />
                 +90 252 123 45 67
               </a>
-              <div className="flex items-start gap-3 text-white/70 text-sm">
-                <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
+              <div className="flex items-start gap-3 text-white/60 font-inter text-sm">
+                <MapPin className="w-4 h-4 mt-0.5 shrink-0" strokeWidth={1.5} />
                 <span>
                   Kumbahçe Mah. Neyzen Tevfik Cad.
                   <br />
@@ -46,69 +116,64 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Sosyal Medya */}
-            <div className="flex gap-3">
+            {/* Social — plain SVG, no circles */}
+            <div className="flex gap-4">
               <a
                 href="https://instagram.com/halikarnassandals"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:border-luxury-gold hover:text-luxury-gold transition-all duration-300"
+                className="text-white/40 hover:text-white transition-colors"
                 aria-label="Instagram"
               >
-                <Instagram className="w-4 h-4" />
+                <Instagram className="w-5 h-5" strokeWidth={1.5} />
               </a>
               <a
                 href="https://facebook.com/halikarnassandals"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:border-luxury-gold hover:text-luxury-gold transition-all duration-300"
+                className="text-white/40 hover:text-white transition-colors"
                 aria-label="Facebook"
               >
-                <Facebook className="w-4 h-4" />
+                <Facebook className="w-5 h-5" strokeWidth={1.5} />
               </a>
               <a
                 href="https://twitter.com/halikarnassandals"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:border-luxury-gold hover:text-luxury-gold transition-all duration-300"
+                className="text-white/40 hover:text-white transition-colors"
                 aria-label="Twitter"
               >
-                <Twitter className="w-4 h-4" />
+                <Twitter className="w-5 h-5" strokeWidth={1.5} />
               </a>
             </div>
           </div>
 
-          {/* Orta ve Sağ - Linkler */}
-          <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-8">
+          {/* Link columns */}
+          <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-8">
             {/* Alışveriş */}
             <div>
-              <h3 className="text-luxury-gold text-xs tracking-[0.2em] uppercase mb-6 font-medium">
+              <h4 className="text-[#8B6F47] font-inter text-v2-label uppercase mb-5">
                 Alışveriş
-              </h3>
+              </h4>
               <ul className="space-y-3">
                 <li>
-                  <Link href="/kadin" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
+                  <Link href="/kadin" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
                     Kadın
                   </Link>
                 </li>
                 <li>
-                  <Link href="/erkek" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
+                  <Link href="/erkek" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
                     Erkek
                   </Link>
                 </li>
                 <li>
-                  <Link href="/yeni-gelenler" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
+                  <Link href="/yeni-gelenler" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
                     Yeni Gelenler
                   </Link>
                 </li>
                 <li>
-                  <Link href="/koleksiyonlar" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
+                  <Link href="/koleksiyonlar" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
                     Koleksiyonlar
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/indirim" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
-                    İndirimler
                   </Link>
                 </li>
               </ul>
@@ -116,32 +181,32 @@ export function Footer() {
 
             {/* Yardım */}
             <div>
-              <h3 className="text-luxury-gold text-xs tracking-[0.2em] uppercase mb-6 font-medium">
+              <h4 className="text-[#8B6F47] font-inter text-v2-label uppercase mb-5">
                 Yardım
-              </h3>
+              </h4>
               <ul className="space-y-3">
                 <li>
-                  <Link href="/siparis-takip" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
+                  <Link href="/siparis-takip" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
                     Sipariş Takip
                   </Link>
                 </li>
                 <li>
-                  <Link href="/sss" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
-                    Sıkça Sorulan Sorular
+                  <Link href="/sss" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
+                    SSS
                   </Link>
                 </li>
                 <li>
-                  <Link href="/sayfa/kargo-ve-teslimat" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
+                  <Link href="/sayfa/kargo-ve-teslimat" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
                     Kargo ve Teslimat
                   </Link>
                 </li>
                 <li>
-                  <Link href="/sayfa/iade-ve-degisim" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
+                  <Link href="/sayfa/iade-ve-degisim" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
                     İade ve Değişim
                   </Link>
                 </li>
                 <li>
-                  <Link href="/beden-rehberi" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
+                  <Link href="/beden-rehberi" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
                     Beden Rehberi
                   </Link>
                 </li>
@@ -150,76 +215,53 @@ export function Footer() {
 
             {/* Kurumsal */}
             <div>
-              <h3 className="text-luxury-gold text-xs tracking-[0.2em] uppercase mb-6 font-medium">
+              <h4 className="text-[#8B6F47] font-inter text-v2-label uppercase mb-5">
                 Kurumsal
-              </h3>
+              </h4>
               <ul className="space-y-3">
                 <li>
-                  <Link href="/hakkimizda" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
+                  <Link href="/hakkimizda" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
                     Hakkımızda
                   </Link>
                 </li>
                 <li>
-                  <Link href="/hakkimizda#hikaye" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
-                    Hikayemiz
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/iletisim" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
+                  <Link href="/iletisim" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
                     İletişim
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/blog" className="text-white/70 hover:text-white text-sm transition-colors duration-300">
-                    Blog
                   </Link>
                 </li>
               </ul>
             </div>
 
-            {/* Bülten */}
-            <div>
-              <h3 className="text-luxury-gold text-xs tracking-[0.2em] uppercase mb-6 font-medium">
-                Bülten
-              </h3>
-              <p className="text-white/70 text-sm mb-4 leading-relaxed">
-                Yeni koleksiyonlar ve özel fırsatlardan haberdar olun.
-              </p>
-              <Link
-                href="/#newsletter"
-                className="inline-block text-white text-sm font-medium border-b border-luxury-gold pb-1 hover:text-luxury-gold transition-colors duration-300"
-              >
-                Abone Ol
-              </Link>
-            </div>
           </div>
         </div>
       </div>
 
-      {/* Alt kısım - Copyright */}
+      {/* Bottom bar */}
       <div className="border-t border-white/10">
-        <div className="container mx-auto px-6 py-6">
+        <div className="container-v2 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-white/50 text-xs">
-              © {new Date().getFullYear()} Halikarnas. Tüm hakları saklıdır.
+            <p className="text-white/40 font-inter text-xs">
+              &copy; {new Date().getFullYear()} Halikarnas. Tüm hakları saklıdır.
             </p>
             <div className="flex items-center gap-6">
-              <Link href="/sayfa/gizlilik-politikasi" className="text-white/50 hover:text-white text-xs transition-colors duration-300">
+              <Link
+                href="/sayfa/gizlilik-politikasi"
+                className="text-white/40 hover:text-white font-inter text-xs transition-colors"
+              >
                 Gizlilik
               </Link>
-              <Link href="/sayfa/kvkk" className="text-white/50 hover:text-white text-xs transition-colors duration-300">
+              <Link
+                href="/sayfa/kvkk"
+                className="text-white/40 hover:text-white font-inter text-xs transition-colors"
+              >
                 KVKK
               </Link>
-              <Link href="/sayfa/cerez-politikasi" className="text-white/50 hover:text-white text-xs transition-colors duration-300">
+              <Link
+                href="/sayfa/cerez-politikasi"
+                className="text-white/40 hover:text-white font-inter text-xs transition-colors"
+              >
                 Çerezler
               </Link>
-            </div>
-            {/* Ödeme Logoları */}
-            <div className="flex items-center gap-3 text-white/40 text-xs">
-              <span>Güvenli Ödeme:</span>
-              <span className="font-medium">Visa</span>
-              <span className="font-medium">Mastercard</span>
-              <span className="font-medium">Troy</span>
             </div>
           </div>
         </div>

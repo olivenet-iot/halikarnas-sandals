@@ -89,6 +89,7 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    scrollbar-color: #8B6F47 #FAF7F2;
   }
 
   body {
@@ -101,7 +102,7 @@
   h4,
   h5,
   h6 {
-    @apply font-serif font-semibold text-luxury-primary;
+    @apply font-serif font-normal text-luxury-primary;
   }
 
   /* Luxury headings with refined tracking */
@@ -120,21 +121,21 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: transparent;
+    background: #FAF7F2;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #c9a962;
+    background: #8B6F47;
     border-radius: 2px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #b89a52;
+    background: #75603C;
   }
 
-  /* Selection - Gold accent */
+  /* Selection */
   ::selection {
-    @apply bg-luxury-gold/20 text-luxury-primary;
+    @apply bg-v2-accent/20 text-v2-text-primary;
   }
 }
 
@@ -370,6 +371,31 @@
 }
 
 @layer utilities {
+  /* V2 Design System — underline link hover */
+  .link-underline-v2 {
+    @apply relative inline-block;
+  }
+
+  .link-underline-v2::after {
+    content: "";
+    @apply absolute left-0 bottom-0 w-0 h-[1px] bg-current;
+    transition: all 400ms ease-out;
+  }
+
+  .link-underline-v2:hover::after {
+    @apply w-full;
+  }
+
+  /* V2 Design System — section padding */
+  .section-v2 {
+    @apply py-v2-section-mobile md:py-v2-section;
+  }
+
+  /* V2 Design System — container */
+  .container-v2 {
+    @apply px-6 md:px-12 lg:px-24 mx-auto max-w-[1440px];
+  }
+
   /* Text Gradient */
   .text-gradient {
     @apply bg-gradient-to-r from-aegean-600 to-terracotta-500 bg-clip-text text-transparent;
@@ -563,5 +589,12 @@
 
   .animate-bounce {
     animation: none;
+  }
+
+  [data-v2-animate] {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

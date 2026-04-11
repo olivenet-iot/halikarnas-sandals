@@ -508,3 +508,33 @@ export const modalContent: Variants = {
 // Viewport settings for scroll-triggered animations
 export const viewportOnce = { once: true, margin: "-100px" };
 export const viewportAlways = { once: false, margin: "-50px" };
+
+// ============================================
+// V2 DESIGN SYSTEM ANIMATIONS
+// Minimal, restrained animations for the redesign
+// ============================================
+
+// Section reveal on scroll — fade + 20px translateY
+export const sectionRevealV2: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
+  },
+};
+
+// Stagger container for V2 sections
+export const staggerV2: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.1 },
+  },
+};
+
+// V2 viewport settings
+export const viewportV2 = {
+  once: true,
+  amount: 0.15,
+  margin: "-50px",
+};

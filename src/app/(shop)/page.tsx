@@ -1,38 +1,28 @@
-import { HeroSection } from "@/components/home/HeroSection";
-import { FeaturedProducts } from "@/components/home/FeaturedProducts";
-import { CategoryCards } from "@/components/home/CategoryCards";
-import { FeaturedCollection } from "@/components/home/FeaturedCollection";
-import { BestSellers } from "@/components/home/BestSellers";
-import { CraftsmanshipMini } from "@/components/home/CraftsmanshipMini";
-import { BrandPromise } from "@/components/home/BrandPromise";
-import { Newsletter } from "@/components/home/Newsletter";
+import { HeroV2 } from "@/components/home/HeroV2";
+import { EditorialCategoryBlock } from "@/components/home/EditorialCategoryBlock";
+import { SecimProductGrid } from "@/components/home/SecimProductGrid";
+import { FullBleedEditorial } from "@/components/home/FullBleedEditorial";
+import { BrandStoryTeaser } from "@/components/home/BrandStoryTeaser";
 
 export default async function Home() {
   return (
-    <div className="bg-luxury-cream">
-      {/* 1. Hero - Full screen immersive */}
-      <HeroSection />
+    <div className="bg-v2-bg-primary">
+      {/* 1. Hero — asymmetric, video-ready */}
+      <HeroV2 />
 
-      {/* 2. Featured Products - Seçtiklerimiz carousel */}
-      <FeaturedProducts />
+      {/* 2. Editorial Category — 65/35 women/men */}
+      <EditorialCategoryBlock />
 
-      {/* 3. Category Cards - Kadın/Erkek */}
-      <CategoryCards />
+      {/* 3. Seçki — featured product grid */}
+      <SecimProductGrid />
 
-      {/* 4. Featured Collection - Quote format */}
-      <FeaturedCollection />
+      {/* 4. Full-bleed editorial — atelier ambiance */}
+      <FullBleedEditorial />
 
-      {/* 5. Best Sellers - Featured products */}
-      <BestSellers />
+      {/* 5. Brand story teaser — pure typography */}
+      <BrandStoryTeaser />
 
-      {/* 6. Craftsmanship - Immersive story */}
-      <CraftsmanshipMini />
-
-      {/* 7. Brand Promise Strip */}
-      <BrandPromise />
-
-      {/* 8. Newsletter - Luxury minimal */}
-      <Newsletter />
+      {/* 6. Footer (with newsletter) is in layout */}
     </div>
   );
 }

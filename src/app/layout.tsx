@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
-import { DM_Sans, Cormorant_Garamond, Cinzel } from "next/font/google";
+import { Inter, DM_Sans, Cormorant_Garamond, Cinzel } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/providers";
 import { Toaster } from "@/components/ui/toaster";
 import { OrganizationJsonLd, WebsiteJsonLd } from "@/components/seo/JsonLd";
+
+const inter = Inter({
+  subsets: ["latin", "latin-ext"],
+  weight: ["400", "500"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 const dmSans = DM_Sans({
   subsets: ["latin", "latin-ext"],
@@ -14,7 +21,8 @@ const dmSans = DM_Sans({
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin", "latin-ext"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "600"],
+  style: ["normal", "italic"],
   variable: "--font-cormorant",
   display: "swap",
 });
@@ -87,7 +95,7 @@ export default function RootLayout({
         <WebsiteJsonLd searchUrl="/arama" />
       </head>
       <body
-        className={`${dmSans.variable} ${cormorant.variable} ${cinzel.variable} font-body antialiased bg-luxury-cream`}
+        className={`${inter.variable} ${dmSans.variable} ${cormorant.variable} ${cinzel.variable} font-body antialiased bg-luxury-cream`}
       >
         <AuthProvider>
           {children}

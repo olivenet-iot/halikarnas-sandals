@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { prisma } from "@/lib/db";
-import { CategoryPage } from "@/components/shop/CategoryPage";
+import { CategoryPageV2 } from "@/components/shop/CategoryPageV2";
 
 export const metadata: Metadata = {
   title: "Kadın Sandaletler",
@@ -101,9 +101,9 @@ export default async function KadinPage() {
   ]);
 
   return (
-    <CategoryPage
-      title="Kadın Sandaletler"
-      description="Premium el yapımı hakiki deri kadın sandaletleri. Her adımda şıklık ve konfor."
+    <CategoryPageV2
+      title="Kadın"
+      description="El yapımı hakiki deri kadın sandaletleri."
       products={products}
       categories={categories}
       gender="women"
