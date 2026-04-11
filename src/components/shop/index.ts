@@ -5,6 +5,7 @@ export { FilterSidebar, FilterTrigger } from "./FilterSidebar";
 export { SortSelect } from "./SortSelect";
 export { CategoryPage } from "./CategoryPage";
 export { ProductDetail } from "./ProductDetail";
+export { ProductDetailV2 } from "./ProductDetailV2";
 
 // Cinematic Collections
 export { CinematicScroll } from "./CinematicScroll";
