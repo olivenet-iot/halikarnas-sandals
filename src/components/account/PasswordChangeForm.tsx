@@ -5,9 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2, Eye, EyeOff, Check, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { V2Input } from "@/components/ui/v2-form";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -78,8 +76,7 @@ export function PasswordChangeForm() {
     } catch (error) {
       toast({
         title: "Hata",
-        description:
-          error instanceof Error ? error.message : "Bir hata oluştu",
+        description: error instanceof Error ? error.message : "Bir hata oluştu",
         variant: "destructive",
       });
     } finally {
@@ -90,69 +87,59 @@ export function PasswordChangeForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {/* Current Password */}
-      <div className="space-y-2">
-        <Label htmlFor="currentPassword">Mevcut Şifre</Label>
-        <div className="relative">
-          <Input
-            id="currentPassword"
-            type={showCurrentPassword ? "text" : "password"}
-            {...register("currentPassword")}
-          />
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-            onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-          >
-            {showCurrentPassword ? (
-              <EyeOff className="h-4 w-4 text-leather-500" />
-            ) : (
-              <Eye className="h-4 w-4 text-leather-500" />
-            )}
-          </Button>
-        </div>
-        {errors.currentPassword && (
-          <p className="text-sm text-red-600">{errors.currentPassword.message}</p>
-        )}
+      <div className="relative">
+        <V2Input
+          label="Mevcut Şifre"
+          required
+          type={showCurrentPassword ? "text" : "password"}
+          {...register("currentPassword")}
+          error={errors.currentPassword?.message}
+        />
+        <button
+          type="button"
+          className="absolute right-0 top-6 p-1 text-v2-text-muted hover:text-v2-text-primary transition-colors"
+          onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+        >
+          {showCurrentPassword ? (
+            <EyeOff className="h-4 w-4" />
+          ) : (
+            <Eye className="h-4 w-4" />
+          )}
+        </button>
       </div>
 
       {/* New Password */}
-      <div className="space-y-2">
-        <Label htmlFor="newPassword">Yeni Şifre</Label>
+      <div>
         <div className="relative">
-          <Input
-            id="newPassword"
+          <V2Input
+            label="Yeni Şifre"
+            required
             type={showNewPassword ? "text" : "password"}
             {...register("newPassword")}
+            error={errors.newPassword?.message}
           />
-          <Button
+          <button
             type="button"
-            variant="ghost"
-            size="icon"
-            className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+            className="absolute right-0 top-6 p-1 text-v2-text-muted hover:text-v2-text-primary transition-colors"
             onClick={() => setShowNewPassword(!showNewPassword)}
           >
             {showNewPassword ? (
-              <EyeOff className="h-4 w-4 text-leather-500" />
+              <EyeOff className="h-4 w-4" />
             ) : (
-              <Eye className="h-4 w-4 text-leather-500" />
+              <Eye className="h-4 w-4" />
             )}
-          </Button>
+          </button>
         </div>
-        {errors.newPassword && (
-          <p className="text-sm text-red-600">{errors.newPassword.message}</p>
-        )}
 
         {/* Password strength checks */}
         {newPassword && (
-          <div className="space-y-1 mt-2">
+          <div className="space-y-1 mt-3">
             {passwordChecks.map((check) => (
               <div
                 key={check.label}
                 className={cn(
-                  "flex items-center gap-2 text-xs",
-                  check.valid ? "text-green-600" : "text-leather-400"
+                  "flex items-center gap-2 text-xs font-inter",
+                  check.valid ? "text-v2-accent" : "text-v2-text-muted"
                 )}
               >
                 {check.valid ? (
@@ -168,38 +155,38 @@ export function PasswordChangeForm() {
       </div>
 
       {/* Confirm Password */}
-      <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Yeni Şifre Tekrar</Label>
-        <div className="relative">
-          <Input
-            id="confirmPassword"
-            type={showConfirmPassword ? "text" : "password"}
-            {...register("confirmPassword")}
-          />
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-          >
-            {showConfirmPassword ? (
-              <EyeOff className="h-4 w-4 text-leather-500" />
-            ) : (
-              <Eye className="h-4 w-4 text-leather-500" />
-            )}
-          </Button>
-        </div>
-        {errors.confirmPassword && (
-          <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>
-        )}
+      <div className="relative">
+        <V2Input
+          label="Yeni Şifre Tekrar"
+          required
+          type={showConfirmPassword ? "text" : "password"}
+          {...register("confirmPassword")}
+          error={errors.confirmPassword?.message}
+        />
+        <button
+          type="button"
+          className="absolute right-0 top-6 p-1 text-v2-text-muted hover:text-v2-text-primary transition-colors"
+          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+        >
+          {showConfirmPassword ? (
+            <EyeOff className="h-4 w-4" />
+          ) : (
+            <Eye className="h-4 w-4" />
+          )}
+        </button>
       </div>
 
       {/* Submit */}
-      <Button type="submit" disabled={isLoading}>
-        {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-        Şifreyi Güncelle
-      </Button>
+      <div className="pt-4">
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="border border-v2-text-primary text-v2-text-primary bg-transparent hover:bg-v2-text-primary hover:text-white px-8 py-3 font-inter text-xs tracking-wide uppercase transition-colors rounded-none disabled:opacity-50"
+        >
+          {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin inline" />}
+          Şifreyi Güncelle
+        </button>
+      </div>
     </form>
   );
 }

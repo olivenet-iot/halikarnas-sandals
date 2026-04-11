@@ -1,8 +1,6 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { PasswordChangeForm } from "@/components/account/PasswordChangeForm";
-import { AlertCircle } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export const metadata = {
   title: "Şifre Değiştir | Halikarnas Sandals",
@@ -18,33 +16,30 @@ export default async function SifreDegistirPage() {
     select: { password: true },
   });
 
-  // If user doesn't have a password (OAuth only), show message
   const hasPassword = !!user?.password;
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-accent font-semibold text-leather-800">
+    <div>
+      <div className="pb-8 border-b border-v2-border-subtle">
+        <h1 className="font-serif font-light text-3xl md:text-4xl text-v2-text-primary">
           Şifre Değiştir
         </h1>
-        <p className="text-leather-500 mt-1">
+        <p className="text-v2-text-muted font-inter text-sm mt-2">
           Hesabınızın güvenliği için şifrenizi düzenli olarak değiştirin.
         </p>
       </div>
 
       {hasPassword ? (
-        <div className="bg-white rounded-xl border border-sand-200 p-6 max-w-lg">
+        <div className="mt-8 max-w-md">
           <PasswordChangeForm />
         </div>
       ) : (
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Şifre Değiştirme Kullanılamıyor</AlertTitle>
-          <AlertDescription>
-            Hesabınız Google ile oluşturulmuş. Şifre değiştirmek için lütfen
-            Google hesabınızın güvenlik ayarlarını kullanın.
-          </AlertDescription>
-        </Alert>
+        <div className="py-12">
+          <p className="font-inter text-sm text-v2-text-muted">
+            Hesabınız Google ile oluşturulmuş. Şifre değiştirmek için Google
+            hesabınızın güvenlik ayarlarını kullanın.
+          </p>
+        </div>
       )}
     </div>
   );

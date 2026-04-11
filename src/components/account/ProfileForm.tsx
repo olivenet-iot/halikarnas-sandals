@@ -5,10 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { V2Input } from "@/components/ui/v2-form";
 import { useToast } from "@/hooks/use-toast";
 
 const profileSchema = z.object({
@@ -24,17 +21,7 @@ interface ProfileFormProps {
     name: string | null;
     email: string;
     phone: string | null;
-    image: string | null;
   };
-}
-
-function getInitials(name: string | null): string {
-  if (!name) return "U";
-  const parts = name.trim().split(" ");
-  if (parts.length === 1) {
-    return parts[0].charAt(0).toUpperCase();
-  }
-  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 }
 
 export function ProfileForm({ user }: ProfileFormProps) {
@@ -74,8 +61,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
     } catch (error) {
       toast({
         title: "Hata",
-        description:
-          error instanceof Error ? error.message : "Bir hata oluştu",
+        description: error instanceof Error ? error.message : "Bir hata oluştu",
         variant: "destructive",
       });
     } finally {
@@ -84,65 +70,59 @@ export function ProfileForm({ user }: ProfileFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {/* Avatar */}
-      <div className="flex items-center gap-4">
-        <Avatar className="h-20 w-20">
-          <AvatarImage src={user.image || undefined} alt={user.name || "User"} />
-          <AvatarFallback className="bg-aegean-100 text-aegean-700 text-xl font-semibold">
-            {getInitials(user.name)}
-          </AvatarFallback>
-        </Avatar>
-        <div>
-          <p className="font-medium text-leather-800">{user.name}</p>
-          <p className="text-sm text-leather-500">{user.email}</p>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 max-w-xl">
+        {/* Name */}
+        <div className="md:col-span-2">
+          <V2Input
+            label="Ad Soyad"
+            required
+            {...register("name")}
+            error={errors.name?.message}
+            placeholder="Adınız Soyadınız"
+          />
+        </div>
+
+        {/* Email (read-only) */}
+        <div className="md:col-span-2">
+          <div>
+            <label className="font-inter text-xs uppercase tracking-[0.15em] text-v2-text-muted mb-2 block">
+              E-POSTA
+            </label>
+            <input
+              type="email"
+              value={user.email}
+              disabled
+              className="w-full px-0 pb-2 bg-transparent border-0 border-b border-v2-border-subtle text-v2-text-muted text-sm outline-none opacity-60"
+            />
+            <p className="font-inter text-xs text-v2-text-muted mt-1">
+              E-posta adresi değiştirilemez
+            </p>
+          </div>
+        </div>
+
+        {/* Phone */}
+        <div className="md:col-span-2">
+          <V2Input
+            label="Telefon"
+            type="tel"
+            {...register("phone")}
+            placeholder="05XX XXX XX XX"
+          />
         </div>
       </div>
 
-      {/* Name */}
-      <div className="space-y-2">
-        <Label htmlFor="name">Ad Soyad</Label>
-        <Input
-          id="name"
-          {...register("name")}
-          placeholder="Adınız Soyadınız"
-        />
-        {errors.name && (
-          <p className="text-sm text-red-600">{errors.name.message}</p>
-        )}
-      </div>
-
-      {/* Email (read-only) */}
-      <div className="space-y-2">
-        <Label htmlFor="email">E-posta</Label>
-        <Input
-          id="email"
-          type="email"
-          value={user.email}
-          disabled
-          className="bg-sand-50"
-        />
-        <p className="text-xs text-leather-500">
-          E-posta adresi değiştirilemez
-        </p>
-      </div>
-
-      {/* Phone */}
-      <div className="space-y-2">
-        <Label htmlFor="phone">Telefon</Label>
-        <Input
-          id="phone"
-          type="tel"
-          {...register("phone")}
-          placeholder="05XX XXX XX XX"
-        />
-      </div>
-
       {/* Submit */}
-      <Button type="submit" disabled={isLoading || !isDirty}>
-        {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-        Değişiklikleri Kaydet
-      </Button>
+      <div className="flex justify-end mt-8">
+        <button
+          type="submit"
+          disabled={isLoading || !isDirty}
+          className="border border-v2-text-primary text-v2-text-primary bg-transparent hover:bg-v2-text-primary hover:text-white px-8 py-3 font-inter text-xs tracking-wide uppercase transition-colors rounded-none disabled:opacity-50"
+        >
+          {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin inline" />}
+          Değişiklikleri Kaydet
+        </button>
+      </div>
     </form>
   );
 }

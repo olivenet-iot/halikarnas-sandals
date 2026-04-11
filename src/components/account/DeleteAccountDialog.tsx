@@ -2,10 +2,7 @@
 
 import { useState } from "react";
 import { signOut } from "next-auth/react";
-import { Loader2, AlertTriangle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -52,13 +49,11 @@ export function DeleteAccountDialog({ hasPassword }: DeleteAccountDialogProps) {
         description: "Hesabınız kalıcı olarak silindi.",
       });
 
-      // Sign out and redirect
       await signOut({ callbackUrl: "/" });
     } catch (error) {
       toast({
         title: "Hata",
-        description:
-          error instanceof Error ? error.message : "Bir hata oluştu",
+        description: error instanceof Error ? error.message : "Bir hata oluştu",
         variant: "destructive",
       });
       setIsLoading(false);
@@ -76,67 +71,62 @@ export function DeleteAccountDialog({ hasPassword }: DeleteAccountDialogProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" className="text-red-600 hover:text-red-700 hover:bg-red-50">
-          Hesabımı Kalıcı Olarak Sil
-        </Button>
+        <button className="font-inter text-xs text-v2-text-muted hover:text-v2-text-primary underline underline-offset-4 transition-colors">
+          Hesabımı kalıcı olarak sil
+        </button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="bg-v2-bg-primary border border-v2-border-subtle rounded-none max-w-md">
         <AlertDialogHeader>
-          <AlertDialogTitle className="flex items-center gap-2 text-red-600">
-            <AlertTriangle className="h-5 w-5" />
+          <AlertDialogTitle className="font-serif font-light text-xl text-v2-text-primary">
             Hesabı Sil
           </AlertDialogTitle>
-          <AlertDialogDescription className="space-y-2">
-            <p>
-              Bu işlem geri alınamaz. Hesabınız ve tüm verileriniz kalıcı olarak
-              silinecektir. Bu işlem şunları içerir:
-            </p>
-            <ul className="list-disc list-inside text-sm space-y-1">
-              <li>Tüm sipariş geçmişiniz</li>
-              <li>Kayıtlı adresleriniz</li>
-              <li>Favorileriniz</li>
-              <li>Hesap bilgileriniz</li>
-            </ul>
+          <AlertDialogDescription className="font-inter text-sm text-v2-text-muted">
+            Hesabınızı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+            Tüm sipariş geçmişiniz, adresleriniz ve favorileriniz kalıcı olarak silinecektir.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
-        <div className="space-y-4 py-4">
+        <div className="space-y-5 py-4">
           {hasPassword && (
-            <div className="space-y-2">
-              <Label htmlFor="delete-password">Şifrenizi Girin</Label>
-              <Input
-                id="delete-password"
+            <div>
+              <label className="font-inter text-xs uppercase tracking-[0.15em] text-v2-text-muted mb-2 block">
+                ŞİFRENİZ
+              </label>
+              <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Şifreniz"
+                placeholder="Şifrenizi girin"
+                className="w-full px-0 pb-2 bg-transparent border-0 border-b border-v2-border-subtle text-v2-text-primary text-sm outline-none focus:border-v2-text-primary transition-colors duration-200"
               />
             </div>
           )}
 
-          <div className="space-y-2">
-            <Label htmlFor="delete-confirmation">
-              Onaylamak için <strong>DELETE</strong> yazın
-            </Label>
-            <Input
-              id="delete-confirmation"
+          <div>
+            <label className="font-inter text-xs uppercase tracking-[0.15em] text-v2-text-muted mb-2 block">
+              ONAY — <span className="text-v2-text-primary">DELETE</span> YAZIN
+            </label>
+            <input
               value={confirmation}
               onChange={(e) => setConfirmation(e.target.value)}
               placeholder="DELETE"
+              className="w-full px-0 pb-2 bg-transparent border-0 border-b border-v2-border-subtle text-v2-text-primary text-sm outline-none focus:border-v2-text-primary transition-colors duration-200"
             />
           </div>
         </div>
 
-        <AlertDialogFooter>
-          <AlertDialogCancel>İptal</AlertDialogCancel>
-          <Button
-            variant="destructive"
+        <AlertDialogFooter className="flex items-center gap-6">
+          <AlertDialogCancel className="border-0 bg-transparent font-inter text-sm text-v2-text-muted hover:text-v2-text-primary underline underline-offset-4 transition-colors p-0 h-auto">
+            İptal
+          </AlertDialogCancel>
+          <button
             onClick={handleDelete}
             disabled={!isValid || isLoading}
+            className="border border-v2-text-primary text-v2-text-primary bg-transparent hover:bg-v2-text-primary hover:text-white px-6 py-2.5 font-inter text-xs tracking-wide uppercase transition-colors rounded-none disabled:opacity-50"
           >
-            {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+            {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin inline" />}
             Hesabı Sil
-          </Button>
+          </button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

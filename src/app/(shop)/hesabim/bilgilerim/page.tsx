@@ -19,7 +19,6 @@ export default async function BilgilerimPage() {
       name: true,
       email: true,
       phone: true,
-      image: true,
       password: true,
     },
   });
@@ -31,35 +30,29 @@ export default async function BilgilerimPage() {
   const hasPassword = !!user.password;
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-accent font-semibold text-leather-800">
+    <div>
+      <div className="pb-8 border-b border-v2-border-subtle">
+        <h1 className="font-serif font-light text-3xl md:text-4xl text-v2-text-primary">
           Hesap Bilgilerim
         </h1>
-        <p className="text-leather-500 mt-1">
+        <p className="text-v2-text-muted font-inter text-sm mt-2">
           Kişisel bilgilerinizi güncelleyin.
         </p>
       </div>
 
-      <div className="bg-white rounded-xl border border-sand-200 p-6">
+      <div className="mt-8">
         <ProfileForm
           user={{
             id: user.id,
             name: user.name,
             email: user.email,
             phone: user.phone,
-            image: user.image,
           }}
         />
       </div>
 
-      {/* Danger Zone */}
-      <div className="bg-white rounded-xl border border-red-200 p-6">
-        <h2 className="text-lg font-semibold text-red-600 mb-2">Tehlikeli Bölge</h2>
-        <p className="text-sm text-leather-500 mb-4">
-          Hesabınızı sildiğinizde tüm verileriniz kalıcı olarak silinecektir.
-          Bu işlem geri alınamaz.
-        </p>
+      {/* Account Delete */}
+      <div className="mt-16 pt-8 border-t border-v2-border-subtle">
         <DeleteAccountDialog hasPassword={hasPassword} />
       </div>
     </div>

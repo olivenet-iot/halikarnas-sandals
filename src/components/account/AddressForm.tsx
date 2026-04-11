@@ -5,18 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { V2Input, V2Select, V2Textarea } from "@/components/ui/v2-form";
 import {
   Dialog,
   DialogContent,
@@ -27,13 +16,13 @@ import { useToast } from "@/hooks/use-toast";
 import { getCitiesSorted, getDistrictsSorted, cities as allCities } from "@/lib/turkey-locations";
 
 const addressSchema = z.object({
-  title: z.string().min(1, "Adres başlığı gerekli"),
+  title: z.string().min(1, "Adres basligi gerekli"),
   firstName: z.string().min(1, "Ad gerekli"),
   lastName: z.string().min(1, "Soyad gerekli"),
-  phone: z.string().min(10, "Geçerli bir telefon numarası girin"),
-  address: z.string().min(10, "Adres en az 10 karakter olmalı"),
-  city: z.string().min(1, "İl seçiniz"),
-  district: z.string().min(1, "İlçe seçiniz"),
+  phone: z.string().min(10, "Gecerli bir telefon numarasi girin"),
+  address: z.string().min(10, "Adres en az 10 karakter olmali"),
+  city: z.string().min(1, "Il seciniz"),
+  district: z.string().min(1, "Ilce seciniz"),
   postalCode: z.string().optional(),
   isDefault: z.boolean().optional(),
 });
@@ -60,7 +49,7 @@ interface AddressFormProps {
   onSuccess: () => void;
 }
 
-const ADDRESS_TITLES = ["Ev", "İş", "Diğer"];
+const ADDRESS_TITLES = ["Ev", "Is", "Diger"];
 
 export function AddressForm({
   open,
@@ -96,12 +85,9 @@ export function AddressForm({
 
   const selectedCityName = watch("city");
   const cities = getCitiesSorted();
-
-  // Find city ID by name to get districts
-  const selectedCityObj = allCities.find(c => c.name === selectedCityName);
+  const selectedCityObj = allCities.find((c) => c.name === selectedCityName);
   const districts = selectedCityObj ? getDistrictsSorted(selectedCityObj.id) : [];
 
-  // Reset form when dialog opens/closes or address changes
   useEffect(() => {
     if (open) {
       if (address) {
@@ -132,7 +118,6 @@ export function AddressForm({
     }
   }, [open, address, reset]);
 
-  // Reset district when city changes
   useEffect(() => {
     if (selectedCityName && address?.city !== selectedCityName) {
       setValue("district", "");
@@ -142,9 +127,7 @@ export function AddressForm({
   const onSubmit = async (data: AddressFormData) => {
     setIsLoading(true);
     try {
-      const url = isEditing
-        ? `/api/addresses/${address.id}`
-        : "/api/addresses";
+      const url = isEditing ? `/api/addresses/${address.id}` : "/api/addresses";
       const method = isEditing ? "PATCH" : "POST";
 
       const res = await fetch(url, {
@@ -155,14 +138,14 @@ export function AddressForm({
 
       if (!res.ok) {
         const error = await res.json();
-        throw new Error(error.error || "Bir hata oluştu");
+        throw new Error(error.error || "Bir hata olustu");
       }
 
       toast({
-        title: isEditing ? "Adres güncellendi" : "Adres eklendi",
+        title: isEditing ? "Adres guncellendi" : "Adres eklendi",
         description: isEditing
-          ? "Adres başarıyla güncellendi."
-          : "Yeni adres başarıyla eklendi.",
+          ? "Adres basariyla guncellendi."
+          : "Yeni adres basariyla eklendi.",
       });
 
       onSuccess();
@@ -170,8 +153,7 @@ export function AddressForm({
     } catch (error) {
       toast({
         title: "Hata",
-        description:
-          error instanceof Error ? error.message : "Bir hata oluştu",
+        description: error instanceof Error ? error.message : "Bir hata olustu",
         variant: "destructive",
       });
     } finally {
@@ -181,164 +163,147 @@ export function AddressForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto bg-v2-bg-primary border border-v2-border-subtle p-10 rounded-none">
         <DialogHeader>
-          <DialogTitle>
-            {isEditing ? "Adresi Düzenle" : "Yeni Adres Ekle"}
+          <DialogTitle className="font-serif font-light text-2xl text-v2-text-primary">
+            {isEditing ? "Adresi Duzenle" : "Yeni Adres"}
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Address Title */}
-          <div className="space-y-2">
-            <Label htmlFor="title">Adres Başlığı</Label>
-            <Select
-              value={watch("title")}
-              onValueChange={(value) => setValue("title", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Seçiniz" />
-              </SelectTrigger>
-              <SelectContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+            {/* Address Title */}
+            <div className="md:col-span-2">
+              <V2Select
+                label="Adres Basligi"
+                required
+                value={watch("title")}
+                onChange={(e) => setValue("title", e.target.value)}
+                error={errors.title?.message}
+              >
+                <option value="">Seciniz</option>
                 {ADDRESS_TITLES.map((title) => (
-                  <SelectItem key={title} value={title}>
+                  <option key={title} value={title}>
                     {title}
-                  </SelectItem>
+                  </option>
                 ))}
-              </SelectContent>
-            </Select>
-            {errors.title && (
-              <p className="text-sm text-red-600">{errors.title.message}</p>
-            )}
-          </div>
-
-          {/* Name */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="firstName">Ad</Label>
-              <Input id="firstName" {...register("firstName")} />
-              {errors.firstName && (
-                <p className="text-sm text-red-600">{errors.firstName.message}</p>
-              )}
+              </V2Select>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="lastName">Soyad</Label>
-              <Input id="lastName" {...register("lastName")} />
-              {errors.lastName && (
-                <p className="text-sm text-red-600">{errors.lastName.message}</p>
-              )}
-            </div>
-          </div>
 
-          {/* Phone */}
-          <div className="space-y-2">
-            <Label htmlFor="phone">Telefon</Label>
-            <Input
-              id="phone"
-              type="tel"
-              placeholder="05XX XXX XX XX"
-              {...register("phone")}
+            {/* First Name */}
+            <V2Input
+              label="Ad"
+              required
+              {...register("firstName")}
+              error={errors.firstName?.message}
             />
-            {errors.phone && (
-              <p className="text-sm text-red-600">{errors.phone.message}</p>
-            )}
-          </div>
 
-          {/* City & District */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="city">İl</Label>
-              <Select
-                value={watch("city")}
-                onValueChange={(value) => setValue("city", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="İl seçiniz" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cities.map((city) => (
-                    <SelectItem key={city.id} value={city.name}>
-                      {city.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.city && (
-                <p className="text-sm text-red-600">{errors.city.message}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="district">İlçe</Label>
-              <Select
-                value={watch("district")}
-                onValueChange={(value) => setValue("district", value)}
-                disabled={!selectedCityName}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="İlçe seçiniz" />
-                </SelectTrigger>
-                <SelectContent>
-                  {districts.map((district) => (
-                    <SelectItem key={district.id} value={district.name}>
-                      {district.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.district && (
-                <p className="text-sm text-red-600">{errors.district.message}</p>
-              )}
-            </div>
-          </div>
-
-          {/* Address */}
-          <div className="space-y-2">
-            <Label htmlFor="address">Adres</Label>
-            <Textarea
-              id="address"
-              placeholder="Mahalle, cadde, sokak, bina no, daire no..."
-              rows={3}
-              {...register("address")}
+            {/* Last Name */}
+            <V2Input
+              label="Soyad"
+              required
+              {...register("lastName")}
+              error={errors.lastName?.message}
             />
-            {errors.address && (
-              <p className="text-sm text-red-600">{errors.address.message}</p>
-            )}
-          </div>
 
-          {/* Postal Code */}
-          <div className="space-y-2">
-            <Label htmlFor="postalCode">Posta Kodu (Opsiyonel)</Label>
-            <Input id="postalCode" {...register("postalCode")} />
-          </div>
+            {/* Phone */}
+            <div className="md:col-span-2">
+              <V2Input
+                label="Telefon"
+                required
+                type="tel"
+                placeholder="05XX XXX XX XX"
+                {...register("phone")}
+                error={errors.phone?.message}
+              />
+            </div>
 
-          {/* Default Checkbox */}
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="isDefault"
-              checked={watch("isDefault")}
-              onCheckedChange={(checked) =>
-                setValue("isDefault", checked as boolean)
-              }
-            />
-            <Label htmlFor="isDefault" className="font-normal cursor-pointer">
-              Varsayılan adres olarak ayarla
-            </Label>
-          </div>
-
-          {/* Submit */}
-          <div className="flex gap-3 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              className="flex-1"
-              onClick={() => onOpenChange(false)}
+            {/* City */}
+            <V2Select
+              label="Il"
+              required
+              value={watch("city")}
+              onChange={(e) => setValue("city", e.target.value)}
+              error={errors.city?.message}
             >
-              İptal
-            </Button>
-            <Button type="submit" className="flex-1" disabled={isLoading}>
-              {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              {isEditing ? "Güncelle" : "Ekle"}
-            </Button>
+              <option value="">Il seciniz</option>
+              {cities.map((city) => (
+                <option key={city.id} value={city.name}>
+                  {city.name}
+                </option>
+              ))}
+            </V2Select>
+
+            {/* District */}
+            <V2Select
+              label="Ilce"
+              required
+              value={watch("district")}
+              onChange={(e) => setValue("district", e.target.value)}
+              disabled={!selectedCityName}
+              error={errors.district?.message}
+            >
+              <option value="">Ilce seciniz</option>
+              {districts.map((district) => (
+                <option key={district.id} value={district.name}>
+                  {district.name}
+                </option>
+              ))}
+            </V2Select>
+
+            {/* Address */}
+            <div className="md:col-span-2">
+              <V2Textarea
+                label="Adres"
+                required
+                placeholder="Mahalle, cadde, sokak, bina no, daire no..."
+                rows={3}
+                {...register("address")}
+                error={errors.address?.message}
+              />
+            </div>
+
+            {/* Postal Code */}
+            <V2Input
+              label="Posta Kodu (Opsiyonel)"
+              {...register("postalCode")}
+            />
+
+            {/* Default Checkbox */}
+            <div className="flex items-center gap-2 self-end pb-2">
+              <input
+                type="checkbox"
+                id="isDefault"
+                checked={watch("isDefault")}
+                onChange={(e) => setValue("isDefault", e.target.checked)}
+                className="w-4 h-4 accent-v2-accent"
+              />
+              <label
+                htmlFor="isDefault"
+                className="font-inter text-sm text-v2-text-muted cursor-pointer"
+              >
+                Varsayilan adres
+              </label>
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex items-center justify-end gap-6 mt-8 pt-6 border-t border-v2-border-subtle">
+            <button
+              type="button"
+              onClick={() => onOpenChange(false)}
+              className="font-inter text-sm text-v2-text-muted hover:text-v2-text-primary underline underline-offset-4 transition-colors"
+            >
+              Iptal
+            </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="border border-v2-text-primary text-v2-text-primary bg-transparent hover:bg-v2-text-primary hover:text-white px-8 py-3 font-inter text-xs tracking-wide uppercase transition-colors rounded-none disabled:opacity-50"
+            >
+              {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin inline" />}
+              {isEditing ? "Guncelle" : "Kaydet"}
+            </button>
           </div>
         </form>
       </DialogContent>

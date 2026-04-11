@@ -1,188 +1,187 @@
 import Link from "next/link";
-import Image from "next/image";
-import { ChevronRight } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { AccountStats, OrderCard } from "@/components/account";
-import { Button } from "@/components/ui/button";
+import { formatPrice, formatDate } from "@/lib/utils";
+import { ProductCardV2 } from "@/components/shop/ProductCardV2";
 
 export default async function HesabimPage() {
   const session = await auth();
   const userId = session?.user?.id;
 
-  // Fetch stats
-  const [orderCount, wishlistCount, addressCount, recentOrders, wishlistItems] =
-    await Promise.all([
-      db.order.count({ where: { userId } }),
-      db.wishlistItem.count({ where: { userId } }),
-      db.address.count({ where: { userId } }),
-      db.order.findMany({
-        where: { userId },
-        orderBy: { createdAt: "desc" },
-        take: 3,
-        include: {
-          items: {
-            include: {
-              product: {
-                select: {
-                  name: true,
-                  images: {
-                    where: { isPrimary: true },
-                    take: 1,
-                    select: { url: true },
-                  },
+  const [recentOrders, wishlistItems] = await Promise.all([
+    db.order.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take: 3,
+      include: {
+        items: {
+          include: {
+            product: {
+              select: {
+                name: true,
+                images: {
+                  where: { isPrimary: true },
+                  take: 1,
+                  select: { url: true },
                 },
               },
             },
           },
         },
-      }),
-      db.wishlistItem.findMany({
-        where: { userId },
-        take: 4,
-        orderBy: { createdAt: "desc" },
-        include: {
-          product: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-              basePrice: true,
-              images: {
-                where: { isPrimary: true },
-                take: 1,
-                select: { url: true },
-              },
+      },
+    }),
+    db.wishlistItem.findMany({
+      where: { userId },
+      take: 4,
+      orderBy: { createdAt: "desc" },
+      include: {
+        product: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            sku: true,
+            gender: true,
+            basePrice: true,
+            compareAtPrice: true,
+            category: { select: { slug: true } },
+            images: {
+              take: 2,
+              orderBy: { position: "asc" },
+              select: { url: true, alt: true },
             },
           },
         },
-      }),
-    ]);
+      },
+    }),
+  ]);
 
   const userName = session?.user?.name?.split(" ")[0] || "Kullanıcı";
 
   return (
-    <div className="space-y-8">
+    <div>
       {/* Welcome */}
-      <div>
-        <h1 className="text-2xl font-accent font-semibold text-leather-800">
-          Hoş geldin, {userName}!
+      <div className="pb-8 border-b border-v2-border-subtle">
+        <h1 className="font-serif font-light text-3xl md:text-4xl text-v2-text-primary">
+          Hoş geldiniz, {userName}
         </h1>
-        <p className="text-leather-500 mt-1">
+        <p className="text-v2-text-muted font-inter text-sm mt-2">
           Hesabınızı buradan yönetebilirsiniz.
         </p>
       </div>
 
-      {/* Stats */}
-      <AccountStats
-        orderCount={orderCount}
-        wishlistCount={wishlistCount}
-        addressCount={addressCount}
-      />
-
       {/* Recent Orders */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-leather-800">
-            Son Siparişleriniz
-          </h2>
-          {orderCount > 0 && (
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/hesabim/siparislerim">
-                Tümünü Gör
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </Link>
-            </Button>
+      <section className="mt-12">
+        <div className="flex items-center justify-between mb-6">
+          <span className="font-inter text-xs uppercase tracking-widest text-v2-text-muted">
+            SON SİPARİŞLER
+          </span>
+          {recentOrders.length > 0 && (
+            <Link
+              href="/hesabim/siparislerim"
+              className="font-inter text-xs text-v2-text-muted hover:text-v2-text-primary underline underline-offset-4 transition-colors"
+            >
+              Tümünü gör &rarr;
+            </Link>
           )}
         </div>
 
         {recentOrders.length > 0 ? (
-          <div className="space-y-3">
+          <div>
             {recentOrders.map((order) => (
-              <OrderCard
+              <Link
                 key={order.id}
-                id={order.id}
-                orderNumber={order.orderNumber}
-                createdAt={order.createdAt}
-                status={order.status as "PENDING" | "CONFIRMED" | "PROCESSING" | "SHIPPED" | "DELIVERED" | "CANCELLED" | "REFUNDED"}
-                items={order.items.map((item) => ({
-                  id: item.id,
-                  productName: item.productName,
-                  productImage: item.product.images[0]?.url || "",
-                  variant: `${item.variantColor || ""} ${item.variantSize}`.trim(),
-                  quantity: item.quantity,
-                  price: Number(item.unitPrice),
-                }))}
-                total={Number(order.total)}
-                trackingNumber={order.trackingNumber || undefined}
-                compact
-              />
+                href={`/hesabim/siparislerim/${order.id}`}
+                className="flex items-center justify-between py-4 border-b border-v2-border-subtle hover:bg-v2-bg-primary/50 transition-colors -mx-2 px-2"
+              >
+                <div className="flex items-center gap-4">
+                  <div>
+                    <p className="font-inter text-sm text-v2-text-primary">
+                      #{order.orderNumber}
+                    </p>
+                    <p className="font-inter text-xs text-v2-text-muted mt-0.5">
+                      {formatDate(order.createdAt)}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-6">
+                  <span className="font-inter text-sm text-v2-text-primary">
+                    {formatPrice(Number(order.total))}
+                  </span>
+                  <span className="font-inter text-xs text-v2-text-muted">
+                    Detay &rarr;
+                  </span>
+                </div>
+              </Link>
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-xl border border-sand-200 p-8 text-center">
-            <p className="text-leather-500 mb-4">Henüz siparişiniz bulunmuyor</p>
-            <Button asChild>
-              <Link href="/kadin">Alışverişe Başla</Link>
-            </Button>
+          <div className="py-6">
+            <p className="font-inter text-sm text-v2-text-muted">
+              Henüz siparişiniz bulunmuyor.
+            </p>
+            <div className="flex gap-4 mt-3">
+              <Link
+                href="/kadin"
+                className="font-inter text-sm text-v2-text-primary underline underline-offset-4 hover:text-v2-text-muted transition-colors"
+              >
+                Kadın &rarr;
+              </Link>
+              <Link
+                href="/erkek"
+                className="font-inter text-sm text-v2-text-primary underline underline-offset-4 hover:text-v2-text-muted transition-colors"
+              >
+                Erkek &rarr;
+              </Link>
+            </div>
           </div>
         )}
       </section>
 
       {/* Wishlist Preview */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-leather-800">
-            Favorileriniz
-          </h2>
-          {wishlistCount > 0 && (
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/hesabim/favorilerim">
-                Tümünü Gör
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </Link>
-            </Button>
+      <section className="mt-16">
+        <div className="flex items-center justify-between mb-8">
+          <span className="font-inter text-xs uppercase tracking-widest text-v2-text-muted">
+            FAVORİLER
+          </span>
+          {wishlistItems.length > 0 && (
+            <Link
+              href="/hesabim/favorilerim"
+              className="font-inter text-xs text-v2-text-muted hover:text-v2-text-primary underline underline-offset-4 transition-colors"
+            >
+              Tümünü gör &rarr;
+            </Link>
           )}
         </div>
 
         {wishlistItems.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {wishlistItems.map((item) => (
-              <Link
+              <ProductCardV2
                 key={item.id}
-                href={`/urun/${item.product.slug}`}
-                className="bg-white rounded-xl border border-sand-200 overflow-hidden hover:border-aegean-300 hover:shadow-soft transition-all group"
-              >
-                <div className="aspect-square relative overflow-hidden">
-                  <Image
-                    src={item.product.images[0]?.url || "/images/placeholder.jpg"}
-                    alt={item.product.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <div className="p-3">
-                  <p className="text-sm font-medium text-leather-800 truncate">
-                    {item.product.name}
-                  </p>
-                  <p className="text-sm text-aegean-600 font-semibold">
-                    {new Intl.NumberFormat("tr-TR", {
-                      style: "currency",
-                      currency: "TRY",
-                    }).format(Number(item.product.basePrice))}
-                  </p>
-                </div>
-              </Link>
+                id={item.product.id}
+                name={item.product.name}
+                slug={item.product.slug}
+                sku={item.product.sku || ""}
+                gender={item.product.gender as "ERKEK" | "KADIN" | "UNISEX" | null}
+                price={Number(item.product.basePrice)}
+                compareAtPrice={item.product.compareAtPrice ? Number(item.product.compareAtPrice) : null}
+                images={item.product.images.map((img) => ({ url: img.url, alt: img.alt || undefined }))}
+                categorySlug={item.product.category?.slug || null}
+              />
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-xl border border-sand-200 p-8 text-center">
-            <p className="text-leather-500 mb-4">
-              Henüz favorilerinize ürün eklemediniz
+          <div className="py-6">
+            <p className="font-inter text-sm text-v2-text-muted">
+              Henüz favoriniz yok.
             </p>
-            <Button asChild>
-              <Link href="/kadin">Ürünleri Keşfet</Link>
-            </Button>
+            <Link
+              href="/kadin"
+              className="font-inter text-sm text-v2-text-primary underline underline-offset-4 hover:text-v2-text-muted transition-colors mt-3 inline-block"
+            >
+              Ürünleri Keşfet &rarr;
+            </Link>
           </div>
         )}
       </section>

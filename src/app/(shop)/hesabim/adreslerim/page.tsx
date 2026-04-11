@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Plus, MapPin, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { AddressCard } from "@/components/account/AddressCard";
+import { Loader2 } from "lucide-react";
 import { AddressForm } from "@/components/account/AddressForm";
+import { useToast } from "@/hooks/use-toast";
 
 interface Address {
   id: string;
@@ -24,6 +23,7 @@ export default function AdreslerimPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
+  const { toast } = useToast();
 
   const fetchAddresses = useCallback(async () => {
     try {
@@ -48,28 +48,38 @@ export default function AdreslerimPage() {
     setIsFormOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    setAddresses((prev) => prev.filter((a) => a.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`/api/addresses/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        setAddresses((prev) => prev.filter((a) => a.id !== id));
+        toast({ title: "Adres silindi" });
+      }
+    } catch {
+      toast({ title: "Hata", description: "Adres silinemedi", variant: "destructive" });
+    }
   };
 
-  const handleSetDefault = (id: string) => {
-    setAddresses((prev) =>
-      prev.map((a) => ({
-        ...a,
-        isDefault: a.id === id,
-      }))
-    );
+  const handleSetDefault = async (id: string) => {
+    try {
+      const res = await fetch(`/api/addresses/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isDefault: true }),
+      });
+      if (res.ok) {
+        setAddresses((prev) =>
+          prev.map((a) => ({ ...a, isDefault: a.id === id }))
+        );
+      }
+    } catch {
+      toast({ title: "Hata", variant: "destructive" });
+    }
   };
 
   const handleFormClose = (open: boolean) => {
     setIsFormOpen(open);
-    if (!open) {
-      setEditingAddress(null);
-    }
-  };
-
-  const handleFormSuccess = () => {
-    fetchAddresses();
+    if (!open) setEditingAddress(null);
   };
 
   const canAddMore = addresses.length < 5;
@@ -77,57 +87,98 @@ export default function AdreslerimPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-aegean-600" />
+        <Loader2 className="h-6 w-6 animate-spin text-v2-text-muted" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div>
+      {/* Header */}
+      <div className="flex items-start justify-between pb-8 border-b border-v2-border-subtle">
         <div>
-          <h1 className="text-2xl font-accent font-semibold text-leather-800">
+          <h1 className="font-serif font-light text-3xl md:text-4xl text-v2-text-primary">
             Adreslerim
           </h1>
-          <p className="text-leather-500 mt-1">
-            {addresses.length} / 5 adres kayıtlı
+          <p className="text-v2-text-muted font-inter text-sm mt-2">
+            {addresses.length} / 5 adres
           </p>
         </div>
         {canAddMore && (
-          <Button onClick={() => setIsFormOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Yeni Adres Ekle
-          </Button>
+          <button
+            onClick={() => setIsFormOpen(true)}
+            className="border border-v2-text-primary text-v2-text-primary bg-transparent hover:bg-v2-text-primary hover:text-white px-6 py-2.5 font-inter text-xs tracking-wide uppercase transition-colors rounded-none"
+          >
+            + Yeni Adres Ekle
+          </button>
         )}
       </div>
 
+      {/* Address List */}
       {addresses.length > 0 ? (
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="mt-8">
           {addresses.map((address) => (
-            <AddressCard
+            <div
               key={address.id}
-              address={address}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              onSetDefault={handleSetDefault}
-            />
+              className="py-6 border-b border-v2-border-subtle"
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  {address.isDefault && (
+                    <span className="inline-block font-inter text-[10px] uppercase tracking-widest text-v2-accent bg-v2-accent/10 px-2 py-0.5 mb-2">
+                      Varsayilan
+                    </span>
+                  )}
+                  <p className="font-inter text-sm font-medium text-v2-text-primary">
+                    {address.firstName} {address.lastName}
+                  </p>
+                  <p className="font-inter text-sm text-v2-text-muted mt-1">
+                    {address.address}
+                  </p>
+                  <p className="font-inter text-sm text-v2-text-muted">
+                    {address.district} / {address.city}
+                  </p>
+                  <p className="font-inter text-sm text-v2-text-muted">
+                    {address.phone}
+                  </p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => handleEdit(address)}
+                    className="font-inter text-xs text-v2-text-muted hover:text-v2-text-primary underline underline-offset-4 transition-colors"
+                  >
+                    Duzenle
+                  </button>
+                  {!address.isDefault && (
+                    <button
+                      onClick={() => handleSetDefault(address.id)}
+                      className="font-inter text-xs text-v2-text-muted hover:text-v2-text-primary underline underline-offset-4 transition-colors"
+                    >
+                      Varsayilan yap
+                    </button>
+                  )}
+                  <button
+                    onClick={() => handleDelete(address.id)}
+                    className="font-inter text-xs text-v2-text-muted hover:text-v2-text-primary underline underline-offset-4 transition-colors"
+                  >
+                    Sil
+                  </button>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-sand-200 p-12 text-center">
-          <div className="h-16 w-16 rounded-full bg-sand-100 flex items-center justify-center mx-auto mb-4">
-            <MapPin className="h-8 w-8 text-leather-400" />
-          </div>
-          <h2 className="text-lg font-semibold text-leather-800 mb-2">
-            Henüz adres eklemediniz
-          </h2>
-          <p className="text-leather-500 mb-6">
-            Siparişlerinizi daha hızlı tamamlamak için adres ekleyin.
+        <div className="py-12">
+          <p className="font-inter text-sm text-v2-text-muted">
+            Henuz adres eklemediniz.
           </p>
-          <Button onClick={() => setIsFormOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            İlk Adresinizi Ekleyin
-          </Button>
+          <button
+            onClick={() => setIsFormOpen(true)}
+            className="font-inter text-sm text-v2-text-primary underline underline-offset-4 hover:text-v2-text-muted transition-colors mt-3 inline-block"
+          >
+            Ilk adresinizi ekleyin &rarr;
+          </button>
         </div>
       )}
 
@@ -135,7 +186,7 @@ export default function AdreslerimPage() {
         open={isFormOpen}
         onOpenChange={handleFormClose}
         address={editingAddress}
-        onSuccess={handleFormSuccess}
+        onSuccess={fetchAddresses}
       />
     </div>
   );
