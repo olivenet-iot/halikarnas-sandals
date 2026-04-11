@@ -4,7 +4,7 @@
 > 
 > **Rapor Tarihi:** 2026-04-11  
 > **Rapor Kapsami:** Tum kaynak kodu, veritabani semasi, API katmani, frontend, admin paneli, is mantigi  
-> **Son Guncelleme:** V2 tasarim sistemi migrasyonu tamamlandi (anasayfa, listeleme, urun detay, cart drawer, checkout, yardimci sayfalar, hikayemiz, navbar, footer). Yeni Gelenler ve Koleksiyonlar feature'lari silindi. Prisma schema guncellendi.
+> **Son Guncelleme:** V2 tasarim sistemi migrasyonu tamamlandi (anasayfa, listeleme, urun detay, cart drawer, checkout, yardimci sayfalar, hikayemiz, hesabim, navbar, footer). Yeni Gelenler ve Koleksiyonlar feature'lari silindi. Prisma schema guncellendi. V2 form component'leri shared dosyaya cikarildi (`src/components/ui/v2-form.tsx`).
 
 ---
 
@@ -34,7 +34,7 @@
 
 ## 1. Executive Summary
 
-**Halikarnas Sandals**, Bodrum/Turkiye merkezli bir el yapimi hakiki deri sandalet markasinin tam islevsel e-ticaret platformudur. Next.js 14 App Router, TypeScript, Prisma ORM ve PostgreSQL kullanilarak tek bir monolitik repo icinde gelistirilmistir. Platform; urun katalogu, sepet (drawer bazli), odeme (su an sadece kapida odeme), siparis takibi, kullanici hesaplari, favori listesi, kupon sistemi, admin paneli (urun/siparis/kullanici/kategori/banner/sayfa/kupon yonetimi), PDF fatura uretimi, email bildirimleri (Resend), gorsel yonetimi (Cloudinary) ve tam Turkce lokalizasyon icermektedir. V2 tasarim sistemi ile anasayfa, listeleme, urun detay, cart drawer, checkout, yardimci sayfalar ve hikayemiz tamamlanmistir.
+**Halikarnas Sandals**, Bodrum/Turkiye merkezli bir el yapimi hakiki deri sandalet markasinin tam islevsel e-ticaret platformudur. Next.js 14 App Router, TypeScript, Prisma ORM ve PostgreSQL kullanilarak tek bir monolitik repo icinde gelistirilmistir. Platform; urun katalogu, sepet (drawer bazli), odeme (su an sadece kapida odeme), siparis takibi, kullanici hesaplari, favori listesi, kupon sistemi, admin paneli (urun/siparis/kullanici/kategori/banner/sayfa/kupon yonetimi), PDF fatura uretimi, email bildirimleri (Resend), gorsel yonetimi (Cloudinary) ve tam Turkce lokalizasyon icermektedir. V2 tasarim sistemi ile anasayfa, listeleme, urun detay, cart drawer, checkout, yardimci sayfalar, hikayemiz ve hesabim tamamlanmistir.
 
 ### Tek Cumle
 Turkiye pazarina yonelik, luks tasarimli, tam islevsel bir el yapimi sandalet e-ticaret platformu.
@@ -84,8 +84,8 @@ halikarnas-sandals/
 │   │   │   ├── siparis/[token]/    # Siparis onay
 │   │   │   ├── siparis-tamamlandi/[token]/  # Siparis basarili
 │   │   │   ├── siparis-takip/      # Siparis takip
-│   │   │   ├── hesabim/            # Kullanici hesap paneli (nested routes)
-│   │   │   │   ├── layout.tsx      # AccountSidebar ile layout
+│   │   │   ├── hesabim/            # Kullanici hesap paneli (V2, nested routes)
+│   │   │   │   ├── layout.tsx      # AccountSidebar ile layout (V2)
 │   │   │   │   ├── siparislerim/   # Siparislerim
 │   │   │   │   ├── adreslerim/     # Adreslerim
 │   │   │   │   ├── favorilerim/    # Favoriler
@@ -529,9 +529,9 @@ Root Layout (src/app/layout.tsx)
 │   ├── <main> (pt-16 md:pt-20 — navbar yuksekligi icin padding)
 │   ├── Footer (V2: bg-v2-bg-dark #2A2A26, entegre newsletter, 3 sutun)
 │   │
-│   └── hesabim/ Layout (src/app/(shop)/hesabim/layout.tsx)
-│       ├── AccountSidebar (sol taraf menu)
-│       └── Icerik alani
+│   └── hesabim/ Layout (src/app/(shop)/hesabim/layout.tsx) — V2
+│       ├── AccountSidebar (text-only, bronz left-border active, no icons)
+│       └── 12-col grid icerik alani (lg:col-span-9)
 │
 ├── (auth) Layout (src/app/(auth)/layout.tsx)
 │   ├── Minimal tasarim — Navbar/Footer yok
@@ -624,20 +624,20 @@ Component'ler **feature-based** (ozellik bazli) yapilandirilmis:
 | `PaymentForm` | `PaymentForm.tsx` | V2 odeme — border-b list items (card-style radio yerine), kredi karti gizli (iyzico geldiginde eklenecek) |
 | `OrderReview` | `OrderReview.tsx` | V2 siparis onay — border-b section'lar + "Duzenle" linkleri, native checkbox, SSL yesil bandi silindi, final buton dolu siyah |
 
-#### `src/components/account/` (10 dosya) — Kullanici hesabi
+#### `src/components/account/` (10 dosya) — Kullanici hesabi (V2)
 
 | Component | Dosya | Amac |
 |-----------|-------|------|
-| `AccountSidebar` | `AccountSidebar.tsx` | Hesap menu sidebar'i |
-| `AccountStats` | `AccountStats.tsx` | Kullanici istatistik kartlari |
-| `ProfileForm` | `ProfileForm.tsx` | Profil duzenleme formu (ad, telefon, email) |
-| `PasswordChangeForm` | `PasswordChangeForm.tsx` | Sifre degistirme formu |
-| `AddressForm` | `AddressForm.tsx` | Adres ekleme/duzenleme formu |
-| `AddressCard` | `AddressCard.tsx` | Adres karti — duzenle/sil butonlari |
-| `OrderCard` | `OrderCard.tsx` | Siparis ozet karti |
-| `OrderTimeline` | `OrderTimeline.tsx` | Siparis durum zaman cizelgesi |
-| `WishlistCard` | `WishlistCard.tsx` | Favori urun karti |
-| `DeleteAccountDialog` | `DeleteAccountDialog.tsx` | Hesap silme onay dialogu |
+| `AccountSidebar` | `AccountSidebar.tsx` | Hesap menu sidebar'i (V2: text-only, bronz left-border active, no icons) |
+| `AccountStats` | `AccountStats.tsx` | ~~Kullanici istatistik kartlari~~ (V2'de artik kullanilmiyor, dashboard'dan silindi) |
+| `ProfileForm` | `ProfileForm.tsx` | Profil duzenleme formu (V2: V2Input, no avatar) |
+| `PasswordChangeForm` | `PasswordChangeForm.tsx` | Sifre degistirme formu (V2: V2Input, eye toggle, accent strength) |
+| `AddressForm` | `AddressForm.tsx` | Adres ekleme/duzenleme formu (V2: V2Input/V2Select/V2Textarea, Dialog) |
+| `AddressCard` | `AddressCard.tsx` | ~~Adres karti~~ (V2'de artik kullanilmiyor, inline list'e gecildi) |
+| `OrderCard` | `OrderCard.tsx` | Siparis ozet karti (admin panelinde hala kullaniliyor olabilir) |
+| `OrderTimeline` | `OrderTimeline.tsx` | ~~Siparis durum zaman cizelgesi~~ (V2'de prose liste ile degistirildi) |
+| `WishlistCard` | `WishlistCard.tsx` | ~~Favori urun karti~~ (V2'de ProductCardV2 + X butonu ile degistirildi) |
+| `DeleteAccountDialog` | `DeleteAccountDialog.tsx` | Hesap silme onay dialogu (V2: underline trigger, no red, v2 modal) |
 
 #### `src/components/admin/` (16+ dosya) — Admin paneli
 
@@ -669,7 +669,15 @@ Component'ler **feature-based** (ozellik bazli) yapilandirilmis:
 | `ForgotPasswordForm` | `ForgotPasswordForm.tsx` | Sifre sifirlama istegi formu |
 | `ResetPasswordForm` | `ResetPasswordForm.tsx` | Token ile sifre sifirlama formu |
 
-#### `src/components/ui/` (27 dosya) — shadcn/ui base componentleri
+#### `src/components/ui/` (28 dosya) — shadcn/ui base componentleri + V2 form wrapper'lari
+
+**V2 Form Component'leri (`v2-form.tsx`):**
+- `V2Input` — forwardRef underline input (label + error + required)
+- `V2Select` — forwardRef underline select (custom SVG arrow)
+- `V2Textarea` — forwardRef underline textarea (min-h-[80px], resize-none)
+- Kullanim: checkout (ShippingForm), hesabim (AddressForm, ProfileForm, PasswordChangeForm)
+
+**shadcn/ui base:**
 
 | Component | Dosya |
 |-----------|-------|
@@ -1001,7 +1009,7 @@ interface UIState {
 
 | Token | Hex | Durum |
 |-------|-----|-------|
-| `luxury-primary` | `#1e3a3a` | Deprecated — sadece legacy sayfalarda (admin, auth, hesabim) |
+| `luxury-primary` | `#1e3a3a` | Deprecated — sadece legacy sayfalarda (admin, auth) |
 | `luxury-gold` | `#c9a962` | Deprecated — v2-accent kullanin |
 | `luxury-terracotta` | `#e07d4c` | Deprecated |
 | `luxury-cream` | `#faf9f6` | Deprecated — v2-bg-primary kullanin |
@@ -2604,7 +2612,7 @@ npm run db:studio      # npx prisma studio
 **HALA ACIK:**
 1. **Dynamic category pages V2 migrasyonu:** `/kadin/[category]` ve `/erkek/[category]` hala legacy CategoryPage, ProductCard, ProductGrid, FilterSidebar, SortSelect kullaniyor — V2'ye gecirilmeli
 2. **Auth sayfalari V2 redesign:** Giris, kayit, sifremi-unuttum, sifre-sifirla — eski tasarimda
-3. **Hesabim sayfalari V2 redesign:** Tum hesap alt sayfalari — eski tasarimda
+3. ~~**Hesabim sayfalari V2 redesign:**~~ → **TAMAMLANDI** (commit 6d65bf4)
 4. **Admin paneli LEGACY:** V2 kapsam disinda — launch sonrasi refactor edilebilir
 5. **Deprecated renk token'lari temizligi:** Tum sayfalar V2'ye gectikten sonra tailwind.config.ts'deki eski token'lar silinmeli
 6. **Gercek urun fotografciligi:** Su an Unsplash/Cloudinary placeholder gorseller kullaniliyor — profesyonel cekimler gerekli
@@ -2658,7 +2666,7 @@ Tum API route'lari ayni pattern'i takip eder:
 
 ### 16.4 Tutarsizliklar
 
-1. **Legacy vs V2 renk token'lari:** V2 sayfalari `v2-*` token kullanirken, legacy sayfalar (admin, auth, hesabim, dynamic [category]) hala `luxury-*`, `sand-*`, `aegean-*` kullaniyor. Codebase'de iki farkli tasarim dili var.
+1. **Legacy vs V2 renk token'lari:** V2 sayfalari `v2-*` token kullanirken, legacy sayfalar (admin, auth, dynamic [category]) hala `luxury-*`, `sand-*`, `aegean-*` kullaniyor. Codebase'de iki farkli tasarim dili var.
 2. **Guest vs Auth cart:** Client-side Zustand store ve server-side Cart modeli arasinda tam senkronizasyon yok
 3. **Shipping cost DB vs constants:** `constants.ts`'de varsayilan degerler var, ama runtime'da `ShippingConfigProvider` DB'den aliyor. Tutarsizlik riski azaldi ama constants.ts'deki degerler fallback olarak korunuyor.
 
@@ -2673,7 +2681,7 @@ V2 migrasyonu asagidaki stratejiyi takip ediyor:
 
 **Kalan riskler:**
 - Legacy token'lar hala tailwind.config'de oldugu icin yanlis component'te kullanilma riski var
-- V2 ve legacy sayfa arasinda geciste gorsel uyumsuzluk kullaniciya hissedilir (navbar/footer V2, ama auth/hesabim legacy)
+- V2 ve legacy sayfa arasinda geciste gorsel uyumsuzluk kullaniciya hissedilir (navbar/footer V2, ama auth sayfalari legacy)
 
 ---
 
@@ -2811,7 +2819,7 @@ Tum email template'leri HTML formatinda, inline CSS ile stilize edilmis:
 | Gorsel Yonetimi | %80 | Cloudinary entegre, upload calisiyor |
 | Favori Listesi | %100 | API + UI + server sync |
 | SEO | %90 | Metadata, JSON-LD, structured data |
-| V2 Tasarim Migrasyonu | %85 | Anasayfa, listeleme (root), urun detay, cart drawer, checkout, yardimci sayfalar, hikayemiz, navbar, footer tamamlandi; auth, hesabim, dynamic [category] bekleniyor |
+| V2 Tasarim Migrasyonu | %90 | Anasayfa, listeleme (root), urun detay, cart drawer, checkout, yardimci sayfalar, hikayemiz, hesabim, navbar, footer tamamlandi; auth, dynamic [category] bekleniyor |
 | **Odeme Entegrasyonu** | **%0** | **KRITIK — Henuz baslanmamis** |
 | Test | %0 | Hicbir test yok |
 | CI/CD | %0 | Pipeline yok |
@@ -2847,7 +2855,7 @@ Tum email template'leri HTML formatinda, inline CSS ile stilize edilmis:
 | `/sepet` | **SILINDI** | Drawer kullaniliyor |
 | `/koleksiyonlar`, `/yeni-gelenler`, `/hakkimizda` | **SILINDI** | Feature'lar komple kaldirildi |
 | Auth (giris, kayit, sifremi-unuttum, sifre-sifirla) | LEGACY | V2 migrasyonu bekleniyor |
-| Hesabim/* (siparislerim, adreslerim, favorilerim, bilgilerim, sifre-degistir) | LEGACY | V2 migrasyonu bekleniyor |
+| Hesabim/* (siparislerim, adreslerim, favorilerim, bilgilerim, sifre-degistir) | **V2 TAMAMLANDI** | Sidebar text-only (bronz left-border), flat list layout, V2Input/V2Select form'lar, card wrapper'lar silindi, kirmizi uyari yok, ProductCardV2 favorilerde |
 | Admin Paneli | LEGACY | V2 kapsam disinda — launch sonrasi refactor edilebilir |
 
 ### 18.2 Component Ciftleri (Eski / Yeni)
@@ -2888,16 +2896,16 @@ Urun detay sayfasi V2 migrasyonunda su ogeler kaldirildi:
 | `CheckoutPage` | Card wrapper, HALIKARNAS header + trust footer | Grid 12-col (7/5 split), card wrapper yok, header/footer silindi |
 | `CheckoutSummary` | Card wrapper, yesil renkler, guvenlik badge | Card yok, mobile accordion, yesil → bronz accent, badge silindi |
 | `PaymentForm` | Card-style radio, MagneticButton | Border-b list items, kredi karti gizlendi (iyzico geldiginde), outline/underline butonlar |
-| `ShippingForm` | LuxuryInput/Select/Textarea | V2Input/V2Select/V2Textarea underline wrappers (forwardRef korundu), altin asterisk → bronz |
+| `ShippingForm` | LuxuryInput/Select/Textarea | V2Input/V2Select/V2Textarea underline wrappers (forwardRef korundu), altin asterisk → bronz. **Not:** Tur 5'te bu wrapper'lar `src/components/ui/v2-form.tsx` shared dosyasina cikarildi. |
 | `OrderReview` | 3 card, Radix Checkbox, SSL yesil bandi | Border-b section'lar + "Duzenle" linkleri, native checkbox, SSL silindi, final buton dolu siyah |
 
 ### 18.5 Sonraki Turlarda Beklenenler
 
 1. Dynamic category pages V2 migrasyonu (`/kadin/[category]`, `/erkek/[category]`)
 2. Auth sayfalari (giris, kayit, sifremi-unuttum, sifre-sifirla) V2 redesign
-3. Hesabim sayfalari V2 redesign
-4. Deprecated renk token'larinin tailwind.config.ts'den kaldirilmasi
-5. Kalan legacy shop component temizligi (5 dosya — dynamic [category] V2'ye gectikten sonra)
+3. Deprecated renk token'larinin tailwind.config.ts'den kaldirilmasi
+4. Kalan legacy shop component temizligi (5 dosya — dynamic [category] V2'ye gectikten sonra)
+5. Kullanilmayan account component'lerinin silinmesi (AccountStats, OrderTimeline, WishlistCard, AddressCard)
 
 ### 18.6 V2 Tasarim Prensipleri
 
@@ -2951,10 +2959,25 @@ Bu rapor guncellemesi dort buyuk refactor turunu kapsar:
 - Kredi karti secenegi gizlendi (iyzico geldiginde aktif edilecek)
 - Mobile accordion siparis ozeti
 
-**Toplam etki:** 150+ dosya degisti/silindi, codebase'de 50+ legacy component fiziksel olarak kaldirildi, 1 Prisma migration uygulandi. V2 tasarim sistemi anasayfa, listeleme, urun detay, cart, checkout, yardimci sayfalar ve hikayemiz icin tamamlandi. Kalan legacy alanlar: auth, hesabim, admin paneli, dynamic category route'lari.
+**Tur 5 — Hesabim V2 (commit 6d65bf4)**
+- 16 dosya degisti, 1426 ekleme, 1459 silme
+- V2Input/V2Select/V2Textarea shared component'e cikarildi (`src/components/ui/v2-form.tsx`)
+- AccountSidebar: icon'lar silindi, text-only nav, bronz left-border active state, muted underline "Cikis yap"
+- Layout: breadcrumb silindi, 12-col grid, bg-v2-bg-primary, sticky sidebar
+- Dashboard: AccountStats silindi, flat order rows, ProductCardV2 favoriler
+- Siparislerim: OrderCard kullanilmiyor, flat border-b satirlar
+- Siparis detay: OrderTimeline kaldirildi, sectioned layout + prose status history (bronz dot)
+- Adreslerim: AddressCard kaldirildi, inline list + V2 form modal
+- Favorilerim: WishlistCard kaldirildi, inline ProductCardV2 + X kaldirma butonu
+- Bilgilerim: avatar silindi, Tehlikeli Bolge silindi, underline hesap silme linki
+- Sifre Degistir: V2Input + eye toggle, password strength v2-accent ile
+- DeleteAccountDialog: kirmizi yok, underline trigger, v2 modal stili
+- ShippingForm.tsx artik shared v2-form.tsx'den import ediyor
 
-**Launch oncesi kritik path:** iyzico entegrasyonu (kredi karti odeme). Diger legacy alanlar (auth, hesabim, admin) islevsel ama V2 disinda — launch sonrasi refactor edilebilir.
+**Toplam etki (5 tur):** 170+ dosya degisti/silindi, codebase'de 50+ legacy component fiziksel olarak kaldirildi, 1 Prisma migration uygulandi. V2 tasarim sistemi anasayfa, listeleme, urun detay, cart, checkout, yardimci sayfalar, hikayemiz ve hesabim icin tamamlandi. Kalan legacy alanlar: auth, admin paneli, dynamic category route'lari.
+
+**Launch oncesi kritik path:** iyzico entegrasyonu (kredi karti odeme). Diger legacy alanlar (auth, admin) islevsel ama V2 disinda — launch sonrasi refactor edilebilir.
 
 ---
 
-*Bu rapor, Halikarnas Sandals codebase'inin kapsamli bir analizini icermektedir. 254 dosya incelenmis, tum modeller, API endpoint'leri, componentler, state yonetimi, is mantigi ve konfigurasyonlar detayli olarak belgelenmistir. Son guncelleme: 2026-04-11, V2 tasarim sistemi migrasyonu (4 tur tamamlandi).*
+*Bu rapor, Halikarnas Sandals codebase'inin kapsamli bir analizini icermektedir. 254 dosya incelenmis, tum modeller, API endpoint'leri, componentler, state yonetimi, is mantigi ve konfigurasyonlar detayli olarak belgelenmistir. Son guncelleme: 2026-04-11, V2 tasarim sistemi migrasyonu (5 tur tamamlandi, hesabim dahil).*
