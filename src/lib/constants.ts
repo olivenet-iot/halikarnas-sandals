@@ -40,14 +40,6 @@ export const mainNavigation = [
       { title: "Spor Sandalet", href: "/erkek/spor-sandalet" },
     ],
   },
-  {
-    title: "Koleksiyonlar",
-    href: "/koleksiyonlar",
-  },
-  {
-    title: "Hakkımızda",
-    href: "/hakkimizda",
-  },
 ];
 
 export const footerNavigation = {
@@ -56,26 +48,21 @@ export const footerNavigation = {
     links: [
       { title: "Kadın", href: "/kadin" },
       { title: "Erkek", href: "/erkek" },
-      { title: "Yeni Gelenler", href: "/yeni-gelenler" },
-      { title: "İndirimler", href: "/indirimler" },
     ],
   },
   customer: {
-    title: "Müşteri Hizmetleri",
+    title: "Yardım",
     links: [
-      { title: "İletişim", href: "/iletisim" },
-      { title: "SSS", href: "/sikca-sorulan-sorular" },
-      { title: "Kargo ve Teslimat", href: "/kargo-teslimat" },
-      { title: "İade ve Değişim", href: "/iade-degisim" },
+      { title: "SSS", href: "/sss" },
+      { title: "Sipariş Takip", href: "/siparis-takip" },
+      { title: "Beden Rehberi", href: "/beden-rehberi" },
     ],
   },
   company: {
     title: "Kurumsal",
     links: [
-      { title: "Hakkımızda", href: "/hakkimizda" },
-      { title: "Gizlilik Politikası", href: "/gizlilik-politikasi" },
-      { title: "Kullanım Koşulları", href: "/kullanim-kosullari" },
-      { title: "KVKK", href: "/kvkk" },
+      { title: "Hikayemiz", href: "/hikayemiz" },
+      { title: "İletişim", href: "/iletisim" },
     ],
   },
 };
@@ -187,32 +174,6 @@ export const imageSizes = {
   hero: { width: 1920, height: 1080 }, // 16:9 ratio
 };
 
-// Navigation Items (for Navbar and MobileMenu)
-export const NAV_ITEMS = [
-  {
-    label: "Kadın",
-    href: "/kadin",
-    children: [
-      { label: "Tüm Ürünler", href: "/kadin" },
-      { label: "Bodrum Sandalet", href: "/kadin/bodrum-sandalet" },
-      { label: "Bodrum Terlik", href: "/kadin/bodrum-terlik" },
-      { label: "Takunyalar", href: "/kadin/takunyalar" },
-    ],
-  },
-  {
-    label: "Erkek",
-    href: "/erkek",
-    children: [
-      { label: "Tüm Ürünler", href: "/erkek" },
-      { label: "Bodrum Sandalet", href: "/erkek/bodrum-sandalet" },
-      { label: "Bodrum Terlik", href: "/erkek/bodrum-terlik" },
-    ],
-  },
-  {
-    label: "Hakkımızda",
-    href: "/hakkimizda",
-  },
-];
 
 // Admin form için kategori seçenekleri
 export const CATEGORY_OPTIONS = {

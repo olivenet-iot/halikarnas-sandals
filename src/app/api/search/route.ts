@@ -116,7 +116,6 @@ export async function GET(request: NextRequest) {
         .filter((v) => v.color && v.colorHex)
         .map((v) => ({ name: v.color!, hex: v.colorHex! })),
       categorySlug: product.category?.slug || null,
-      isNew: product.isNew,
       isSale: product.compareAtPrice ? Number(product.compareAtPrice) > Number(product.basePrice) : false,
       isBestseller: product.isBestSeller,
       category: product.category,

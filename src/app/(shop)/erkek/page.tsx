@@ -54,7 +54,6 @@ async function getProducts() {
       sizes: Array.from(new Set(product.variants.map((v) => v.size))),
       categorySlug: product.category?.slug || null,
       createdAt: product.createdAt.toISOString(),
-      isNew: product.isNew,
       isSale: product.compareAtPrice ? Number(product.compareAtPrice) > Number(product.basePrice) : false,
       isBestseller: product.isBestSeller,
     }));

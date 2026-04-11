@@ -10,7 +10,6 @@ import {
   RefreshCw,
   Tag,
   FileText,
-  Layers,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
@@ -33,7 +32,6 @@ const ACTION_ICONS: Record<string, React.ComponentType<{ className?: string }>> 
   USER: User,
   SETTINGS: Settings,
   CATEGORY: Tag,
-  COLLECTION: Layers,
   PAGE: FileText,
   STOCK: Package,
   BULK: Package,
@@ -67,9 +65,6 @@ const ACTION_TRANSLATIONS: Record<string, string> = {
   CATEGORY_CREATE: "Kategori oluşturuldu",
   CATEGORY_UPDATE: "Kategori güncellendi",
   CATEGORY_DELETE: "Kategori silindi",
-  COLLECTION_CREATE: "Koleksiyon oluşturuldu",
-  COLLECTION_UPDATE: "Koleksiyon güncellendi",
-  COLLECTION_DELETE: "Koleksiyon silindi",
   SETTINGS_UPDATE: "Ayarlar güncellendi",
   COUPON_CREATE: "Kupon oluşturuldu",
   COUPON_UPDATE: "Kupon güncellendi",

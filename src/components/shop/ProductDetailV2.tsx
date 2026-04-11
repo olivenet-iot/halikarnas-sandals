@@ -50,12 +50,10 @@ interface Product {
   soleType?: string | null;
   heelHeight?: string | null;
   careInstructions?: string | null;
-  isNew: boolean;
   isBestseller: boolean;
   images: ProductImage[];
   variants: ProductVariant[];
   category: { name: string; slug: string } | null;
-  collection: { name: string; slug: string } | null;
   reviews: {
     id: string;
     rating: number;

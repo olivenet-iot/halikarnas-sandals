@@ -1,29 +1,21 @@
 "use client";
 
-import { useState, useEffect, useMemo, CSSProperties } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
   Search,
   ShoppingBag,
   Heart,
-  ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cart-store";
 import { useUIStore } from "@/stores/ui-store";
-import { useScrollStore } from "@/stores/scroll-store";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useHydrated } from "@/hooks/useHydrated";
 import { UserMenu } from "./UserMenu";
 import { cn } from "@/lib/utils";
-import { NAV_ITEMS } from "@/lib/constants";
-
-interface NavbarProps {
-  variant?: "default" | "cinematic";
-}
 
 /* ═══════════════════════════════════════════════
  * V2 DEFAULT NAVBAR
@@ -148,7 +140,7 @@ function NavbarDefault() {
               </Link>
             </Button>
 
-            <UserMenu variant="default" />
+            <UserMenu />
 
             <Button
               variant="ghost"
@@ -172,219 +164,8 @@ function NavbarDefault() {
 }
 
 /* ═══════════════════════════════════════════════
- * CINEMATIC NAVBAR — preserved as-is for /koleksiyonlar
+ * EXPORTED NAVBAR
  * ═══════════════════════════════════════════════ */
-function NavbarCinematic() {
-  const pathname = usePathname();
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const hydrated = useHydrated();
-
-  const { openCart, getTotalItems } = useCartStore();
-  const { openMobileMenu, openSearch } = useUIStore();
-  const { isAuthenticated } = useCurrentUser();
-
-  const navbarTheme = useScrollStore((state) => state.navbarTheme);
-
-  const cartItemCount = hydrated ? getTotalItems() : 0;
-
-  const cinematicTextStyle: CSSProperties = useMemo(() => {
-    if (navbarTheme === "light") {
-      return { textShadow: "0 1px 2px rgba(0, 0, 0, 0.1)" };
-    }
-    return {
-      textShadow: `
-        0 0 20px rgba(255, 255, 255, 0.5),
-        0 0 40px rgba(255, 255, 255, 0.3),
-        0 2px 4px rgba(0, 0, 0, 0.5)
-      `,
-    };
-  }, [navbarTheme]);
-
-  const cinematicActiveStyle: CSSProperties = useMemo(() => {
-    if (navbarTheme === "light") {
-      return { textShadow: "0 1px 2px rgba(184, 134, 11, 0.3)" };
-    }
-    return {
-      textShadow: `
-        0 0 20px rgba(184, 134, 11, 0.6),
-        0 0 40px rgba(184, 134, 11, 0.3),
-        0 2px 4px rgba(0, 0, 0, 0.5)
-      `,
-    };
-  }, [navbarTheme]);
-
-  const cinematicIconStyle: CSSProperties = useMemo(() => {
-    if (navbarTheme === "light") return {};
-    return {
-      filter: `drop-shadow(0 0 8px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 16px rgba(255, 255, 255, 0.2))`,
-    };
-  }, [navbarTheme]);
-
-  const textClasses = "text-white transition-all duration-300 font-medium";
-  const iconClasses = "text-white hover:text-white/80 transition-all duration-300";
-
-  const getNavItemClasses = (href: string) => {
-    const isActive = pathname === href || pathname.startsWith(href + "/");
-    if (isActive) return "text-[#B8860B] border-b border-[#B8860B] pb-1";
-    return cn(textClasses, "hover:opacity-70");
-  };
-
-  return (
-    <header className="fixed top-0 left-0 right-0 z-50 py-5" style={{ background: "transparent" }}>
-      <nav className="container-luxury transition-all duration-500">
-        <div className="flex items-center justify-between h-14 md:h-16">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn("md:hidden", iconClasses)}
-            onClick={openMobileMenu}
-            aria-label="Menüyü aç"
-            style={cinematicIconStyle}
-          >
-            <Menu className="h-6 w-6" />
-          </Button>
-
-          <Link
-            href="/"
-            className="font-display text-xl md:text-2xl tracking-[0.15em] text-white hover:opacity-80 transition-all duration-300"
-            style={cinematicTextStyle}
-          >
-            HALIKARNAS
-          </Link>
-
-          <div className="hidden md:flex items-center gap-10">
-            {NAV_ITEMS.map((item) => (
-              <div
-                key={item.href}
-                className="relative"
-                onMouseEnter={() => item.children && setActiveDropdown(item.href)}
-                onMouseLeave={() => setActiveDropdown(null)}
-              >
-                <Link
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-1 text-sm font-medium tracking-wide uppercase transition-all duration-300",
-                    getNavItemClasses(item.href)
-                  )}
-                  style={
-                    pathname === item.href || pathname.startsWith(item.href + "/")
-                      ? cinematicActiveStyle
-                      : cinematicTextStyle
-                  }
-                >
-                  {item.label}
-                  {item.children && (
-                    <ChevronDown
-                      className={cn(
-                        "h-4 w-4 transition-transform duration-300",
-                        activeDropdown === item.href && "rotate-180"
-                      )}
-                    />
-                  )}
-                </Link>
-
-                <AnimatePresence>
-                  {item.children && activeDropdown === item.href && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-                      className="absolute top-full left-1/2 -translate-x-1/2 pt-4"
-                    >
-                      <div
-                        className={cn(
-                          "py-3 min-w-[200px] shadow-lg",
-                          navbarTheme === "light"
-                            ? "bg-white/95 backdrop-blur-md border border-stone-200"
-                            : "bg-black/80 backdrop-blur-md border border-white/10"
-                        )}
-                      >
-                        {item.children.map((child) => (
-                          <Link
-                            key={child.href}
-                            href={child.href}
-                            className={cn(
-                              "block px-6 py-2.5 text-sm tracking-wide transition-all duration-200",
-                              navbarTheme === "light"
-                                ? pathname === child.href
-                                  ? "bg-stone-100 text-[#B8860B]"
-                                  : "text-stone-700 hover:bg-stone-100 hover:text-stone-900"
-                                : pathname === child.href
-                                  ? "bg-white/10 text-[#B8860B]"
-                                  : "text-white/80 hover:bg-white/10 hover:text-white"
-                            )}
-                          >
-                            {child.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={openSearch}
-              aria-label="Ara"
-              className={iconClasses}
-              style={cinematicIconStyle}
-            >
-              <Search className="h-5 w-5" />
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              asChild
-              className={cn("hidden sm:flex", iconClasses)}
-              style={cinematicIconStyle}
-            >
-              <Link
-                href={isAuthenticated ? "/hesabim/favorilerim" : "/giris?callbackUrl=/hesabim/favorilerim"}
-                aria-label="Favorilerim"
-              >
-                <Heart className="h-5 w-5" />
-              </Link>
-            </Button>
-
-            <UserMenu variant="cinematic" />
-
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={openCart}
-              aria-label="Sepetim"
-              className={cn("relative", iconClasses)}
-              style={cinematicIconStyle}
-            >
-              <ShoppingBag className="h-5 w-5" />
-              {cartItemCount > 0 && (
-                <motion.span
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-luxury-gold text-luxury-primary text-xs flex items-center justify-center font-medium"
-                >
-                  {cartItemCount > 99 ? "99+" : cartItemCount}
-                </motion.span>
-              )}
-            </Button>
-          </div>
-        </div>
-      </nav>
-    </header>
-  );
-}
-
-/* ═══════════════════════════════════════════════
- * EXPORTED NAVBAR — routes to correct variant
- * ═══════════════════════════════════════════════ */
-export function Navbar({ variant = "default" }: NavbarProps) {
-  if (variant === "cinematic") return <NavbarCinematic />;
+export function Navbar() {
   return <NavbarDefault />;
 }

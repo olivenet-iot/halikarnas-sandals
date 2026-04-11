@@ -32,14 +32,12 @@ const productSchema = z.object({
   gender: z.enum(["KADIN", "ERKEK", "UNISEX"]).optional().nullable(),
   status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]).optional(),
   isFeatured: z.boolean().optional(),
-  isNew: z.boolean().optional(),
   isBestSeller: z.boolean().optional(),
   material: z.string().optional().nullable(),
   heelHeight: z.string().optional().nullable(),
   soleType: z.string().optional().nullable(),
   metaTitle: z.string().optional().nullable(),
   metaDescription: z.string().optional().nullable(),
-  collectionIds: z.array(z.string()).optional(),
   variants: z.array(variantSchema).optional(),
   images: z.array(imageSchema).optional(),
 });
@@ -200,21 +198,6 @@ export async function PATCH(
         });
       }
 
-      // Update collections if provided
-      if (validatedData.collectionIds !== undefined) {
-        // Delete old collection associations and create new ones
-        await tx.collectionProduct.deleteMany({ where: { productId: id } });
-        if (validatedData.collectionIds.length > 0) {
-          await tx.collectionProduct.createMany({
-            data: validatedData.collectionIds.map((collectionId, index) => ({
-              productId: id,
-              collectionId,
-              position: index,
-            })),
-          });
-        }
-      }
-
       // Update product
       return tx.product.update({
         where: { id },
@@ -230,7 +213,6 @@ export async function PATCH(
           gender: validatedData.gender,
           status: validatedData.status,
           isFeatured: validatedData.isFeatured,
-          isNew: validatedData.isNew,
           isBestSeller: validatedData.isBestSeller,
           material: validatedData.material,
           heelHeight: validatedData.heelHeight,
@@ -242,7 +224,6 @@ export async function PATCH(
           variants: true,
           images: { orderBy: { position: "asc" } },
           category: true,
-          collections: { include: { collection: true } },
         },
       });
     });
@@ -308,7 +289,6 @@ export async function DELETE(
       // İlişkili kayıtları sil
       await tx.productImage.deleteMany({ where: { productId: id } });
       await tx.wishlistItem.deleteMany({ where: { productId: id } });
-      await tx.collectionProduct.deleteMany({ where: { productId: id } });
 
       // CartItem'lar variant üzerinden bağlı, önce onları temizle
       const variants = await tx.productVariant.findMany({

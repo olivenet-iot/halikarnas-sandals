@@ -330,7 +330,7 @@ export default function BannerFormPage() {
                     <Input
                       id="linkUrl"
                       {...register("linkUrl")}
-                      placeholder="/koleksiyonlar/yaz"
+                      placeholder="/kadin/bodrum-sandalet"
                     />
                   </div>
                   <div className="space-y-2">

@@ -69,24 +69,3 @@ export function getProductImageUrl(url: string): string {
   });
 }
 
-/**
- * Get optimized URL for collection card thumbnails
- */
-export function getCollectionThumbnailUrl(url: string): string {
-  return optimizeCloudinaryUrl(url, {
-    width: 600,
-    height: 800,
-    quality: "auto:good",
-  });
-}
-
-/**
- * Get optimized URL for collection hero banners (full-width)
- */
-export function getCollectionHeroUrl(url: string): string {
-  return optimizeCloudinaryUrl(url, {
-    width: 1920,
-    height: 800,
-    quality: "auto:good",
-  });
-}

@@ -24,12 +24,6 @@ export async function getProduct(
           orderBy: [{ size: "asc" }, { color: "asc" }],
         },
         category: true,
-        collections: {
-          include: {
-            collection: true,
-          },
-          take: 1,
-        },
         reviews: {
           where: { isApproved: true },
           include: {
@@ -116,7 +110,6 @@ export function transformProductData(product: ProductWithRelations) {
     soleType: product.soleType,
     heelHeight: product.heelHeight,
     careInstructions: product.careInstructions,
-    isNew: product.isNew,
     isBestseller: product.isBestSeller,
     images: product.images.map((img) => ({
       id: img.id,
@@ -134,12 +127,6 @@ export function transformProductData(product: ProductWithRelations) {
     })),
     category: product.category
       ? { name: product.category.name, slug: product.category.slug }
-      : null,
-    collection: product.collections[0]?.collection
-      ? {
-          name: product.collections[0].collection.name,
-          slug: product.collections[0].collection.slug,
-        }
       : null,
     reviews: product.reviews.map((r) => ({
       id: r.id,

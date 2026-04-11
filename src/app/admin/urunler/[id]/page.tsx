@@ -9,25 +9,17 @@ interface PageProps {
 export default async function EditProductPage({ params }: PageProps) {
   const { id } = await params;
 
-  const [product, categories, collections] = await Promise.all([
+  const [product, categories] = await Promise.all([
     db.product.findUnique({
       where: { id },
       include: {
         variants: true,
         images: { orderBy: { position: "asc" } },
-        collections: {
-          include: { collection: { select: { id: true } } },
-        },
       },
     }),
     db.category.findMany({
       orderBy: { name: "asc" },
       select: { id: true, name: true, gender: true, slug: true },
-    }),
-    db.collection.findMany({
-      where: { isActive: true },
-      orderBy: { name: "asc" },
-      select: { id: true, name: true, slug: true },
     }),
   ]);
 
@@ -50,14 +42,12 @@ export default async function EditProductPage({ params }: PageProps) {
     gender: product.gender ?? "KADIN" as const,
     status: product.status,
     isFeatured: product.isFeatured,
-    isNew: product.isNew,
     isBestSeller: product.isBestSeller,
     material: product.material || "",
     heelHeight: product.heelHeight || "",
     soleType: product.soleType || "",
     metaTitle: product.metaTitle || "",
     metaDescription: product.metaDescription || "",
-    collectionIds: product.collections.map((c) => c.collection.id),
     variants: product.variants.map((v) => ({
       id: v.id,
       size: v.size,
@@ -85,7 +75,6 @@ export default async function EditProductPage({ params }: PageProps) {
       <ProductForm
         product={formProduct}
         categories={categories}
-        collections={collections}
       />
     </div>
   );

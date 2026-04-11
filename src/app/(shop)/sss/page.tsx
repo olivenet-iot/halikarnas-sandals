@@ -1,15 +1,17 @@
-"use client";
-
-import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Search, ArrowRight } from "lucide-react";
-import { GoldDivider } from "@/components/ui/luxury/GoldDivider";
-import { TextFadeIn } from "@/components/ui/luxury/TextReveal";
-import { MagneticButton } from "@/components/ui/luxury/MagneticButton";
-import { LuxuryFAQAccordion } from "@/components/faq/LuxuryFAQAccordion";
+import type { Metadata } from "next";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { FAQJsonLd } from "@/components/seo/JsonLd";
-import { cn } from "@/lib/utils";
-import { EASE } from "@/lib/animations";
+
+export const metadata: Metadata = {
+  title: "Sikca Sorulan Sorular | Halikarnas Sandals",
+  description:
+    "Halikarnas Sandals hakkinda sikca sorulan sorular. Siparis, kargo, iade, urun bakimi ve odeme hakkinda merak ettikleriniz.",
+};
 
 const faqData = [
   {
@@ -102,236 +104,58 @@ const faqData = [
   },
 ];
 
-const categories = faqData.map((section) => section.category);
+const allFaqs = faqData.flatMap((section) =>
+  section.questions.map((q) => ({
+    question: q.q,
+    answer: q.a,
+  }))
+);
+
+const allQuestions = faqData.flatMap((section, sectionIndex) =>
+  section.questions.map((q, questionIndex) => ({
+    id: `faq-${sectionIndex}-${questionIndex}`,
+    ...q,
+  }))
+);
 
 export default function FAQPage() {
-  const [activeCategory, setActiveCategory] = useState(categories[0]);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  // Filter FAQs based on search query
-  const filteredFaqs = useMemo(() => {
-    const currentSection = faqData.find((s) => s.category === activeCategory);
-    if (!currentSection) return [];
-
-    if (!searchQuery.trim()) {
-      return currentSection.questions;
-    }
-
-    const query = searchQuery.toLowerCase();
-    return currentSection.questions.filter(
-      (faq) =>
-        faq.q.toLowerCase().includes(query) ||
-        faq.a.toLowerCase().includes(query)
-    );
-  }, [activeCategory, searchQuery]);
-
-  // Search across all categories
-  const allFilteredFaqs = useMemo(() => {
-    if (!searchQuery.trim()) return null;
-
-    const query = searchQuery.toLowerCase();
-    const results: { category: string; questions: typeof faqData[0]["questions"] }[] = [];
-
-    faqData.forEach((section) => {
-      const matchedQuestions = section.questions.filter(
-        (faq) =>
-          faq.q.toLowerCase().includes(query) ||
-          faq.a.toLowerCase().includes(query)
-      );
-      if (matchedQuestions.length > 0) {
-        results.push({ category: section.category, questions: matchedQuestions });
-      }
-    });
-
-    return results;
-  }, [searchQuery]);
-
-  // Flatten all FAQs for JSON-LD
-  const allFaqs = faqData.flatMap((section) =>
-    section.questions.map((q) => ({
-      question: q.q,
-      answer: q.a,
-    }))
-  );
-
   return (
-    <>
+    <div className="bg-v2-bg-primary">
       <FAQJsonLd faqs={allFaqs} />
-      <div className="min-h-screen bg-[#FAF9F6]">
-        {/* Hero Section */}
-        <section className="pt-32 pb-16 text-center">
-          <GoldDivider variant="default" className="mx-auto mb-8" />
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: EASE.luxury }}
-            className="inline-flex items-center gap-3 mb-6"
-          >
-            <span className="w-8 h-px bg-[#B8860B]/50" />
-            <span className="text-[#B8860B] text-xs tracking-[0.3em] uppercase font-medium">
-              Yardim
-            </span>
-            <span className="w-8 h-px bg-[#B8860B]/50" />
-          </motion.div>
+      {/* Hero */}
+      <section className="pt-32 pb-12 text-center">
+        <div className="max-w-3xl mx-auto px-4">
+          <p className="text-[#8B6F47] tracking-widest text-xs font-inter uppercase">
+            Sikca Sorulan Sorular
+          </p>
+          <h1 className="font-serif font-light text-4xl md:text-5xl text-v2-text-primary mt-4">
+            Yardimci olabilir miyiz?
+          </h1>
+        </div>
+      </section>
 
-          <TextFadeIn delay={0.1}>
-            <h1 className="font-serif text-4xl md:text-5xl text-stone-800 mb-6">
-              Sikca Sorulan Sorular
-            </h1>
-          </TextFadeIn>
-
-          <TextFadeIn delay={0.2}>
-            <p className="text-stone-600 max-w-xl mx-auto text-lg mb-10">
-              Merak ettiginiz her seyin yaniti burada
-            </p>
-          </TextFadeIn>
-
-          {/* Search Bar */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: EASE.luxury, delay: 0.3 }}
-            className="max-w-xl mx-auto px-4"
-          >
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-stone-400" />
-              <input
-                type="text"
-                placeholder="Soru ara..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 bg-white border border-stone-200
-                         focus:border-[#B8860B] focus:ring-2 focus:ring-[#B8860B]/20
-                         transition-all duration-300 outline-none text-stone-800
-                         placeholder:text-stone-400"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
-                >
-                  <span className="sr-only">Clear</span>
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              )}
-            </div>
-          </motion.div>
-        </section>
-
-        {/* Category Tabs */}
-        {!searchQuery && (
-          <section className="border-b border-stone-200 bg-white/50">
-            <div className="max-w-4xl mx-auto px-4">
-              <div className="flex gap-1 overflow-x-auto hide-scrollbar py-1">
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => setActiveCategory(category)}
-                    className={cn(
-                      "relative px-6 py-4 text-sm tracking-wide uppercase whitespace-nowrap transition-colors duration-300",
-                      activeCategory === category
-                        ? "text-[#B8860B]"
-                        : "text-stone-500 hover:text-stone-700"
-                    )}
-                  >
-                    {category}
-                    {activeCategory === category && (
-                      <motion.div
-                        layoutId="tab-indicator"
-                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#B8860B]"
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                      />
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* FAQ Content */}
-        <section className="py-16 md:py-24">
-          <div className="max-w-3xl mx-auto px-4">
-            {searchQuery ? (
-              // Search Results
-              <div>
-                {allFilteredFaqs && allFilteredFaqs.length > 0 ? (
-                  <div className="space-y-12">
-                    {allFilteredFaqs.map((section) => (
-                      <div key={section.category}>
-                        <h2 className="text-xs uppercase tracking-[0.2em] text-[#B8860B] mb-6">
-                          {section.category}
-                        </h2>
-                        <LuxuryFAQAccordion items={section.questions} />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-center py-12"
-                  >
-                    <p className="text-stone-500 mb-4">
-                      &quot;{searchQuery}&quot; icin sonuc bulunamadi
-                    </p>
-                    <button
-                      onClick={() => setSearchQuery("")}
-                      className="text-[#B8860B] hover:underline"
-                    >
-                      Tum sorulari goster
-                    </button>
-                  </motion.div>
-                )}
-              </div>
-            ) : (
-              // Category FAQs
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeCategory}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.4, ease: EASE.luxury }}
-                >
-                  <LuxuryFAQAccordion items={filteredFaqs} />
-                </motion.div>
-              </AnimatePresence>
-            )}
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="bg-stone-100/50 py-20">
-          <div className="max-w-4xl mx-auto px-4 text-center">
-            <GoldDivider variant="default" className="mx-auto mb-8" />
-
-            <TextFadeIn>
-              <h2 className="font-serif text-2xl md:text-3xl text-stone-800 mb-4">
-                Sorunuza Yanit Bulamadiniz mi?
-              </h2>
-            </TextFadeIn>
-
-            <TextFadeIn delay={0.1}>
-              <p className="text-stone-600 mb-10 max-w-md mx-auto">
-                Musteri hizmetlerimiz size yardimci olmak icin hazir.
-              </p>
-            </TextFadeIn>
-
-            <MagneticButton
-              href="/iletisim"
-              variant="primary"
-              size="lg"
-              icon={<ArrowRight className="w-4 h-4" />}
-            >
-              Bize Ulasin
-            </MagneticButton>
-          </div>
-        </section>
-      </div>
-    </>
+      {/* FAQ Accordion */}
+      <section className="py-20 md:py-28">
+        <div className="max-w-3xl mx-auto px-4">
+          <Accordion type="single" collapsible>
+            {allQuestions.map((item) => (
+              <AccordionItem
+                key={item.id}
+                value={item.id}
+                className="border-t border-v2-border-subtle border-b-0"
+              >
+                <AccordionTrigger className="font-serif text-lg hover:no-underline">
+                  {item.q}
+                </AccordionTrigger>
+                <AccordionContent className="font-inter text-sm text-v2-text-muted leading-relaxed">
+                  {item.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      </section>
+    </div>
   );
 }

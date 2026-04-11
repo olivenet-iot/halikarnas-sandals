@@ -61,14 +61,12 @@ const productSchema = z.object({
   gender: z.enum(["KADIN", "ERKEK", "UNISEX"]),
   status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]),
   isFeatured: z.boolean(),
-  isNew: z.boolean(),
   isBestSeller: z.boolean(),
   material: z.string().optional(),
   heelHeight: z.string().optional(),
   soleType: z.string().optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
-  collectionIds: z.array(z.string()).optional(),
   variants: z.array(variantSchema).min(1, "En az bir varyant gerekli"),
   images: z.array(imageSchema),
 });
@@ -82,16 +80,9 @@ interface Category {
   slug: string;
 }
 
-interface Collection {
-  id: string;
-  name: string;
-  slug: string;
-}
-
 interface ProductFormProps {
   product?: ProductFormData & { id: string };
   categories: Category[];
-  collections?: Collection[];
 }
 
 const SIZES = ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"];
@@ -129,7 +120,7 @@ function generateSKU(name: string, size: string, color?: string): string {
   return `${prefix}-${size}-${colorCode}-${random}`;
 }
 
-export function ProductForm({ product, categories, collections = [] }: ProductFormProps) {
+export function ProductForm({ product, categories }: ProductFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [variantMode, setVariantMode] = useState<"manual" | "matrix">("manual");
   const [stagedImages, setStagedImages] = useState<StagedImage[]>([]);
@@ -159,14 +150,12 @@ export function ProductForm({ product, categories, collections = [] }: ProductFo
       gender: undefined,
       status: "DRAFT",
       isFeatured: false,
-      isNew: true,
       isBestSeller: false,
       material: "Hakiki Deri",
       heelHeight: "",
       soleType: "",
       metaTitle: "",
       metaDescription: "",
-      collectionIds: [],
       variants: [{ size: "38", color: "Siyah", colorHex: "#000000", stock: 10, sku: "" }],
       images: [],
     },
@@ -786,18 +775,6 @@ export function ProductForm({ product, categories, collections = [] }: ProductFo
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="isNew"
-                  checked={watch("isNew")}
-                  onCheckedChange={(checked) =>
-                    setValue("isNew", checked as boolean)
-                  }
-                />
-                <Label htmlFor="isNew" className="font-normal cursor-pointer">
-                  Yeni Ürün
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
                   id="isBestSeller"
                   checked={watch("isBestSeller")}
                   onCheckedChange={(checked) =>
@@ -881,45 +858,6 @@ export function ProductForm({ product, categories, collections = [] }: ProductFo
                 )}
               </div>
 
-              {/* Collections */}
-              {collections.length > 0 && (
-                <div className="space-y-2">
-                  <Label>Koleksiyonlar</Label>
-                  <div className="border rounded-lg p-3 space-y-2 max-h-48 overflow-y-auto">
-                    {collections.map((collection) => {
-                      const isChecked = watch("collectionIds")?.includes(collection.id) ?? false;
-                      return (
-                        <div key={collection.id} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`collection-${collection.id}`}
-                            checked={isChecked}
-                            onCheckedChange={(checked) => {
-                              const current = watch("collectionIds") || [];
-                              if (checked) {
-                                setValue("collectionIds", [...current, collection.id]);
-                              } else {
-                                setValue(
-                                  "collectionIds",
-                                  current.filter((id) => id !== collection.id)
-                                );
-                              }
-                            }}
-                          />
-                          <Label
-                            htmlFor={`collection-${collection.id}`}
-                            className="font-normal cursor-pointer text-sm"
-                          >
-                            {collection.name}
-                          </Label>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    Ürünün dahil olacağı koleksiyonları seçin
-                  </p>
-                </div>
-              )}
             </CardContent>
           </Card>
 

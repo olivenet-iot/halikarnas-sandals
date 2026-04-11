@@ -152,7 +152,7 @@ export function Footer() {
           <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-8">
             {/* Alışveriş */}
             <div>
-              <h4 className="text-[#8B6F47] font-inter text-v2-label uppercase mb-5">
+              <h4 className="text-white/50 font-inter font-medium text-xs tracking-[0.2em] uppercase mb-5">
                 Alışveriş
               </h4>
               <ul className="space-y-3">
@@ -166,43 +166,23 @@ export function Footer() {
                     Erkek
                   </Link>
                 </li>
-                <li>
-                  <Link href="/yeni-gelenler" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
-                    Yeni Gelenler
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/koleksiyonlar" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
-                    Koleksiyonlar
-                  </Link>
-                </li>
               </ul>
             </div>
 
             {/* Yardım */}
             <div>
-              <h4 className="text-[#8B6F47] font-inter text-v2-label uppercase mb-5">
+              <h4 className="text-white/50 font-inter font-medium text-xs tracking-[0.2em] uppercase mb-5">
                 Yardım
               </h4>
               <ul className="space-y-3">
-                <li>
-                  <Link href="/siparis-takip" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
-                    Sipariş Takip
-                  </Link>
-                </li>
                 <li>
                   <Link href="/sss" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
                     SSS
                   </Link>
                 </li>
                 <li>
-                  <Link href="/sayfa/kargo-ve-teslimat" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
-                    Kargo ve Teslimat
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/sayfa/iade-ve-degisim" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
-                    İade ve Değişim
+                  <Link href="/siparis-takip" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
+                    Sipariş Takip
                   </Link>
                 </li>
                 <li>
@@ -215,13 +195,13 @@ export function Footer() {
 
             {/* Kurumsal */}
             <div>
-              <h4 className="text-[#8B6F47] font-inter text-v2-label uppercase mb-5">
+              <h4 className="text-white/50 font-inter font-medium text-xs tracking-[0.2em] uppercase mb-5">
                 Kurumsal
               </h4>
               <ul className="space-y-3">
                 <li>
-                  <Link href="/hakkimizda" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
-                    Hakkımızda
+                  <Link href="/hikayemiz" className="text-white/60 hover:text-white font-inter text-sm transition-colors">
+                    Hikayemiz
                   </Link>
                 </li>
                 <li>

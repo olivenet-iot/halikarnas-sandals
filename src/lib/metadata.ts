@@ -103,22 +103,3 @@ export function generateCategoryMetadata(category: CategoryMetaData): Metadata {
   });
 }
 
-export interface CollectionMetaData {
-  name: string;
-  description?: string | null;
-  slug: string;
-  image?: string | null;
-}
-
-export function generateCollectionMetadata(collection: CollectionMetaData): Metadata {
-  const description =
-    collection.description ||
-    `${collection.name} koleksiyonunu keşfedin. Halikarnas Sandals'tan özel tasarım el yapımı deri sandaletler.`;
-
-  return generateMetadata({
-    title: collection.name,
-    description: description.substring(0, 160),
-    image: collection.image || undefined,
-    path: `/koleksiyonlar/${collection.slug}`,
-  });
-}

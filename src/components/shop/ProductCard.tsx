@@ -25,7 +25,6 @@ export interface ProductCardProps {
   sizes?: string[];
   categorySlug?: string | null;
   createdAt?: string;
-  isNew?: boolean;
   isSale?: boolean;
   isBestseller?: boolean;
   className?: string;
@@ -43,7 +42,6 @@ export function ProductCard({
   images,
   colors = [],
   categorySlug,
-  isNew,
   isSale,
   className,
 }: ProductCardProps) {
@@ -148,18 +146,13 @@ export function ProductCard({
         )}
 
         {/* Minimal Badges - Luxury style */}
-        <span className="absolute top-4 left-4 flex flex-col gap-2">
-          {isNew && (
-            <span className="px-3 py-1 bg-luxury-primary text-luxury-cream text-[10px] tracking-[0.2em] uppercase font-medium">
-              Yeni
-            </span>
-          )}
-          {isSale && discount > 0 && (
+        {isSale && discount > 0 && (
+          <span className="absolute top-4 left-4">
             <span className="px-3 py-1 bg-luxury-terracotta text-white text-[10px] tracking-[0.2em] uppercase font-medium">
               -{discount}%
             </span>
-          )}
-        </span>
+          </span>
+        )}
 
         {/* Wishlist Button - Minimal */}
         <Button

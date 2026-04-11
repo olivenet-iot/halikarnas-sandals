@@ -10,8 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "",
     "/kadin",
     "/erkek",
-    "/koleksiyonlar",
-    "/hakkimizda",
+    "/hikayemiz",
     "/iletisim",
     "/sss",
     "/beden-rehberi",
@@ -63,19 +62,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
-  // Collections
-  const collections = await db.collection.findMany({
-    where: { isActive: true },
-    select: { slug: true, updatedAt: true },
-  });
-
-  const collectionPages = collections.map((col) => ({
-    url: `${baseUrl}/koleksiyonlar/${col.slug}`,
-    lastModified: col.updatedAt,
-    changeFrequency: "weekly" as const,
-    priority: 0.7,
-  }));
-
   // Legal/static pages
   const pages = await db.page.findMany({
     where: { isActive: true },
@@ -93,7 +79,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...staticPages,
     ...productPages,
     ...categoryPages,
-    ...collectionPages,
     ...legalPages,
   ];
 }

@@ -1,4 +1,4 @@
-// Legacy — still used by /kadin/[category], /erkek/[category], /arama, /yeni-gelenler
+// Legacy — still used by /kadin/[category], /erkek/[category], /arama
 export { ProductCard } from "./ProductCard";
 export type { ProductCardProps } from "./ProductCard";
 export { ProductGrid } from "./ProductGrid";
@@ -16,10 +16,3 @@ export { ColorSelectorV2 } from "./ColorSelectorV2";
 export { SizeSelectorV2 } from "./SizeSelectorV2";
 export { ImageGalleryV2 } from "./ImageGalleryV2";
 export { MobileAddToCartBarV2 } from "./MobileAddToCartBarV2";
-
-// Cinematic Collections
-export { CinematicScroll } from "./CinematicScroll";
-export { ScrollProgress, ScrollProgressMobile } from "./ScrollProgress";
-export { IntroFrame } from "./frames/IntroFrame";
-export { CollectionFrame } from "./frames/CollectionFrame";
-export { OutroFrame } from "./frames/OutroFrame";

@@ -57,48 +57,7 @@ async function main() {
   console.log("✓ Categories created");
 
   // ============================================
-  // 3. Create Collections
-  // ============================================
-  console.log("Creating collections...");
-
-  const collections = [
-    {
-      name: "Yaz 2024 Koleksiyonu",
-      slug: "yaz-2024",
-      description: "2024 yaz sezonunun en şık sandaletleri",
-      isFeatured: true,
-    },
-    {
-      name: "El Yapımı Özel Seri",
-      slug: "el-yapimi-ozel-seri",
-      description: "Ustalarımızın elinden çıkan özel tasarımlar",
-      isFeatured: true,
-    },
-    {
-      name: "Bodrum Esintisi",
-      slug: "bodrum-esintisi",
-      description: "Bodrum'un ruhunu yansıtan tasarımlar",
-      isFeatured: false,
-    },
-  ];
-
-  for (const col of collections) {
-    await prisma.collection.upsert({
-      where: { slug: col.slug },
-      update: {},
-      create: {
-        name: col.name,
-        slug: col.slug,
-        description: col.description,
-        isFeatured: col.isFeatured,
-        isActive: true,
-      },
-    });
-  }
-  console.log("✓ Collections created");
-
-  // ============================================
-  // 4. Create Sample Products
+  // 3. Create Sample Products
   // ============================================
   console.log("Creating sample products...");
 
@@ -111,10 +70,6 @@ async function main() {
   });
   const erkekBodrumCategory = await prisma.category.findUnique({
     where: { slug_gender: { slug: "bodrum-sandalet", gender: Gender.ERKEK } },
-  });
-
-  const yaz2024Collection = await prisma.collection.findUnique({
-    where: { slug: "yaz-2024" },
   });
 
   // Sample Products Data
@@ -144,7 +99,6 @@ async function main() {
       categoryId: kadinBodrumCategory?.id,
       status: ProductStatus.ACTIVE,
       isFeatured: true,
-      isNew: true,
       isBestSeller: true,
       colors: [
         { name: "Taba", hex: "#C17E61" },
@@ -177,7 +131,6 @@ Yüzyıllardır süregelen zanaatkarlık geleneğimizin bir yansıması olan bu 
       categoryId: kadinBodrumCategory?.id,
       status: ProductStatus.ACTIVE,
       isFeatured: true,
-      isNew: false,
       isBestSeller: true,
       colors: [
         { name: "Kahverengi", hex: "#4A3728" },
@@ -209,7 +162,6 @@ Yüzyıllardır süregelen zanaatkarlık geleneğimizin bir yansıması olan bu 
       categoryId: kadinTerlikCategory?.id,
       status: ProductStatus.ACTIVE,
       isFeatured: false,
-      isNew: true,
       isBestSeller: false,
       colors: [
         { name: "Gold", hex: "#A68B5B" },
@@ -242,7 +194,6 @@ Sağlam yapısı ve konforlu tabanıyla günlük kullanım için ideal olan bu s
       categoryId: erkekBodrumCategory?.id,
       status: ProductStatus.ACTIVE,
       isFeatured: true,
-      isNew: false,
       isBestSeller: true,
       colors: [
         { name: "Kahverengi", hex: "#4A3728" },
@@ -275,7 +226,6 @@ Geniş kalıbı ve rahat yapısıyla uzun yürüyüşlerde bile konfor sağlayan
       categoryId: erkekBodrumCategory?.id,
       status: ProductStatus.ACTIVE,
       isFeatured: false,
-      isNew: true,
       isBestSeller: false,
       colors: [
         { name: "Taba", hex: "#C17E61" },
@@ -372,23 +322,6 @@ Geniş kalıbı ve rahat yapısıyla uzun yürüyüşlerde bile konfor sağlayan
           alt: `${product.name} - Görsel ${i + 1}`,
           position: i,
           isPrimary: i === 0,
-        },
-      });
-    }
-
-    // Add to collection
-    if (yaz2024Collection && product.isNew) {
-      await prisma.collectionProduct.upsert({
-        where: {
-          collectionId_productId: {
-            collectionId: yaz2024Collection.id,
-            productId: createdProduct.id,
-          },
-        },
-        update: {},
-        create: {
-          collectionId: yaz2024Collection.id,
-          productId: createdProduct.id,
         },
       });
     }
@@ -767,13 +700,11 @@ Geniş kalıbı ve rahat yapısıyla uzun yürüyüşlerde bile konfor sağlayan
   const productCount = await prisma.product.count();
   const variantCount = await prisma.productVariant.count();
   const categoryCount = await prisma.category.count();
-  const collectionCount = await prisma.collection.count();
   const pageCount = await prisma.page.count();
   const faqCount = await prisma.fAQ.count();
 
   console.log("\n✅ Seeding completed!");
   console.log(`   - ${categoryCount} categories`);
-  console.log(`   - ${collectionCount} collections`);
   console.log(`   - ${productCount} products`);
   console.log(`   - ${variantCount} variants`);
   console.log(`   - ${pageCount} pages`);

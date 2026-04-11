@@ -29,7 +29,6 @@ const breadcrumbMap: Record<string, string> = {
   admin: "Dashboard",
   urunler: "Ürünler",
   kategoriler: "Kategoriler",
-  koleksiyonlar: "Koleksiyonlar",
   siparisler: "Siparişler",
   kullanicilar: "Kullanıcılar",
   ayarlar: "Ayarlar",

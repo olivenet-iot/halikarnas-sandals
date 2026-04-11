@@ -8,13 +8,13 @@ export default function NotFound() {
       <div className="text-center max-w-lg">
         {/* 404 Visual */}
         <div className="mb-8">
-          <div className="text-[120px] md:text-[180px] font-bold text-sand-200 leading-none select-none">
+          <div className="text-[120px] md:text-[180px] font-bold text-v2-border-subtle leading-none select-none">
             404
           </div>
           <div className="relative -mt-16 md:-mt-20">
-            <div className="w-32 h-32 mx-auto rounded-full bg-sand-100 flex items-center justify-center">
+            <div className="w-32 h-32 mx-auto rounded-full bg-v2-bg-primary flex items-center justify-center">
               <svg
-                className="w-16 h-16 text-sand-400"
+                className="w-16 h-16 text-v2-text-muted"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -31,10 +31,10 @@ export default function NotFound() {
         </div>
 
         {/* Message */}
-        <h1 className="text-2xl md:text-3xl font-bold text-leather-900 mb-3">
+        <h1 className="text-2xl md:text-3xl font-bold text-v2-text-primary mb-3">
           Sayfa Bulunamadı
         </h1>
-        <p className="text-leather-600 mb-8">
+        <p className="text-v2-text-muted mb-8">
           Aradığınız sayfa taşınmış veya silinmiş olabilir.
           Anasayfaya dönebilir veya arama yapabilirsiniz.
         </p>
@@ -57,35 +57,29 @@ export default function NotFound() {
 
         {/* Popular Links */}
         <div className="mt-12 pt-8 border-t">
-          <p className="text-sm text-leather-500 mb-4">Popüler Sayfalar</p>
+          <p className="text-sm text-v2-text-muted mb-4">Popüler Sayfalar</p>
           <div className="flex flex-wrap justify-center gap-2">
             <Link
               href="/kadin"
-              className="px-3 py-1.5 text-sm bg-sand-100 text-leather-700 rounded-full hover:bg-sand-200 transition-colors"
+              className="px-3 py-1.5 text-sm bg-v2-bg-primary text-v2-text-primary rounded-full hover:bg-v2-border-subtle transition-colors"
             >
               Kadın
             </Link>
             <Link
               href="/erkek"
-              className="px-3 py-1.5 text-sm bg-sand-100 text-leather-700 rounded-full hover:bg-sand-200 transition-colors"
+              className="px-3 py-1.5 text-sm bg-v2-bg-primary text-v2-text-primary rounded-full hover:bg-v2-border-subtle transition-colors"
             >
               Erkek
             </Link>
             <Link
-              href="/koleksiyonlar"
-              className="px-3 py-1.5 text-sm bg-sand-100 text-leather-700 rounded-full hover:bg-sand-200 transition-colors"
+              href="/hikayemiz"
+              className="px-3 py-1.5 text-sm bg-v2-bg-primary text-v2-text-primary rounded-full hover:bg-v2-border-subtle transition-colors"
             >
-              Koleksiyonlar
-            </Link>
-            <Link
-              href="/yeni-gelenler"
-              className="px-3 py-1.5 text-sm bg-sand-100 text-leather-700 rounded-full hover:bg-sand-200 transition-colors"
-            >
-              Yeni Gelenler
+              Hikayemiz
             </Link>
             <Link
               href="/iletisim"
-              className="px-3 py-1.5 text-sm bg-sand-100 text-leather-700 rounded-full hover:bg-sand-200 transition-colors"
+              className="px-3 py-1.5 text-sm bg-v2-bg-primary text-v2-text-primary rounded-full hover:bg-v2-border-subtle transition-colors"
             >
               İletişim
             </Link>

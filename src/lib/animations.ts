@@ -30,7 +30,7 @@ export const EASE = {
 } as const;
 
 // ============================================
-// LUXURY COLLECTION PAGE ANIMATIONS
+// LUXURY PAGE ANIMATIONS
 // ============================================
 
 // Gold decorative line animation

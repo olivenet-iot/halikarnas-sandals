@@ -1,8 +1,6 @@
 "use client";
 
-import { CSSProperties } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
   User,
@@ -25,7 +23,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { cn } from "@/lib/utils";
-import { useState, useEffect, useMemo } from "react";
 
 function getInitials(name: string | null | undefined): string {
   if (!name) return "U";
@@ -36,60 +33,10 @@ function getInitials(name: string | null | undefined): string {
   return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 }
 
-interface UserMenuProps {
-  variant?: "default" | "cinematic";
-}
-
-export function UserMenu({ variant = "default" }: UserMenuProps) {
-  const isCinematic = variant === "cinematic";
-  const pathname = usePathname();
+export function UserMenu() {
   const { user, isLoading, isAuthenticated, isAdmin } = useCurrentUser();
-  const [scrollY, setScrollY] = useState(0);
 
-  const isHomepage = pathname === "/";
-  const isScrolled = scrollY > 50;
-
-  useEffect(() => {
-    if (isCinematic) return; // Cinematic modda window scroll dinleme
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isCinematic]);
-
-  // Determine if we need light (white) or dark text
-  // Cinematic mode always uses light mode
-  const isLightMode = isCinematic || (isHomepage && !isScrolled);
-
-  const iconClasses = cn(
-    "transition-all duration-300",
-    isLightMode
-      ? "text-white hover:text-white/80"
-      : "text-luxury-primary hover:text-luxury-primary/70"
-  );
-
-  // Cinematic icon glow style
-  const cinematicIconStyle: CSSProperties = useMemo(() => {
-    if (!isCinematic) return {};
-    return {
-      filter: `
-        drop-shadow(0 0 8px rgba(255, 255, 255, 0.4))
-        drop-shadow(0 0 16px rgba(255, 255, 255, 0.2))
-      `,
-    };
-  }, [isCinematic]);
-
-  const glowStyle: CSSProperties = useMemo(() => {
-    if (isCinematic) return cinematicIconStyle;
-    if (isLightMode) {
-      return {
-        textShadow: "0 0 30px rgba(255,255,255,0.6), 0 2px 8px rgba(0,0,0,0.5)",
-      };
-    }
-    return {};
-  }, [isLightMode, isCinematic, cinematicIconStyle]);
+  const iconClasses = "text-v2-text-primary transition-all duration-300";
 
   if (isLoading) {
     return (
@@ -98,7 +45,6 @@ export function UserMenu({ variant = "default" }: UserMenuProps) {
         size="icon"
         className={cn("hidden sm:flex", iconClasses)}
         disabled
-        style={glowStyle}
       >
         <Loader2 className="h-5 w-5 animate-spin" />
       </Button>
@@ -115,8 +61,7 @@ export function UserMenu({ variant = "default" }: UserMenuProps) {
             size="icon"
             className={cn("hidden sm:flex", iconClasses)}
             aria-label="Hesabım"
-            style={glowStyle}
-          >
+              >
             <User className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
@@ -145,8 +90,7 @@ export function UserMenu({ variant = "default" }: UserMenuProps) {
           size="icon"
           className={cn("hidden sm:flex", iconClasses)}
           aria-label="Hesabım"
-          style={glowStyle}
-        >
+          >
           <Avatar className="h-8 w-8">
             <AvatarImage src={user?.image || undefined} alt={user?.name || "User"} />
             <AvatarFallback className="bg-aegean-100 text-aegean-700 text-sm font-medium">

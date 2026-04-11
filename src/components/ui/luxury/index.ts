@@ -1,5 +1,5 @@
 // Luxury UI Components
-// Premium animation-rich components for collection pages
+// Premium animation-rich components
 
 export { GoldDivider } from "./GoldDivider";
 export { TextReveal, TextFadeIn, LetterSpacingReveal } from "./TextReveal";

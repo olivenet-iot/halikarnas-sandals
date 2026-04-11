@@ -7,7 +7,6 @@ import {
   LayoutDashboard,
   Package,
   FolderTree,
-  Layers,
   ShoppingCart,
   Users,
   Settings,
@@ -64,11 +63,6 @@ const navItems = [
     title: "Kategoriler",
     href: "/admin/kategoriler",
     icon: FolderTree,
-  },
-  {
-    title: "Koleksiyonlar",
-    href: "/admin/koleksiyonlar",
-    icon: Layers,
   },
   {
     title: "Kullanıcılar",

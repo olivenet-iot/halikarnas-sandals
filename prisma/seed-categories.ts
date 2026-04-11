@@ -54,7 +54,6 @@ async function main() {
   await prisma.cartItem.deleteMany();
   await prisma.orderItem.deleteMany();
   await prisma.wishlistItem.deleteMany();
-  await prisma.collectionProduct.deleteMany();
   await prisma.productImage.deleteMany();
   await prisma.productVariant.deleteMany();
   console.log("✓ Ürün bağlantılı veriler silindi");

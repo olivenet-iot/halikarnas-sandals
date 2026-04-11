@@ -28,7 +28,6 @@ interface ListingProduct {
   sizes?: string[];
   categorySlug?: string | null;
   createdAt?: string;
-  isNew?: boolean;
   isSale?: boolean;
   isBestseller?: boolean;
 }

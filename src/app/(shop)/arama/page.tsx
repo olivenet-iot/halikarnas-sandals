@@ -226,9 +226,6 @@ function SearchContent() {
             <Button variant="outline" asChild>
               <Link href="/erkek">Erkek Sandaletler</Link>
             </Button>
-            <Button variant="outline" asChild>
-              <Link href="/koleksiyonlar">Koleksiyonlar</Link>
-            </Button>
           </div>
         </div>
       ) : (

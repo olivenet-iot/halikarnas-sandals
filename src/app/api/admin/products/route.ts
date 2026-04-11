@@ -32,14 +32,12 @@ const productSchema = z.object({
   gender: z.enum(["KADIN", "ERKEK", "UNISEX"]).optional().nullable(),
   status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]),
   isFeatured: z.boolean(),
-  isNew: z.boolean(),
   isBestSeller: z.boolean(),
   material: z.string().optional(),
   heelHeight: z.string().optional(),
   soleType: z.string().optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
-  collectionIds: z.array(z.string()).optional(),
   variants: z.array(variantSchema).min(1, "En az bir varyant gerekli"),
   images: z.array(imageSchema),
 });
@@ -163,7 +161,6 @@ export async function POST(request: NextRequest) {
         gender: validatedData.gender || null,
         status: validatedData.status,
         isFeatured: validatedData.isFeatured,
-        isNew: validatedData.isNew,
         isBestSeller: validatedData.isBestSeller,
         material: validatedData.material || null,
         heelHeight: validatedData.heelHeight || null,
@@ -187,20 +184,11 @@ export async function POST(request: NextRequest) {
             position: img.position ?? index,
           })),
         },
-        collections: validatedData.collectionIds?.length
-          ? {
-              create: validatedData.collectionIds.map((collectionId, index) => ({
-                collectionId,
-                position: index,
-              })),
-            }
-          : undefined,
       },
       include: {
         variants: true,
         images: true,
         category: true,
-        collections: { include: { collection: true } },
       },
     });
 

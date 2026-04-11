@@ -4,12 +4,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import {
   Loader2,
-  Search,
   Package,
   Truck,
   MapPin,
@@ -22,11 +21,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { GoldDivider } from "@/components/ui/luxury/GoldDivider";
-import { TextFadeIn } from "@/components/ui/luxury/TextReveal";
-import { MagneticButton } from "@/components/ui/luxury/MagneticButton";
 import { cn, formatPrice, formatDate } from "@/lib/utils";
-import { EASE } from "@/lib/animations";
 
 const trackSchema = z.object({
   email: z.string().email("Gecerli bir e-posta adresi girin"),
@@ -167,137 +162,111 @@ export default function OrderTrackingPage() {
   const currentStatusIndex = order ? STATUS_ORDER.indexOf(order.status) : -1;
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6]">
-      {/* Hero Section */}
-      <section className="pt-32 pb-16 text-center">
-        <GoldDivider variant="default" className="mx-auto mb-8" />
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: EASE.luxury }}
-          className="inline-flex items-center gap-3 mb-6"
-        >
-          <span className="w-8 h-px bg-[#B8860B]/50" />
-          <span className="text-[#B8860B] text-xs tracking-[0.3em] uppercase font-medium">
-            Siparis Takibi
-          </span>
-          <span className="w-8 h-px bg-[#B8860B]/50" />
-        </motion.div>
-
-        <TextFadeIn delay={0.1}>
-          <h1 className="font-serif text-4xl md:text-5xl text-stone-800 mb-6">
-            Siparisizi Takip Edin
-          </h1>
-        </TextFadeIn>
-
-        <TextFadeIn delay={0.2}>
-          <p className="text-stone-600 max-w-xl mx-auto text-lg">
-            Siparis numaraniz ve e-posta adresiniz ile siparisinin durumunu ogrenebilirsiniz.
-          </p>
-        </TextFadeIn>
-      </section>
-
-      {/* Form Section */}
-      <section className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: EASE.luxury, delay: 0.3 }}
-          className="bg-white border border-stone-200 p-8 md:p-10"
-        >
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-full bg-[#B8860B]/10 border border-[#B8860B]/30 flex items-center justify-center">
-              <Search className="h-4 w-4 text-[#B8860B]" />
-            </div>
-            <div>
-              <h2 className="font-serif text-xl text-stone-800">Siparis Sorgula</h2>
-              <p className="text-sm text-stone-500">Bilgilerinizi girerek sorgulayın</p>
-            </div>
+    <div className="min-h-screen bg-v2-bg-primary">
+      {/* Hero + Form Section */}
+      <section className="py-20 md:py-28">
+        <div className="max-w-md mx-auto px-4 sm:px-6">
+          {/* Hero */}
+          <div className="text-center mb-14">
+            <span className="text-[#8B6F47] tracking-widest text-xs font-inter uppercase">
+              Siparis Takibi
+            </span>
+            <h1 className="font-serif font-light text-4xl md:text-5xl text-v2-text-primary mt-4">
+              Siparisizi takip edin
+            </h1>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Form */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             {/* Email */}
-            <div className="space-y-2">
-              <label className="text-xs uppercase tracking-[0.15em] text-stone-500 font-medium block">
-                E-posta Adresi <span className="text-[#B8860B]">*</span>
+            <div>
+              <label className="font-inter text-xs tracking-wide uppercase text-v2-text-muted block mb-3">
+                E-posta Adresi
               </label>
               <input
                 {...register("email")}
                 type="email"
                 placeholder="Siparisinizde kullandiginiz e-posta"
                 className={cn(
-                  "w-full px-0 py-3 bg-transparent border-0 border-b transition-all duration-300",
-                  "border-stone-300 focus:border-[#B8860B] focus:ring-0",
-                  "placeholder:text-stone-400 text-stone-800 outline-none",
+                  "w-full px-0 py-3 bg-transparent border-0 border-b transition-colors duration-200",
+                  "border-v2-border-subtle focus:border-v2-text-primary focus:ring-0",
+                  "placeholder:text-v2-text-muted/50 text-v2-text-primary outline-none",
                   errors.email && "border-red-400"
                 )}
               />
               {errors.email && (
-                <p className="text-xs text-red-500">{errors.email.message}</p>
+                <p className="text-xs text-red-500 mt-2">{errors.email.message}</p>
               )}
             </div>
 
             {/* Order Number */}
-            <div className="space-y-2">
-              <label className="text-xs uppercase tracking-[0.15em] text-stone-500 font-medium block">
-                Siparis Numarasi <span className="text-[#B8860B]">*</span>
+            <div>
+              <label className="font-inter text-xs tracking-wide uppercase text-v2-text-muted block mb-3">
+                Siparis Numarasi
               </label>
               <input
                 {...register("orderNumber")}
                 placeholder="Ornek: HS-20260101-1234"
                 className={cn(
-                  "w-full px-0 py-3 bg-transparent border-0 border-b transition-all duration-300",
-                  "border-stone-300 focus:border-[#B8860B] focus:ring-0",
-                  "placeholder:text-stone-400 text-stone-800 outline-none font-mono",
+                  "w-full px-0 py-3 bg-transparent border-0 border-b transition-colors duration-200",
+                  "border-v2-border-subtle focus:border-v2-text-primary focus:ring-0",
+                  "placeholder:text-v2-text-muted/50 text-v2-text-primary outline-none font-mono",
                   errors.orderNumber && "border-red-400"
                 )}
               />
               {errors.orderNumber && (
-                <p className="text-xs text-red-500">{errors.orderNumber.message}</p>
+                <p className="text-xs text-red-500 mt-2">{errors.orderNumber.message}</p>
               )}
             </div>
 
             {/* Submit */}
-            <div className="pt-4">
-              <MagneticButton
-                onClick={handleSubmit(onSubmit)}
-                variant="primary"
-                size="lg"
-                className="w-full"
-                icon={isLoading ? undefined : <ArrowRight className="w-4 h-4" />}
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className={cn(
+                  "w-full py-3.5 border border-v2-text-primary text-v2-text-primary",
+                  "hover:bg-v2-text-primary hover:text-white",
+                  "transition-colors duration-200 text-sm tracking-wide",
+                  "disabled:opacity-50 disabled:cursor-not-allowed"
+                )}
               >
                 {isLoading ? (
-                  <span className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Sorgulaniyor...
                   </span>
                 ) : (
-                  "Siparisi Sorgula"
+                  <span className="inline-flex items-center gap-2">
+                    Sorgula
+                    <ArrowRight className="h-4 w-4" />
+                  </span>
                 )}
-              </MagneticButton>
+              </button>
             </div>
           </form>
-        </motion.div>
+        </div>
       </section>
 
       {/* Order Result Section */}
       <AnimatePresence mode="wait">
         {order && (
           <motion.section
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -30 }}
-            transition={{ duration: 0.5, ease: EASE.luxury }}
-            className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-24"
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            className="max-w-2xl mx-auto px-4 sm:px-6 pb-24"
           >
             {/* Order Header */}
-            <div className="bg-white border border-stone-200 p-6 md:p-8 mb-6">
+            <div className="border-b border-v2-border-subtle pb-8 mb-8">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                 <div>
-                  <p className="text-sm text-stone-500 mb-1">Siparis Numarasi</p>
-                  <h2 className="font-serif text-2xl text-stone-800">{order.orderNumber}</h2>
-                  <p className="text-sm text-stone-500 mt-1">
+                  <p className="font-inter text-xs tracking-wide uppercase text-v2-text-muted mb-1">
+                    Siparis Numarasi
+                  </p>
+                  <h2 className="font-serif text-2xl text-v2-text-primary">{order.orderNumber}</h2>
+                  <p className="text-sm text-v2-text-muted mt-1">
                     Siparis Tarihi: {formatDate(order.createdAt)}
                   </p>
                 </div>
@@ -319,10 +288,10 @@ export default function OrderTrackingPage() {
               {order.status !== "CANCELLED" && order.status !== "REFUNDED" && (
                 <div className="relative pt-4">
                   {/* Progress line background */}
-                  <div className="absolute left-0 right-0 top-8 h-1 bg-stone-200 rounded-full" />
+                  <div className="absolute left-0 right-0 top-8 h-px bg-v2-border-subtle" />
                   {/* Progress line filled */}
                   <div
-                    className="absolute left-0 top-8 h-1 bg-[#B8860B] rounded-full transition-all duration-500"
+                    className="absolute left-0 top-8 h-px bg-v2-text-primary transition-all duration-500"
                     style={{
                       width: `${Math.max(0, currentStatusIndex) / (STATUS_ORDER.length - 1) * 100}%`,
                     }}
@@ -343,8 +312,8 @@ export default function OrderTrackingPage() {
                             className={cn(
                               "w-8 h-8 rounded-full flex items-center justify-center z-10 transition-all",
                               isPast || isCurrent
-                                ? "bg-[#B8860B] text-white"
-                                : "bg-stone-200 text-stone-400"
+                                ? "bg-v2-text-primary text-white"
+                                : "bg-v2-border-subtle text-v2-text-muted"
                             )}
                           >
                             {isPast ? (
@@ -356,13 +325,15 @@ export default function OrderTrackingPage() {
                           <p
                             className={cn(
                               "text-xs mt-2 text-center max-w-[80px]",
-                              isPast || isCurrent ? "text-stone-800 font-medium" : "text-stone-400"
+                              isPast || isCurrent
+                                ? "text-v2-text-primary font-medium"
+                                : "text-v2-text-muted"
                             )}
                           >
                             {statusConfig.label}
                           </p>
                           {historyItem && (
-                            <p className="text-[10px] text-stone-400 mt-1">
+                            <p className="text-[10px] text-v2-text-muted mt-1">
                               {formatDate(historyItem.createdAt, { day: "numeric", month: "short" })}
                             </p>
                           )}
@@ -375,13 +346,13 @@ export default function OrderTrackingPage() {
 
               {/* Tracking Info */}
               {order.trackingNumber && order.carrier && (
-                <div className="mt-8 p-4 bg-stone-50 rounded-lg border border-stone-200">
+                <div className="mt-8 py-4 border-t border-v2-border-subtle">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Truck className="h-5 w-5 text-[#B8860B]" />
+                      <Truck className="h-5 w-5 text-v2-text-muted" />
                       <div>
-                        <p className="text-sm text-stone-500">{order.carrier}</p>
-                        <p className="font-mono text-stone-800">{order.trackingNumber}</p>
+                        <p className="text-sm text-v2-text-muted">{order.carrier}</p>
+                        <p className="font-mono text-v2-text-primary">{order.trackingNumber}</p>
                       </div>
                     </div>
                     {getTrackingUrl(order.carrier, order.trackingNumber) && (
@@ -389,10 +360,10 @@ export default function OrderTrackingPage() {
                         href={getTrackingUrl(order.carrier, order.trackingNumber)!}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#B8860B] text-white text-sm font-medium rounded hover:bg-[#9a7209] transition-colors"
+                        className="inline-flex items-center gap-2 px-4 py-2 border border-v2-text-primary text-v2-text-primary text-sm hover:bg-v2-text-primary hover:text-white transition-colors"
                       >
                         Kargo Takip
-                        <ExternalLink className="h-4 w-4" />
+                        <ExternalLink className="h-3.5 w-3.5" />
                       </a>
                     )}
                   </div>
@@ -401,16 +372,18 @@ export default function OrderTrackingPage() {
             </div>
 
             {/* Order Items */}
-            <div className="bg-white border border-stone-200 p-6 md:p-8 mb-6">
-              <h3 className="font-serif text-lg text-stone-800 mb-6">Siparis Detaylari</h3>
+            <div className="mb-8">
+              <h3 className="font-inter text-xs tracking-wide uppercase text-v2-text-muted mb-6">
+                Siparis Detaylari
+              </h3>
 
               <div className="space-y-4">
                 {order.items.map((item) => (
                   <div
                     key={item.id}
-                    className="flex gap-4 pb-4 border-b border-stone-100 last:border-0 last:pb-0"
+                    className="flex gap-4 pb-4 border-b border-v2-border-subtle last:border-0 last:pb-0"
                   >
-                    <div className="w-20 h-20 bg-stone-100 rounded overflow-hidden flex-shrink-0">
+                    <div className="w-20 h-20 bg-v2-border-subtle overflow-hidden flex-shrink-0">
                       {item.image ? (
                         <Image
                           src={item.image}
@@ -421,21 +394,21 @@ export default function OrderTrackingPage() {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <Package className="h-6 w-6 text-stone-400" />
+                          <Package className="h-6 w-6 text-v2-text-muted" />
                         </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-stone-800 truncate">{item.productName}</h4>
-                      <p className="text-sm text-stone-500">
+                      <h4 className="font-medium text-v2-text-primary truncate">{item.productName}</h4>
+                      <p className="text-sm text-v2-text-muted">
                         {item.variantColor && `${item.variantColor} / `}
                         Beden: {item.variantSize} / Adet: {item.quantity}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium text-stone-800">{formatPrice(item.total)}</p>
+                      <p className="font-medium text-v2-text-primary">{formatPrice(item.total)}</p>
                       {item.quantity > 1 && (
-                        <p className="text-xs text-stone-500">{formatPrice(item.unitPrice)} / adet</p>
+                        <p className="text-xs text-v2-text-muted">{formatPrice(item.unitPrice)} / adet</p>
                       )}
                     </div>
                   </div>
@@ -443,14 +416,14 @@ export default function OrderTrackingPage() {
               </div>
 
               {/* Order Totals */}
-              <div className="mt-6 pt-6 border-t border-stone-200 space-y-2">
+              <div className="mt-6 pt-6 border-t border-v2-border-subtle space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-stone-500">Ara Toplam</span>
-                  <span className="text-stone-800">{formatPrice(order.totals.subtotal)}</span>
+                  <span className="text-v2-text-muted">Ara Toplam</span>
+                  <span className="text-v2-text-primary">{formatPrice(order.totals.subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-stone-500">Kargo</span>
-                  <span className="text-stone-800">
+                  <span className="text-v2-text-muted">Kargo</span>
+                  <span className="text-v2-text-primary">
                     {order.totals.shippingCost === 0 ? "Ucretsiz" : formatPrice(order.totals.shippingCost)}
                   </span>
                 </div>
@@ -460,23 +433,25 @@ export default function OrderTrackingPage() {
                     <span className="text-green-600">-{formatPrice(order.totals.discount)}</span>
                   </div>
                 )}
-                <div className="flex justify-between text-lg font-semibold pt-2 border-t border-stone-200">
-                  <span className="text-stone-800">Toplam</span>
-                  <span className="text-stone-900">{formatPrice(order.totals.total)}</span>
+                <div className="flex justify-between text-base font-medium pt-3 border-t border-v2-border-subtle">
+                  <span className="text-v2-text-primary">Toplam</span>
+                  <span className="text-v2-text-primary">{formatPrice(order.totals.total)}</span>
                 </div>
               </div>
             </div>
 
             {/* Shipping & Payment Info */}
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-8">
               {/* Shipping Address */}
-              <div className="bg-white border border-stone-200 p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <MapPin className="h-5 w-5 text-[#B8860B]" />
-                  <h3 className="font-serif text-lg text-stone-800">Teslimat Adresi</h3>
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <MapPin className="h-4 w-4 text-v2-text-muted" />
+                  <h3 className="font-inter text-xs tracking-wide uppercase text-v2-text-muted">
+                    Teslimat Adresi
+                  </h3>
                 </div>
-                <div className="text-sm text-stone-600 space-y-1">
-                  <p className="font-medium text-stone-800">{order.shippingAddress.name}</p>
+                <div className="text-sm text-v2-text-muted space-y-1">
+                  <p className="font-medium text-v2-text-primary">{order.shippingAddress.name}</p>
                   <p>{order.shippingAddress.address}</p>
                   <p>
                     {order.shippingAddress.district} / {order.shippingAddress.city}
@@ -486,15 +461,17 @@ export default function OrderTrackingPage() {
               </div>
 
               {/* Payment Info */}
-              <div className="bg-white border border-stone-200 p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <Package className="h-5 w-5 text-[#B8860B]" />
-                  <h3 className="font-serif text-lg text-stone-800">Odeme Bilgileri</h3>
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <Package className="h-4 w-4 text-v2-text-muted" />
+                  <h3 className="font-inter text-xs tracking-wide uppercase text-v2-text-muted">
+                    Odeme Bilgileri
+                  </h3>
                 </div>
-                <div className="text-sm text-stone-600 space-y-2">
+                <div className="text-sm text-v2-text-muted space-y-2">
                   <div className="flex justify-between">
                     <span>Odeme Yontemi</span>
-                    <span className="text-stone-800">{order.paymentMethod || "-"}</span>
+                    <span className="text-v2-text-primary">{order.paymentMethod || "-"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Odeme Durumu</span>
@@ -510,16 +487,16 @@ export default function OrderTrackingPage() {
             </div>
 
             {/* Help Link */}
-            <div className="mt-8 text-center">
-              <p className="text-sm text-stone-500 mb-2">
+            <div className="mt-12 pt-8 border-t border-v2-border-subtle text-center">
+              <p className="text-sm text-v2-text-muted mb-2">
                 Siparisizle ilgili sorulariniz mi var?
               </p>
               <Link
                 href="/iletisim"
-                className="inline-flex items-center gap-2 text-[#B8860B] hover:text-[#9a7209] transition-colors text-sm font-medium"
+                className="inline-flex items-center gap-2 text-v2-text-primary hover:opacity-70 transition-opacity text-sm"
               >
                 Bizimle iletisime gecin
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
           </motion.section>
