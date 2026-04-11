@@ -29,7 +29,7 @@ export function EditorialCategoryBlock() {
           <Link href="/erkek" className="group block">
             <div className="relative h-[300px] md:h-[55%] min-h-[280px] overflow-hidden">
               <Image
-                src="https://res.cloudinary.com/dxqmfpa8g/image/upload/v1766897986/halikarnas/home/erkek-koleksiyonu_wgvz9u.webp"
+                src="https://res.cloudinary.com/dxqmfpa8g/image/upload/v1775908098/halikarnas/home/erkek1_vki4pb.webp"
                 alt="Erkek sandaletleri"
                 fill
                 className="object-cover transition-transform duration-[800ms] ease-out group-hover:scale-[1.02]"
