@@ -2,112 +2,224 @@
 
 ## Bu Skill Ne Zaman Kullanilir
 
-- Styling ve renk kararlari
+- V2 styling ve renk kararlari
+- V2 pattern kullanimi
 - Animasyon ekleme
-- Luxury component kullanimi
 - Typography kararlari
 - UI tutarliligi saglama
 - Yeni sayfa olusturma
+- Yasak pattern kontrolu
 
 ---
 
-## Luxury Color System
+## V2 Color System (PRIMARY)
 
-### Primary Palette (Tailwind Classes)
-
-| Token | Hex | Kullanim |
-|-------|-----|----------|
-| `luxury-primary` | #1e3a3a | Primary actions, headings, dark backgrounds |
-| `luxury-primary-light` | #2d5555 | Hover states |
-| `luxury-primary-dark` | #152a2a | Active states |
-| `luxury-gold` | #c9a962 | Premium CTAs, dividers, accents |
-| `luxury-gold-light` | #d4b87a | Gold hover states |
-| `luxury-terracotta` | #e07d4c | Accent, sale badges |
-
-### Neutral Palette
+Tum yeni sayfalar ve V2 component'leri bu tokenlari kullanmalidir.
 
 | Token | Hex | Kullanim |
 |-------|-----|----------|
-| `luxury-cream` | #faf9f6 | Page backgrounds |
-| `luxury-ivory` | #f5f4f0 | Section backgrounds |
-| `luxury-stone` | #e8e6e1 | Borders, subtle backgrounds |
-| `luxury-charcoal` | #2d2d2d | Text, dark elements |
+| `v2-bg-primary` | #FAF7F2 | Sicak krem sayfa arkaplan |
+| `v2-bg-dark` | #2A2A26 | Koyu arkaplan (footer, mobil bar) |
+| `v2-text-primary` | #1C1917 | Ana metin, basliklar |
+| `v2-text-muted` | #6B6560 | Ikincil metin, label'lar |
+| `v2-accent` | #8B6F47 | Bronz aksesuar, aktif gostergeler |
+| `v2-border-subtle` | #E8E2D8 | Ince kenarlik, input alt cizgi |
 
 ### Kullanim Ornekleri
 
 ```tsx
 // Page background
-<div className="bg-luxury-cream min-h-screen">
+<div className="bg-v2-bg-primary min-h-screen">
 
-// Primary button
-<Button className="bg-luxury-primary hover:bg-luxury-primary-light text-white">
-
-// Gold CTA (luxury)
-<MagneticButton variant="primary">Kesfet</MagneticButton>
+// Dark section (footer, mobile bar)
+<div className="bg-v2-bg-dark text-white">
 
 // Heading
-<h1 className="text-luxury-charcoal font-serif text-4xl">
+<h1 className="text-v2-text-primary font-serif font-light">
 
 // Body text
-<p className="text-luxury-charcoal/80">
+<p className="text-v2-text-muted font-inter">
 
-// Muted text
-<span className="text-luxury-charcoal/60">
+// Accent label
+<span className="font-inter text-v2-label uppercase tracking-[0.2em] text-v2-accent">
 
-// Link
-<a className="text-luxury-primary hover:text-luxury-gold">
+// Subtle border
+<div className="border-b border-v2-border-subtle">
 
-// Card
-<div className="bg-luxury-ivory border border-luxury-stone rounded-lg">
-
-// Gold accent line
-<GoldDivider />
-
-// Sale badge
-<Badge className="bg-luxury-terracotta text-white">INDIRIM</Badge>
+// Link with underline animation
+<a className="link-underline-v2 text-v2-text-primary">
 ```
 
 ---
 
-## Typography System
+## V2 Typography System
 
 ### Font Families
 
-| Class | Font | Kullanim |
-|-------|------|----------|
-| `font-serif` / `font-heading` | Cormorant Garamond | Headings, display text |
-| `font-sans` / `font-body` | Inter / DM Sans | Body text, UI elements |
-| `font-accent` / `font-display` | Cinzel | Luxury labels, editorial quotes |
+| Class | Font | Agirliklar | Kullanim |
+|-------|------|-----------|----------|
+| `font-serif` / `font-heading` | Cormorant Garamond | 300, 400 + italic | Basliklar, urun adlari |
+| `font-inter` | Inter | 400, 500 | Body text, label'lar, butonlar, UI elementleri |
+
+### Font Size Tokens
+
+| Token | Boyut | Line Height | Letter Spacing | Kullanim |
+|-------|-------|-------------|----------------|----------|
+| `v2-hero` | 7rem | 1.05 | -0.01em | Desktop hero |
+| `v2-hero-md` | 5rem | 1.05 | -0.01em | Tablet hero |
+| `v2-hero-sm` | 2.5rem | 1.1 | -0.01em | Mobil hero |
+| `v2-section` | 3.5rem | 1.15 | -0.01em | Section baslik |
+| `v2-section-sm` | 2rem | 1.2 | -- | Mobil section baslik |
+| `v2-body` | 1rem | 1.7 | -- | Govde metin |
+| `v2-label` | 0.6875rem | 1.4 | 0.2em | Etiket, kategori |
+| `v2-caps` | 0.625rem | 1.4 | 0.1em | Kucuk etiket |
 
 ### Heading Hierarchy
 
 ```tsx
-// Hero title (Collection pages, full-screen)
-<h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-luxury-charcoal tracking-tight">
-
-// Page title (Standard pages)
-<h1 className="font-serif text-3xl md:text-4xl lg:text-5xl text-luxury-charcoal">
+// Hero title
+<h1 className="font-serif font-light text-[2.5rem] md:text-[4rem] lg:text-[5.5rem] text-v2-text-primary">
 
 // Section title
-<h2 className="font-serif text-2xl md:text-3xl text-luxury-charcoal">
+<h2 className="font-serif font-light text-2xl md:text-3xl text-v2-text-primary">
 
-// Subsection
-<h3 className="font-serif text-xl md:text-2xl text-luxury-charcoal">
+// Eyebrow/label
+<span className="font-inter text-v2-label uppercase tracking-[0.2em] text-v2-accent">
 
-// Card title
-<h4 className="font-serif text-lg text-luxury-charcoal">
-
-// Luxury label (gold, uppercase)
-<span className="font-display text-xs tracking-[0.3em] uppercase text-luxury-gold">
-  KOLEKSIYON
-</span>
+// Product name (card)
+<h3 className="font-serif font-normal text-sm text-v2-text-primary">
 
 // Body text
-<p className="text-luxury-charcoal/80 leading-relaxed">
+<p className="font-inter text-v2-body text-v2-text-muted leading-relaxed">
 
-// Small/muted text
-<span className="text-sm text-luxury-charcoal/60">
+// Price
+<span className="font-inter text-sm text-v2-text-primary">
+
+// Form label
+<label className="font-inter text-xs uppercase tracking-[0.15em] text-v2-text-muted">
 ```
+
+---
+
+## V2 CSS Utility Classes
+
+Bu class'lar `globals.css` icinde `@layer utilities` altinda tanimlidir.
+
+| Class | Tanimlama | Kullanim |
+|-------|-----------|----------|
+| `.container-v2` | `px-6 md:px-12 lg:px-24 mx-auto max-w-[1440px]` | V2 sayfa container |
+| `.section-v2` | `py-v2-section-mobile md:py-v2-section` | Responsive section padding |
+| `.link-underline-v2` | Hover'da 0 -> 100% genislik underline animasyonu (400ms) | CTA linkleri |
+
+---
+
+## V2 Spacing System
+
+| Token | Deger | Kullanim |
+|-------|-------|----------|
+| `v2-section` | 10rem (160px) | Section dikey padding (desktop) |
+| `v2-section-mobile` | 6.25rem (100px) | Section dikey padding (mobil) |
+| `v2-gap` | 5rem (80px) | Buyuk bosluk |
+| `v2-gap-sm` | 3rem (48px) | Kucuk bosluk |
+
+---
+
+## V2 Component Patterns
+
+### V2 Section
+
+```tsx
+<section className="section-v2 container-v2">
+  <h2 className="font-serif font-light text-2xl md:text-3xl text-v2-text-primary mb-8">
+    Section Basligi
+  </h2>
+  {/* Section icerigi */}
+</section>
+```
+
+### V2 Product Card
+
+```tsx
+<div className="group relative">
+  {/* Image — no border, no rounded */}
+  <div className="relative aspect-[3/4] overflow-hidden bg-v2-bg-primary">
+    <Image
+      src={product.image}
+      alt={product.name}
+      fill
+      className="object-cover transition-transform duration-700 group-hover:scale-105"
+    />
+  </div>
+  {/* Info */}
+  <div className="mt-3 space-y-1">
+    <h3 className="font-serif font-normal text-sm text-v2-text-primary">
+      {product.name}
+    </h3>
+    <span className="font-inter text-sm text-v2-text-primary">
+      {formatPrice(product.price)}
+    </span>
+  </div>
+</div>
+```
+
+### V2 Input (Underline Style)
+
+```tsx
+<input
+  className="w-full py-2 bg-transparent border-0 border-b border-v2-border-subtle
+             focus:border-v2-text-primary focus:outline-none focus:ring-0
+             font-inter text-v2-body text-v2-text-primary
+             placeholder:text-v2-text-muted/50
+             transition-colors duration-300"
+  placeholder="Adiniz"
+/>
+```
+
+### V2 Button (Primary)
+
+```tsx
+<button className="bg-v2-text-primary text-white hover:opacity-90
+                   rounded-none px-8 py-3
+                   font-inter text-sm uppercase tracking-[0.1em]
+                   transition-opacity duration-300">
+  Sepete Ekle
+</button>
+```
+
+### V2 Button (Outline)
+
+```tsx
+<button className="border border-v2-text-primary text-v2-text-primary
+                   hover:bg-v2-text-primary hover:text-white
+                   rounded-none px-8 py-3
+                   font-inter text-sm uppercase tracking-[0.1em]
+                   transition-colors duration-300">
+  Devam Et
+</button>
+```
+
+---
+
+## YASAK LIST (V2 Sayfalarinda Kullanilmamasi Gerekenler)
+
+Asagidaki pattern'ler V2 sayfalarinda KESINLIKLE yasaktir:
+
+| Yasak | Aciklama |
+|-------|----------|
+| Yesil/teal renkler | `luxury-primary` (#1e3a3a) dahil tum yesil tonlari |
+| Altin #B8860B veya #c9a962 | `v2-accent` (#8B6F47) kullan |
+| Gradient arkaplanlar | Duz renk arkaplanlar kullan |
+| Trust bar | Kargo/iade/guvenli odeme ikon bari yasak |
+| Card border'li form input | Underline stil kullan |
+| Rounded pill butonlar | `rounded-none` kullan |
+| Numarali circle progress stepper | Text stepper kullan |
+| All-caps urun isimleri | Normal case kullan |
+| Full-width dolgu siyah CTA | Contained buton kullan |
+| Yesil success banner | Notr tonlarda bildirim kullan |
+| `GoldDivider` | V2 sayfalarda kullanma |
+| `MagneticButton` | V2 sayfalarda kullanma |
+| `font-display` / Cinzel | V2 sayfalarda kullanma |
+| `font-sans` / DM Sans | `font-inter` kullan |
 
 ---
 
@@ -120,10 +232,14 @@ import {
   TIMING,
   EASE,
   fadeInUp,
-  goldLine,
+  fadeIn,
   staggerContainer,
-  letterSpacingReveal,
-  // ... etc
+  sectionRevealV2,
+  staggerV2,
+  viewportV2,
+  cardHover,
+  imageHoverZoom,
+  imageReveal,
 } from "@/lib/animations";
 ```
 
@@ -147,9 +263,41 @@ import {
 | `EASE.bounce` | [0.68, -0.55, 0.265, 1.55] | Playful elements |
 | `EASE.spring` | spring config | Physical interactions |
 
-### Pre-built Variants
+### V2 Animation Variants
 
-#### Reveal Animations
+```tsx
+// V2 Section Reveal
+<motion.div
+  variants={sectionRevealV2}
+  initial="hidden"
+  whileInView="visible"
+  viewport={viewportV2}
+>
+  Section icerigi
+</motion.div>
+
+// V2 Stagger Container
+<motion.div
+  variants={staggerV2}
+  initial="hidden"
+  whileInView="visible"
+  viewport={viewportV2}
+>
+  {items.map(item => (
+    <motion.div key={item.id} variants={fadeInUp}>
+      {item.content}
+    </motion.div>
+  ))}
+</motion.div>
+```
+
+V2 viewport ayarlari:
+
+```tsx
+const viewportV2 = { once: true, amount: 0.15, margin: "-50px" }
+```
+
+### Genel Reveal Animasyonlari
 
 ```tsx
 // Fade in with upward motion
@@ -162,23 +310,13 @@ import {
   Content
 </motion.div>
 
-// Gold line reveal
-<motion.div variants={goldLine}>
-  <GoldDivider />
-</motion.div>
-
-// Text letter spacing reveal (for hero titles)
-<motion.h1 variants={letterSpacingReveal}>
-  AEGEAN
-</motion.h1>
-
 // Image clip reveal
 <motion.div variants={imageReveal}>
   <Image src="..." />
 </motion.div>
 ```
 
-#### Hover Effects
+### Hover Effects
 
 ```tsx
 // Card hover with lift
@@ -192,7 +330,7 @@ import {
 </motion.div>
 ```
 
-#### Stagger Containers
+### Stagger Containers
 
 ```tsx
 // Standard stagger (0.1s delay between items)
@@ -207,28 +345,34 @@ import {
     </motion.div>
   ))}
 </motion.div>
-
-// Cinematic stagger (slower, 0.15s delay)
-<motion.div variants={staggerContainerCinematic}>
-  {/* ... */}
-</motion.div>
 ```
 
-### Viewport Settings
+### LEGACY Animasyonlar (sadece admin/auth sayfalari)
+
+Asagidaki animasyonlar V2 sayfalarda KULLANILMAZ, sadece admin/auth/hesabim gibi eski sayfalarda kalir:
+
+- `goldLine` / `goldLineWide` -- GoldDivider animasyonu
+- `letterSpacingReveal` -- Hero letter spacing efekti
+- `staggerContainerCinematic` -- Yavas cinematic stagger
+
+### Viewport Ayarlari
 
 ```tsx
-// Standard (triggers at 30% visibility)
+// V2 (onerilen)
+viewport={viewportV2}  // { once: true, amount: 0.15, margin: "-50px" }
+
+// Standard (eski sayfalar)
 viewport={{ once: true, amount: 0.3, margin: "-100px" }}
 
-// Eager (triggers earlier, for above-fold content)
+// Eager (above-fold content)
 viewport={{ once: true, amount: 0.1, margin: "-50px" }}
 ```
 
 ---
 
-## Luxury Components
+## Legacy Components (SADECE admin/auth/hesabim)
 
-### Import
+**UYARI:** Asagidaki component'ler V2 sayfalarda KESINLIKLE kullanilmaz. Sadece admin paneli, auth sayfalari ve hesabim bolumunde kalirlar.
 
 ```tsx
 import {
@@ -243,436 +387,130 @@ import {
 } from "@/components/ui/luxury";
 ```
 
-### GoldDivider
-
-```tsx
-// Default (4rem width, animated)
-<GoldDivider />
-
-// Wide variant (6rem)
-<GoldDivider variant="wide" />
-
-// Full width
-<GoldDivider variant="full" />
-
-// Without animation
-<GoldDivider animated={false} />
-
-// With delay
-<GoldDivider delay={0.3} />
-
-// Centered
-<GoldDivider className="mx-auto" />
-```
-
-### MagneticButton
-
-```tsx
-// Primary (gold background, magnetic effect)
-<MagneticButton variant="primary">Kesfet</MagneticButton>
-
-// Outline
-<MagneticButton variant="outline">Detaylar</MagneticButton>
-
-// Ghost
-<MagneticButton variant="ghost">Daha Fazla</MagneticButton>
-
-// With icon
-<MagneticButton icon={<ArrowIcon />}>Devam Et</MagneticButton>
-
-// As link
-<MagneticButton href="/koleksiyonlar">Koleksiyonlar</MagneticButton>
-
-// Large size
-<MagneticButton size="lg">Satin Al</MagneticButton>
-
-// Extra large
-<MagneticButton size="xl">Hero CTA</MagneticButton>
-```
-
-### TextReveal
-
-```tsx
-// Split text reveal (word by word)
-<TextReveal text="Premium El Yapimi Sandaletler" />
-
-// Fade in paragraph
-<TextFadeIn>
-  Uzun paragraf metni burada yer alir...
-</TextFadeIn>
-
-// Letter spacing reveal (for hero titles)
-<LetterSpacingReveal>KOLEKSIYON</LetterSpacingReveal>
-```
-
-### ParallaxImage
-
-```tsx
-// Basic parallax
-<ParallaxImage
-  src="/images/hero.jpg"
-  alt="Hero image"
-  parallaxAmount={0.3}  // 0.1 to 1.0
-/>
-
-// With Ken Burns effect
-<ParallaxImage
-  src="/images/hero.jpg"
-  alt="Hero"
-  kenBurns={true}
-/>
-
-// With overlay
-<ParallaxImage
-  src="/images/hero.jpg"
-  alt="Hero"
-  overlay="gradient"  // "none" | "bottom" | "full" | "vignette" | "gradient"
-/>
-
-// Layered parallax (foreground + background)
-<ParallaxLayeredImage
-  backgroundSrc="/bg.jpg"
-  foregroundSrc="/product.png"
-/>
-```
-
-### ScrollIndicator
-
-```tsx
-// For scroll-snap pages
-<ScrollIndicator
-  currentFrame={activeFrame}
-  totalFrames={7}
-/>
-
-// Simple bouncing chevron
-<ChevronBounce />
-
-// Different variants
-<ScrollIndicator variant="arrow" />
-<ScrollIndicator variant="mouse" />
-<ScrollIndicator variant="line" />
-```
-
-### EditorialQuote
-
-```tsx
-<EditorialQuote
-  quote="Luxury is in each detail."
-  author="Hubert de Givenchy"
-/>
-
-<EditorialText>
-  Editorial paragraf metni...
-  Birden fazla satir olabilir.
-</EditorialText>
-```
-
-### ProductShowcase
-
-```tsx
-// Single luxury product card
-<ProductCardLuxury
-  product={product}
-  size="medium"  // "small" | "medium" | "large"
-/>
-
-// Grid layout
-<ProductGridLuxury
-  products={products}
-  layout="masonry"  // "masonry" | "uniform" | "featured"
-/>
-```
+| Component | Aciklama | V2 Durumu |
+|-----------|----------|-----------|
+| `GoldDivider` | Altin cizgi ayirici | YASAK -- V2'de border-v2-border-subtle kullan |
+| `MagneticButton` | Magnetik buton efekti | YASAK -- V2 buton pattern'i kullan |
+| `TextReveal` / `LetterSpacingReveal` | Metin reveal animasyonu | YASAK -- fadeInUp kullan |
+| `ParallaxImage` / `ParallaxLayeredImage` | Parallax gorsel | YASAK -- standard Image kullan |
+| `ScrollIndicator` / `ChevronBounce` | Scroll gosterge | YASAK |
+| `EditorialQuote` / `EditorialText` | Editorial metin | YASAK |
+| `ProductCardLuxury` / `ProductGridLuxury` | Luxury urun kartlari | YASAK -- V2 product card kullan |
 
 ---
 
-## Page Patterns
+## Legacy Color Tokens (@DEPRECATED)
 
-### Hero Section (Premium)
+Bu tokenlar hala tailwind.config.ts icinde tanimlidir ama yakinlasik bir temizlik pass'inde kaldirilacaktir. Yeni kodda **kesinlikle kullanma**.
 
-```tsx
-<section className="relative h-screen overflow-hidden bg-luxury-charcoal">
-  {/* Parallax Background */}
-  <ParallaxImage
-    src="/hero.jpg"
-    className="absolute inset-0"
-    parallaxAmount={0.3}
-  />
+### Gecis Tablosu
 
-  {/* Overlay */}
-  <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60" />
+| Legacy Token | Hex | V2 Karsiligi |
+|-------------|-----|-------------|
+| `luxury-primary` | #1e3a3a | V2'de karsiligi yok -- kullanma |
+| `luxury-primary-light` | #2d5555 | V2'de karsiligi yok -- kullanma |
+| `luxury-primary-dark` | #152a2a | V2'de karsiligi yok -- kullanma |
+| `luxury-gold` | #c9a962 | `v2-accent` (#8B6F47) |
+| `luxury-gold-light` | #d4b87a | `v2-accent` (#8B6F47) |
+| `luxury-terracotta` | #e07d4c | `v2-accent` (#8B6F47) |
+| `luxury-cream` | #faf9f6 | `v2-bg-primary` (#FAF7F2) |
+| `luxury-ivory` | #f5f4f0 | `v2-bg-primary` (#FAF7F2) |
+| `luxury-stone` | #e8e6e1 | `v2-border-subtle` (#E8E2D8) |
+| `luxury-charcoal` | #2d2d2d | `v2-text-primary` (#1C1917) |
 
-  {/* Content */}
-  <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
-    <motion.span
-      className="font-display text-xs tracking-[0.3em] uppercase text-luxury-gold mb-4"
-      variants={fadeInUp}
-      initial="hidden"
-      animate="visible"
-    >
-      2026 Koleksiyonu
-    </motion.span>
+### Eski Palette Tokenlari (KULLANMA)
 
-    <motion.h1
-      className="font-serif text-5xl md:text-7xl mb-6"
-      variants={letterSpacingReveal}
-      initial="hidden"
-      animate="visible"
-    >
-      AEGEAN
-    </motion.h1>
+| Token Ailesi | Durum |
+|-------------|-------|
+| `sand-*` (50-900) | DEPRECATED -- kullanma |
+| `aegean-*` (50-900) | DEPRECATED -- kullanma |
+| `terracotta-*` (50-900) | DEPRECATED -- kullanma |
+| `leather-*` (50-900) | DEPRECATED -- kullanma |
+| `olive-gold` | DEPRECATED -- kullanma |
+| `sea-foam` | DEPRECATED -- kullanma |
 
-    <GoldDivider className="mb-8" />
+### Eski Font Tokenlari
 
-    <MagneticButton variant="primary" icon={<ArrowIcon />}>
-      Kesfet
-    </MagneticButton>
-  </div>
-
-  {/* Scroll indicator */}
-  <ChevronBounce className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white" />
-</section>
-```
-
-### Section with Animation
-
-```tsx
-<section className="py-24 bg-luxury-cream">
-  <div className="container max-w-7xl mx-auto px-4">
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
-      variants={staggerContainer}
-      className="text-center mb-16"
-    >
-      {/* Eyebrow */}
-      <motion.span
-        variants={fadeInUp}
-        className="font-display text-xs tracking-[0.3em] uppercase text-luxury-gold mb-4 block"
-      >
-        Koleksiyonlar
-      </motion.span>
-
-      {/* Title */}
-      <motion.h2
-        variants={fadeInUp}
-        className="font-serif text-3xl md:text-4xl text-luxury-charcoal mb-4"
-      >
-        Kesfedilmeyi Bekliyor
-      </motion.h2>
-
-      {/* Divider */}
-      <GoldDivider className="mx-auto" />
-    </motion.div>
-
-    {/* Content grid */}
-    <motion.div
-      className="grid grid-cols-1 md:grid-cols-3 gap-8"
-      variants={staggerContainer}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-    >
-      {items.map((item) => (
-        <motion.div key={item.id} variants={fadeInUp}>
-          {/* Card content */}
-        </motion.div>
-      ))}
-    </motion.div>
-  </div>
-</section>
-```
-
-### Scroll-Snap Frame
-
-```tsx
-<div
-  className="snap-start snap-always relative overflow-hidden"
-  style={{
-    height: '100dvh',
-    minHeight: '100dvh',
-    maxHeight: '100dvh',
-    flexShrink: 0
-  }}
->
-  {/* Frame content */}
-</div>
-```
+| Legacy Token | V2 Karsiligi |
+|-------------|-------------|
+| `font-display` / Cinzel | Kullanma, `font-serif` kullan |
+| `font-accent` / Cinzel | Kullanma, `font-serif` kullan |
+| `font-sans` / DM Sans | `font-inter` kullan |
+| `font-body` / DM Sans | `font-inter` kullan |
 
 ---
 
-## ANTI-PATTERNS (Yapilmamasi Gerekenler)
+## Anti-Patterns
 
-### 1. Parallax Y Movement > ±3%
+### 1. forwardRef Zorunlu (react-hook-form)
 
-**YANLIS:**
 ```tsx
-// Bu FRAME GAP (siyah bant) yaratir!
-useTransform(scrollYProgress, [0, 1], ["-10%", "10%"])
-```
-
-**DOGRU:**
-```tsx
-// Max ±3% kullan, frame gap olmaz
-useTransform(scrollYProgress, [0, 1], ["-3%", "3%"])
-```
-
-**Aciklama:** Parallax Y hareketi fazla olursa, scroll-snap frame'leri arasinda siyah bantlar (gap) olusur.
-
----
-
-### 2. min-h-screen + padding = Scroll-snap Bozulur
-
-**YANLIS:**
-```tsx
-<div className="min-h-screen py-16">
-  {/* Scroll-snap BOZULUR! */}
-</div>
-```
-
-**DOGRU:**
-```tsx
-<div style={{
-  height: '100dvh',
-  minHeight: '100dvh',
-  maxHeight: '100dvh'
-}}>
-  {/* Icerigi flex ile yerlesim */}
-</div>
-```
-
-**Aciklama:** `min-h-screen` + padding, frame'in boyutunu 100vh'den buyuk yapar ve scroll-snap davranisini bozar. `100dvh` (dynamic viewport height) kullan.
-
----
-
-### 3. SheetFooter Layout Sorunu
-
-**YANLIS:**
-```tsx
-<Sheet>
-  <SheetContent>
-    {/* ... */}
-    <SheetFooter>
-      <Button>Checkout</Button>
-    </SheetFooter>
-  </SheetContent>
-</Sheet>
-```
-
-**DOGRU:**
-```tsx
-<Sheet>
-  <SheetContent className="flex flex-col">
-    <SheetHeader>...</SheetHeader>
-    <div className="flex-1 overflow-auto">
-      {/* Content */}
-    </div>
-    <div className="border-t border-luxury-stone p-4 mt-auto">
-      <Button className="w-full">Checkout</Button>
-    </div>
-  </SheetContent>
-</Sheet>
-```
-
-**Aciklama:** `SheetFooter` component'i CartDrawer'da layout sorunlari yaratir. Manuel `div` ile flex layout kullan.
-
----
-
-### 4. forwardRef Gerekli (react-hook-form)
-
-**YANLIS:**
-```tsx
+// YANLIS
 function CustomInput(props) {
   return <input {...props} />
 }
 
-// react-hook-form ile CALISMAZ!
-<FormControl>
-  <CustomInput />
-</FormControl>
-```
-
-**DOGRU:**
-```tsx
+// DOGRU
 const CustomInput = React.forwardRef<HTMLInputElement, InputProps>(
   (props, ref) => {
     return <input ref={ref} {...props} />
   }
 )
 CustomInput.displayName = "CustomInput"
-
-// react-hook-form ile CALISIR
-<FormControl>
-  <CustomInput />
-</FormControl>
 ```
 
-**Aciklama:** react-hook-form, input'lara ref atar. `forwardRef` kullanmazsan form validation calismaz.
+react-hook-form input'lara ref atar. `forwardRef` kullanmazsan form validation calismaz.
 
----
+### 2. SheetFooter Kullanma
 
-### 5. Legacy Token Kullanimi
-
-**YANLIS:**
 ```tsx
-<div className="bg-sand-50 text-leather-900">
-<Button className="bg-aegean-500 hover:bg-aegean-600">
+// YANLIS
+<SheetFooter>
+  <Button>Checkout</Button>
+</SheetFooter>
+
+// DOGRU
+<div className="border-t border-v2-border-subtle p-4 mt-auto">
+  <Button className="w-full">Checkout</Button>
+</div>
 ```
 
-**DOGRU:**
+`SheetFooter` component'i CartDrawer'da layout sorunlari yaratir. Manuel div ile flex layout kullan.
+
+### 3. V2 Sayfalarda luxury-* Token Kullanma
+
 ```tsx
+// YANLIS
 <div className="bg-luxury-cream text-luxury-charcoal">
 <Button className="bg-luxury-primary hover:bg-luxury-primary-light">
+
+// DOGRU
+<div className="bg-v2-bg-primary text-v2-text-primary">
+<button className="bg-v2-text-primary text-white hover:opacity-90 rounded-none">
 ```
 
-**Aciklama:** Legacy tokenlar (`sand-*`, `leather-*`, `aegean-*`) deprecated. Her zaman `luxury-*` tokenlarini kullan.
+### 4. V2 Sayfalarda GoldDivider/MagneticButton Kullanma
 
----
-
-### 6. Image Scale < 1.02
-
-**YANLIS:**
 ```tsx
-// Parallax'ta scale:1 kullanma - edge gorunur
-<motion.div style={{ scale: 1 }}>
-  <Image fill />
-</motion.div>
+// YANLIS
+<GoldDivider />
+<MagneticButton variant="primary">Kesfet</MagneticButton>
+
+// DOGRU
+<div className="border-b border-v2-border-subtle" />
+<button className="bg-v2-text-primary text-white rounded-none px-8 py-3">Kesfet</button>
 ```
 
-**DOGRU:**
+### 5. Parallax Y Movement > +/-3%
+
 ```tsx
-// Minimum 1.02 scale kullan
-<motion.div style={{ scale: 1.05 }}>
-  <Image fill className="object-cover" />
-</motion.div>
+// YANLIS -- frame gap (siyah bant) yaratir
+useTransform(scrollYProgress, [0, 1], ["-10%", "10%"])
+
+// DOGRU -- max +/-3%
+useTransform(scrollYProgress, [0, 1], ["-3%", "3%"])
 ```
 
-**Aciklama:** Parallax image'larda scale 1.0 olursa, hareket sirasinda kenarlar gorunur. Minimum 1.02-1.05 scale kullan.
-
 ---
 
-## Deprecation Notice
-
-### Legacy Tokens (KULLANMA)
-
-Bu tokenlar deprecated ve `luxury-*` sistemine migrate edilmeli:
-
-| Deprecated | Yerine Kullan |
-|------------|---------------|
-| `sand-50` | `luxury-cream` |
-| `sand-100` | `luxury-ivory` |
-| `sand-200` | `luxury-stone` |
-| `leather-900` | `luxury-charcoal` |
-| `leather-600` | `luxury-charcoal/80` |
-| `leather-500` | `luxury-charcoal/60` |
-| `leather-400` | `luxury-charcoal/40` |
-| `aegean-500` | `luxury-primary` |
-| `aegean-600` | `luxury-primary-dark` |
-| `terracotta-500` | `luxury-terracotta` |
-
-Mevcut kodda bu tokenlari gorursen, `luxury-*` sistemine cevir.
-
----
-
-*Bu skill Halikarnas Sandals projesinin design system'i icin tek kaynak (source of truth) olarak kullanilmalidir.*
+*Bu skill Halikarnas Sandals projesinin V2 design system'i icin tek kaynak (source of truth) olarak kullanilmalidir.*

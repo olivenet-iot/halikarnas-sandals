@@ -10,6 +10,8 @@
 
 ---
 
+**Not:** Koleksiyon (Collection) API endpoint'leri (`/api/admin/collections`) kaldirilmistir. `isNew` alani Product schema'dan silinmistir.
+
 ## Route Handler Pattern
 
 ### Temel Yapi
@@ -254,7 +256,6 @@ export const productSchema = z.object({
   status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]).default("DRAFT"),
   material: z.string().optional(),
   isFeatured: z.boolean().default(false),
-  isNew: z.boolean().default(false),
   isBestSeller: z.boolean().default(false),
 });
 
@@ -570,5 +571,33 @@ export async function POST(request: NextRequest) {
   }
 
   // ... rest of handler
+}
+```
+
+## Public Settings Endpoint
+
+```typescript
+// GET /api/settings — Public shipping config
+// Auth gerektirmez
+export async function GET() {
+  try {
+    const settings = await db.siteSetting.findMany({
+      where: { group: "shipping" },
+    });
+
+    const config = {
+      freeShippingThreshold: 500,
+      shippingCost: 49.9,
+    };
+
+    for (const s of settings) {
+      if (s.key === "free_shipping_threshold") config.freeShippingThreshold = parseFloat(s.value);
+      if (s.key === "standard_shipping_cost") config.shippingCost = parseFloat(s.value);
+    }
+
+    return NextResponse.json(config);
+  } catch {
+    return NextResponse.json({ freeShippingThreshold: 500, shippingCost: 49.9 });
+  }
 }
 ```

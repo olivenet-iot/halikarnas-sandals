@@ -28,7 +28,6 @@ import { useRouter } from "next/navigation";
 
 // 3. UI component imports
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 
 // 4. Icon imports
 import { ShoppingCart, Heart } from "lucide-react";
@@ -102,69 +101,71 @@ export function AddToCartButton({ productId }: { productId: string }) {
 
 **Detayli bilgi:** `.claude/skills/halikarnas-design-system.md`
 
-### Renk Sistemi (Luxury Palette)
+### Renk Sistemi (V2 Palette)
 
 ```tsx
-// Primary
-<Button className="bg-luxury-primary hover:bg-luxury-primary-light text-white">
-<Link className="text-luxury-primary hover:text-luxury-gold">
+// V2 PRIMARY -- Renkler
+<Button className="bg-v2-text-primary text-white hover:opacity-90 rounded-none">
+<Link className="link-underline-v2 text-v2-text-primary">
 
 // Backgrounds
-<div className="bg-luxury-cream">      // Page background
-<div className="bg-luxury-ivory">      // Section background
-<div className="bg-luxury-stone">      // Subtle background
+<div className="bg-v2-bg-primary">      // Page background (#FAF7F2)
+<div className="bg-v2-bg-dark">         // Footer, dark sections (#2A2A26)
 
 // Text
-<h1 className="text-luxury-charcoal">         // Basliklar
-<p className="text-luxury-charcoal/80">       // Body text
-<span className="text-luxury-charcoal/60">    // Muted text
-<span className="text-luxury-charcoal/40">    // Very muted
+<h1 className="text-v2-text-primary font-serif font-light">   // Basliklar (#1C1917)
+<p className="text-v2-text-muted font-inter">                 // Body text (#6B6560)
+<span className="text-v2-accent font-inter">                  // Accent (#8B6F47)
 
-// Gold Accents
-<span className="text-luxury-gold">           // Accent text
-<MagneticButton variant="primary">            // Gold CTA
-
-// Sale/Accent
-<Badge className="bg-luxury-terracotta text-white">
+// Border
+<div className="border-b border-v2-border-subtle">            // (#E8E2D8)
 ```
+
+> **Legacy Not:** `luxury-*` tokenlari sadece admin, auth ve hesabim sayfalarinda kullanilir.
+> Yeni V2 sayfalarinda `luxury-*`, `sand-*`, `aegean-*`, `leather-*`, `terracotta-*` tokenlari YASAKTIR.
 
 ### Typography
 
 ```tsx
-// Hero title (full-screen pages)
-<h1 className="font-serif text-5xl md:text-7xl text-luxury-charcoal tracking-tight">
-
-// Page title
-<h1 className="font-serif text-3xl md:text-4xl text-luxury-charcoal">
+// Hero title
+<h1 className="font-serif font-light text-[2.5rem] md:text-[4rem] text-v2-text-primary">
 
 // Section title
-<h2 className="font-serif text-2xl md:text-3xl text-luxury-charcoal">
+<h2 className="font-serif font-light text-2xl md:text-3xl text-v2-text-primary">
 
-// Subsection
-<h3 className="font-serif text-xl md:text-2xl text-luxury-charcoal">
+// Eyebrow label
+<span className="font-inter text-v2-label uppercase tracking-[0.2em] text-v2-accent">
 
 // Body
-<p className="text-luxury-charcoal/80 leading-relaxed">
-<p className="text-sm text-luxury-charcoal/60">
+<p className="font-inter text-v2-body text-v2-text-muted leading-relaxed">
 
-// Luxury label (gold, uppercase)
-<span className="font-display text-xs tracking-[0.3em] uppercase text-luxury-gold">
+// Form label
+<label className="font-inter text-xs uppercase tracking-[0.15em] text-v2-text-muted">
 
-// Labels
-<label className="text-sm font-medium text-luxury-charcoal">
+// Product name
+<h3 className="font-serif font-normal text-sm text-v2-text-primary">
+
+// Price
+<span className="font-inter text-sm text-v2-text-primary">
+
+// Nav link
+<span className="font-inter text-xs uppercase tracking-[0.15em] text-v2-text-primary">
 ```
 
 ### Layout Patterns
 
 ```tsx
-// Container
-<div className="container py-8 md:py-12">
+// V2 Container
+<div className="container-v2">
 
-// Section
-<section className="py-16 md:py-24">
+// V2 Section
+<section className="section-v2 container-v2">
 
-// Grid
-<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+// 12-column Grid
+<div className="grid grid-cols-1 md:grid-cols-12 gap-16 lg:gap-24">
+
+// Product Grid (4 columns)
+<div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
 
 // Flex Center
 <div className="flex items-center justify-center">
@@ -173,42 +174,41 @@ export function AddToCartButton({ productId }: { productId: string }) {
 <div className="flex items-center justify-between">
 ```
 
-### Card Pattern
+### Card Pattern (V2 Product Card)
 
 ```tsx
-<Card className="bg-luxury-ivory border-luxury-stone rounded-lg shadow-soft overflow-hidden">
-  <CardHeader className="p-4 border-b border-luxury-stone">
-    <CardTitle className="font-serif text-luxury-charcoal">Baslik</CardTitle>
-  </CardHeader>
-  <CardContent className="p-4">
-    <p className="text-luxury-charcoal/80">Icerik</p>
-  </CardContent>
-  <CardFooter className="p-4 border-t border-luxury-stone bg-luxury-cream">
-    Footer
-  </CardFooter>
-</Card>
+// V2 Product Card -- no border, no rounded
+<div className="group relative w-full">
+  <div className="aspect-[3/4] overflow-hidden bg-v2-bg-primary">
+    <Image
+      src="..."
+      alt="..."
+      fill
+      className="object-cover transition-transform duration-[800ms] ease-out group-hover:scale-[1.02]"
+    />
+  </div>
+  <div className="pt-3 space-y-1">
+    <h3 className="font-serif font-normal text-sm text-v2-text-primary">{name}</h3>
+    <p className="font-inter text-sm text-v2-text-primary">{formatPrice(price)}</p>
+  </div>
+</div>
 ```
 
 ### Section Pattern
 
 ```tsx
-<section className="py-16 md:py-24 bg-luxury-cream">
-  <div className="container max-w-7xl mx-auto px-4">
-    {/* Section Header */}
-    <div className="text-center mb-12">
-      <span className="font-display text-xs tracking-[0.3em] uppercase text-luxury-gold mb-4 block">
-        Kategori
-      </span>
-      <h2 className="font-serif text-2xl md:text-3xl text-luxury-charcoal mb-4">
-        Baslik
-      </h2>
-      <GoldDivider className="mx-auto" />
-    </div>
-
-    {/* Content */}
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-      {/* Items */}
-    </div>
+<section className="section-v2 container-v2">
+  <span className="font-inter text-v2-label uppercase tracking-[0.2em] text-v2-accent block mb-4">
+    KATEGORI
+  </span>
+  <h2 className="font-serif font-light text-2xl md:text-3xl text-v2-text-primary mb-6">
+    Baslik
+  </h2>
+  <p className="font-inter text-v2-body text-v2-text-muted mb-12">
+    Aciklama
+  </p>
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    {/* Items */}
   </div>
 </section>
 ```
@@ -312,7 +312,11 @@ export function ContactForm() {
           )}
         />
 
-        <Button type="submit" disabled={form.formState.isSubmitting}>
+        <Button
+          type="submit"
+          disabled={form.formState.isSubmitting}
+          className="bg-v2-text-primary text-white hover:opacity-90 rounded-none w-full py-3 font-inter text-xs uppercase tracking-[0.15em]"
+        >
           {form.formState.isSubmitting && (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           )}
@@ -411,15 +415,15 @@ export function ProductActions({ product, variant }) {
 ## Loading States
 
 ```tsx
-// Skeleton Loading
+// Skeleton Loading (V2)
 import { Skeleton } from "@/components/ui/skeleton";
 
 function ProductCardSkeleton() {
   return (
     <div className="space-y-3">
-      <Skeleton className="h-64 w-full rounded-lg" />
-      <Skeleton className="h-4 w-3/4" />
-      <Skeleton className="h-4 w-1/2" />
+      <div className="aspect-[3/4] w-full bg-v2-border-subtle animate-pulse" />
+      <div className="h-4 w-3/4 bg-v2-border-subtle animate-pulse" />
+      <div className="h-4 w-1/2 bg-v2-border-subtle animate-pulse" />
     </div>
   );
 }
@@ -434,7 +438,7 @@ function ProductCardSkeleton() {
 export default function Loading() {
   return (
     <div className="flex items-center justify-center min-h-[50vh]">
-      <Loader2 className="h-8 w-8 animate-spin text-aegean-600" />
+      <Loader2 className="h-8 w-8 animate-spin text-v2-text-muted" />
     </div>
   );
 }
@@ -508,9 +512,14 @@ import Image from "next/image";
 
 ---
 
-## Animation (Framer Motion)
+## Animation
 
 **Detayli bilgi:** `.claude/skills/halikarnas-design-system.md`
+
+### V2 Animasyonlar (Tercih Edilen)
+
+V2 animasyonlar: `sectionRevealV2`, `staggerV2`, `viewportV2` kullanin.
+CSS-first yaklasim: basit animasyonlar icin `transition-all duration-700 ease-out` tercih edin.
 
 ### Import
 
@@ -520,43 +529,64 @@ import {
   TIMING,
   EASE,
   fadeInUp,
-  staggerContainer,
-  goldLine,
-  letterSpacingReveal,
+  sectionRevealV2,
+  staggerV2,
+  viewportV2,
 } from "@/lib/animations";
 ```
 
-### Pre-built Variants Kullanimi (Tercih Edilen)
+### V2 Section Reveal (Tercih Edilen)
 
 ```tsx
-// Fade in up (viewport triggered)
+// Section reveal on scroll
 <motion.div
-  variants={fadeInUp}
+  variants={sectionRevealV2}
   initial="hidden"
   whileInView="visible"
-  viewport={{ once: true }}
+  viewport={viewportV2}
 >
   Content
 </motion.div>
 
-// Staggered list
+// Staggered list (V2)
 <motion.div
-  variants={staggerContainer}
+  variants={staggerV2}
   initial="hidden"
   whileInView="visible"
-  viewport={{ once: true }}
+  viewport={viewportV2}
 >
   {items.map((item) => (
-    <motion.div key={item.id} variants={fadeInUp}>
+    <motion.div key={item.id} variants={sectionRevealV2}>
       {item.name}
     </motion.div>
   ))}
 </motion.div>
+```
 
-// Gold line reveal
-<motion.div variants={goldLine}>
-  <GoldDivider />
-</motion.div>
+### CSS-First Animation (Basit Durumlar Icin)
+
+```tsx
+// Entry reveal
+<div className={cn(
+  "transition-all duration-700 ease-out",
+  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+)}>
+  Content
+</div>
+
+// Image hover zoom (800ms, max 1.02 scale)
+<div className="relative overflow-hidden">
+  <Image
+    src="..."
+    alt="..."
+    fill
+    className="object-cover transition-transform duration-[800ms] ease-out group-hover:scale-[1.02]"
+  />
+</div>
+
+// Product image swap (opacity transition)
+<Image className="object-cover transition-all duration-[400ms] ease-out group-hover:opacity-0" />
+<Image className="object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-[400ms] ease-out" />
 ```
 
 ### Manuel Animation (Gerektiginde)
@@ -576,6 +606,19 @@ import {
   transition={{ duration: TIMING.slow, ease: EASE.luxury }}
   viewport={{ once: true }}
 >
+
+// Step transition (checkout)
+<AnimatePresence mode="wait">
+  <motion.div
+    key={currentStep}
+    initial={{ opacity: 0, x: 20 }}
+    animate={{ opacity: 1, x: 0 }}
+    exit={{ opacity: 0, x: -20 }}
+    transition={{ duration: 0.4, ease: EASE.luxury }}
+  >
+    {/* Step content */}
+  </motion.div>
+</AnimatePresence>
 ```
 
 ### TIMING & EASE Constants
@@ -589,15 +632,20 @@ TIMING.slow     // 0.7s  - sections
 TIMING.cinematic // 1.5s - hero
 
 // Easing
-EASE.luxury     // [0.4, 0, 0.2, 1] - premium feel
+EASE.luxury     // [0.4, 0, 0.2, 1] - premium feel (DEFAULT)
 EASE.smooth     // [0.25, 0.1, 0.25, 1]
 EASE.bounce     // bouncy effect
 EASE.spring     // physics-based
+
+// V2 viewport settings
+viewportV2      // { once: true, amount: 0.15, margin: "-50px" }
 ```
 
 ---
 
-## Luxury Components
+## LEGACY -- Sadece admin/auth/hesabim
+
+**UYARI:** Asagidaki component'ler V2 sayfalarda KESINLIKLE kullanilmaz. Sadece admin paneli, auth sayfalari ve hesabim bolumunde kalirlar.
 
 **Detayli bilgi:** `.claude/skills/halikarnas-design-system.md`
 
@@ -615,18 +663,17 @@ import {
 } from "@/components/ui/luxury";
 ```
 
-### Kullanim Ornekleri
+### Kullanim Ornekleri (sadece legacy sayfalar)
 
 ```tsx
 // Gold divider
 <GoldDivider />
 <GoldDivider variant="wide" />
-<GoldDivider className="mx-auto" />
 
 // Magnetic button (gold, premium feel)
 <MagneticButton variant="primary">Kesfet</MagneticButton>
-<MagneticButton variant="outline" href="/koleksiyonlar">
-  Koleksiyonlar
+<MagneticButton variant="outline" href="/hakkimizda">
+  Hikayemiz
 </MagneticButton>
 
 // Text animations
@@ -649,3 +696,40 @@ import {
   author="Hubert de Givenchy"
 />
 ```
+
+### Legacy Renk Token'lari (admin/auth/hesabim)
+
+```tsx
+// Bu tokenlar SADECE legacy sayfalarda kullanilir
+<Button className="bg-luxury-primary hover:bg-luxury-primary-light text-white">
+<span className="text-luxury-gold">
+<div className="bg-luxury-cream">
+<div className="bg-luxury-ivory border-luxury-stone">
+```
+
+### Legacy Animation'lar
+
+```tsx
+// Sadece legacy sayfalarda
+import { goldLine, letterSpacingReveal, staggerContainerCinematic } from "@/lib/animations";
+
+<motion.div variants={goldLine}>
+  <GoldDivider />
+</motion.div>
+```
+
+---
+
+## V2 Sayfa Olusturma Rehberi
+
+1. Sayfa arka plani: `bg-v2-bg-primary`
+2. Section'lar: `section-v2 container-v2`
+3. Basliklar: `font-serif font-light` (Cormorant Garamond)
+4. Body text: `font-inter` (Inter)
+5. Linkler: `link-underline-v2`
+6. Formlar: Underline input pattern (border-b, no card wrapper)
+7. Butonlar: `rounded-none`, outline veya dolu siyah
+8. Animasyonlar: sectionRevealV2 + viewportV2
+
+**Detayli pattern ornekleri:** `.claude/skills/halikarnas-v2-patterns.md`
+**Detayli token bilgisi:** `.claude/skills/halikarnas-design-system.md`

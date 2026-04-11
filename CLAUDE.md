@@ -28,7 +28,7 @@ Halikarnas Sandals, Bodrum/Turkiye merkezli bir el yapimi hakiki deri sandalet m
 ```
 halikarnas-sandals/
 ├── prisma/
-│   ├── schema.prisma          # Database schema (20+ modeller)
+│   ├── schema.prisma          # Database schema (18 modeller)
 │   ├── seed.ts                # Seed data (kategoriler, urunler, sayfalar)
 │   └── migrations/            # Migration gecmisi
 ├── src/
@@ -37,12 +37,10 @@ halikarnas-sandals/
 │   │   │   ├── kadin/         # Kadin kategorisi
 │   │   │   ├── erkek/         # Erkek kategorisi
 │   │   │   ├── urun/[slug]/   # Urun detay
-│   │   │   ├── sepet/         # Sepet
 │   │   │   ├── odeme/         # Checkout
 │   │   │   ├── hesabim/       # Kullanici paneli
-│   │   │   ├── koleksiyonlar/ # Koleksiyonlar
 │   │   │   ├── arama/         # Arama sonuclari
-│   │   │   ├── hakkimizda/    # Hakkimizda
+│   │   │   ├── hikayemiz/     # Marka hikayesi (V2)
 │   │   │   ├── iletisim/      # Iletisim formu
 │   │   │   ├── sss/           # SSS
 │   │   │   ├── beden-rehberi/ # Beden tablosu
@@ -54,7 +52,6 @@ halikarnas-sandals/
 │   │   ├── admin/             # Admin paneli
 │   │   │   ├── urunler/       # Urun CRUD
 │   │   │   ├── kategoriler/   # Kategori yonetimi
-│   │   │   ├── koleksiyonlar/ # Koleksiyon yonetimi
 │   │   │   ├── siparisler/    # Siparis yonetimi
 │   │   │   ├── kullanicilar/  # Kullanici yonetimi
 │   │   │   ├── kuponlar/      # Kupon CRUD
@@ -116,7 +113,6 @@ halikarnas-sandals/
 | `ProductVariant` | Renk/beden kombinasyonlari, stok, SKU |
 | `ProductImage` | Urun gorselleri (position, isPrimary) |
 | `Category` | Hiyerarsik kategoriler (parent/children) |
-| `Collection` | Koleksiyonlar (N:N with Product) |
 | `Order` | Siparisler (durum takibi, adres snapshot) |
 | `OrderItem` | Siparis kalemleri (urun snapshot) |
 | `Cart` / `CartItem` | Sepet (user veya session bazli) |
@@ -150,7 +146,6 @@ User ──1:N── WishlistItem ──N:1── Product
 Product ──N:1── Category (parent/children)
 Product ──1:N── ProductVariant
 Product ──1:N── ProductImage
-Product ──N:N── Collection (via CollectionProduct)
 
 Order ──N:1── Coupon
 Order ──1:N── OrderStatusHistory
@@ -169,6 +164,7 @@ Order ──1:N── OrderStatusHistory
 | `/api/coupon/validate` | POST | Kupon dogrulama |
 | `/api/locations/cities` | GET | Sehir listesi |
 | `/api/locations/districts` | GET | Ilce listesi (?city=) |
+| `/api/settings` | GET | Public shipping config |
 
 ### Auth API
 
@@ -201,7 +197,6 @@ Order ──1:N── OrderStatusHistory
 | `/api/admin/products/[id]` | GET, PATCH, DELETE | Urun detay/guncelleme/silme |
 | `/api/admin/categories` | GET, POST | Kategoriler |
 | `/api/admin/categories/[id]` | PATCH, DELETE | Kategori islemleri |
-| `/api/admin/collections` | GET, POST | Koleksiyonlar |
 | `/api/admin/orders/[id]` | GET, PATCH | Siparis detay/durum guncelle |
 | `/api/admin/users/[id]` | GET, PATCH, DELETE | Kullanici islemleri |
 | `/api/admin/coupons` | GET, POST | Kuponlar |
@@ -283,34 +278,33 @@ interface UIStore {
 
 **Detayli bilgi:** `.claude/skills/halikarnas-design-system.md`
 
-### Renkler (Luxury Palette - KULLAN)
+### V2 Renkler (PRIMARY — tum V2 sayfalarda)
 
 | Token | Hex | Kullanim |
 |-------|-----|----------|
-| `luxury-primary` | #1e3a3a | Primary actions, headings |
-| `luxury-primary-light` | #2d5555 | Hover states |
-| `luxury-gold` | #c9a962 | Premium CTAs, dividers |
-| `luxury-terracotta` | #e07d4c | Accent, sale badges |
-| `luxury-cream` | #faf9f6 | Page backgrounds |
-| `luxury-ivory` | #f5f4f0 | Section backgrounds |
-| `luxury-stone` | #e8e6e1 | Borders, subtle backgrounds |
-| `luxury-charcoal` | #2d2d2d | Text, dark elements |
+| `v2-bg-primary` | #FAF7F2 | Sayfa arkaplan |
+| `v2-bg-dark` | #2A2A26 | Footer, koyu section'lar |
+| `v2-text-primary` | #1C1917 | Basliklar, ana metin |
+| `v2-text-muted` | #6B6560 | Ikincil metin, label'lar |
+| `v2-accent` | #8B6F47 | Bronz aksesuar, aktif gostergeler |
+| `v2-border-subtle` | #E8E2D8 | Kenarliklar, input alt cizgi |
 
-### Legacy Renkler (DEPRECATED - KULLANMA)
+### Legacy Renkler (@DEPRECATED — sadece admin/auth/hesabim)
 
-```
-sand-*      -> luxury-cream/ivory/stone kullan
-leather-*   -> luxury-charcoal kullan
-aegean-*    -> luxury-primary kullan
-terracotta-* -> luxury-terracotta kullan
-```
+| Token | Not |
+|-------|-----|
+| `luxury-primary` (#1e3a3a) | V2'de kullanilmaz |
+| `luxury-gold` (#c9a962) | v2-accent kullan |
+| `luxury-cream`, `luxury-ivory`, `luxury-stone`, `luxury-charcoal` | v2-* karsiliklari kullan |
+| `sand-*`, `aegean-*`, `terracotta-*`, `leather-*` | Kullanma |
 
 ### Typography
 
 ```
-font-serif / font-heading: Cormorant Garamond (basliklar)
-font-sans / font-body: Inter / DM Sans (body text)
-font-accent / font-display: Cinzel (luxury labels)
+font-serif / font-heading: Cormorant Garamond (300, 400 + italic) — V2 basliklar
+font-inter: Inter (400, 500) — V2 body text, label'lar, butonlar
+font-sans / font-body: DM Sans — LEGACY, font-inter kullan
+font-accent / font-display: Cinzel — LEGACY, V2'de kullanma
 ```
 
 ### Animation System
@@ -328,7 +322,28 @@ import { TIMING, EASE, fadeInUp, staggerContainer } from "@/lib/animations";
 import { GoldDivider, MagneticButton, TextReveal, ParallaxImage } from "@/components/ui/luxury";
 ```
 
-### Component Patterns
+### V2 Component Patterns
+
+```tsx
+// V2 Section
+<section className="section-v2 container-v2">
+
+// V2 Label
+<span className="font-inter text-v2-label uppercase tracking-[0.2em] text-v2-accent">
+
+// V2 Heading
+<h1 className="font-serif font-light text-2xl md:text-4xl text-v2-text-primary">
+
+// V2 Button (outline)
+<button className="border border-v2-text-primary text-v2-text-primary hover:bg-v2-text-primary hover:text-white rounded-none px-8 py-3">
+
+// V2 Input (underline)
+<input className="border-0 border-b border-v2-border-subtle focus:border-v2-text-primary bg-transparent">
+```
+
+**Detayli V2 pattern'ler:** `.claude/skills/halikarnas-v2-patterns.md`
+
+### Legacy Component Patterns (admin/auth/hesabim)
 
 ```tsx
 // Primary Button (Luxury)
@@ -359,6 +374,9 @@ import { GoldDivider, MagneticButton, TextReveal, ParallaxImage } from "@/compon
 - `min-h-screen` + padding ile scroll-snap bozulur
 - `SheetFooter` yerine manuel div kullan
 - Form input'larda `forwardRef` zorunlu (react-hook-form)
+- V2 sayfalarda `luxury-*`, `sand-*`, `aegean-*` token'lari kullanma
+- V2 sayfalarda GoldDivider, MagneticButton kullanma
+- V2 sayfalarda font-display (Cinzel) kullanma
 
 ---
 
@@ -562,14 +580,15 @@ export async function POST(request: NextRequest) {
 ## TODO / Bekleyen Gelistirmeler
 
 - [ ] Payment integration (iyzico/PayTR)
-- [ ] Email sending (Resend/Nodemailer)
-- [ ] Image upload (Uploadthing/Cloudinary)
+- [ ] Email sending — KISMI TAMAMLANDI (Resend entegre, template'ler hazir)
+- [ ] Image upload — KISMI TAMAMLANDI (Cloudinary entegre)
 - [ ] Real-time notifications
 - [ ] PWA support
 - [ ] Multi-language (i18n)
 - [ ] Advanced analytics
 - [ ] Review system implementation
 - [ ] Blog/Magazine section
+- [ ] V2 migration: auth sayfalari, hesabim sayfalari, dynamic [category] route'lari
 
 ---
 
@@ -577,12 +596,12 @@ export async function POST(request: NextRequest) {
 
 | Metrik | Deger |
 |--------|-------|
-| TypeScript dosyalari | 198 |
-| React components | 81 |
-| API routes | 33 |
-| Pages | 43 |
+| TypeScript dosyalari | 254 |
+| React components | 102 |
+| API routes | 46 |
+| Pages | 49 |
 | Zustand stores | 5 |
-| Prisma models | 20+ |
+| Prisma models | 18 |
 | shadcn/ui components | 40+ |
 
 ---

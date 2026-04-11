@@ -280,6 +280,16 @@ const order = await db.order.findUnique({
 
 ---
 
+### Odeme Durumu
+
+**Aktif odeme yontemi:** Sadece "Kapida Odeme" (`cash_on_delivery`)
+
+**Kredi karti:** UI'da devre disi (`disabled: true`, "Yakinda" badge). iyzico/PayTR entegrasyonu bekliyor — launch oncesi kritik oncelik.
+
+Tum siparisler `paymentStatus: PENDING` ile olusturulur.
+
+---
+
 ## Email Bildirimleri (Planned)
 
 | Durum | Email Tipi |

@@ -1,6 +1,6 @@
 # Halikarnas Sandals
 
-Premium el yapimi deri sandalet e-ticaret platformu. Bodrum/Turkiye merkezli bir zanaat markasi icin gelistirilmistir.
+Premium el yapimi deri sandalet e-ticaret platformu. Bodrum/Turkiye merkezli bir zanaat markasi icin gelistirilmistir. V2 tasarim sistemi (minimal, editorial estetik) ile gelistirilmektedir.
 
 ## Tech Stack
 
@@ -13,7 +13,9 @@ Premium el yapimi deri sandalet e-ticaret platformu. Bodrum/Turkiye merkezli bir
 | State | Zustand |
 | Styling | Tailwind CSS + shadcn/ui |
 | Forms | React Hook Form + Zod |
+| Animation | Framer Motion |
 | Images | Cloudinary |
+| Email | Resend |
 
 ## Kurulum
 
@@ -66,8 +68,10 @@ src/
 │   └── api/               # API Routes
 ├── components/
 │   ├── ui/                # shadcn/ui componentleri
-│   ├── layout/            # Navbar, Footer
-│   ├── shop/              # Urun kartlari, filtreler
+│   ├── layout/            # Navbar, Footer, CartDrawer
+│   ├── shop/              # Urun kartlari, filtreler (V2)
+│   ├── checkout/           # Checkout componentleri (V2)
+│   ├── providers/          # Auth, ShippingConfig providers
 │   └── admin/             # Admin componentleri
 ├── lib/
 │   ├── db.ts              # Prisma client
@@ -112,14 +116,18 @@ npx prisma generate        # Client generate
 
 ## Ozellikler
 
-- Urun katalog yonetimi
-- Sepet ve checkout
-- Kullanici hesaplari
-- Admin paneli
-- Koleksiyon yonetimi
-- Kupon sistemi
-- SEO optimizasyonu
-- Responsive tasarim
+- Urun katalog yonetimi (kategori bazli)
+- Sepet (drawer) ve checkout (V2)
+- Kullanici hesaplari ve favoriler
+- Admin paneli (urun/siparis/kullanici/kupon/banner/sayfa yonetimi)
+- Kupon ve indirim sistemi
+- Siparis takip (guest + auth)
+- V2 tasarim sistemi (Cormorant + Inter, warm neutral palet)
+- SEO optimizasyonu (JSON-LD, Open Graph)
+- Responsive tasarim (mobile-first)
+- Email bildirimleri (Resend)
+- Gorsel yonetimi (Cloudinary CDN)
+- Marka hikayesi sayfasi
 
 ## Lisans
 

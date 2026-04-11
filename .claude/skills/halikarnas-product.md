@@ -7,7 +7,6 @@
 - Varyant (beden/renk) yonetimi
 - Gorsel ekleme/duzenleme
 - Kategori atama
-- Koleksiyona ekleme
 
 ---
 
@@ -93,10 +92,11 @@ images: [
 {
   status: "ACTIVE",      // DRAFT, ACTIVE, ARCHIVED
   isFeatured: true,      // One cikan
-  isNew: true,           // Yeni urun
   isBestSeller: false,   // Cok satan
 }
 ```
+
+**Not:** `isNew` alani ve `collections` iliskisi Prisma schema'dan kaldirilmistir. Urunler artik koleksiyonlara atanamaz.
 
 ---
 

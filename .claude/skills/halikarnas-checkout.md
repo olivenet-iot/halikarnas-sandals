@@ -16,7 +16,7 @@
 ### Shipping Form Schema
 
 ```typescript
-// src/lib/validations/checkout.ts
+// Schema inline olarak `src/components/checkout/ShippingForm.tsx` icinde tanimlanmistir.
 import { z } from "zod";
 
 export const shippingSchema = z.object({
@@ -104,7 +104,7 @@ import { Input } from "@/components/ui/input";
         <Input
           placeholder="Adinizi girin"
           {...field}
-          className="bg-white border-luxury-stone focus:border-luxury-gold focus:ring-luxury-gold/20"
+          className="border-0 border-b border-v2-border-subtle bg-transparent focus:border-v2-text-primary focus:ring-0 font-inter text-sm"
         />
       </FormControl>
       <FormMessage />
@@ -644,7 +644,9 @@ interface ShippingInfo {
   email: string;
   phone: string;
   city: string;
+  cityName: string;        // Sehir adi (display icin)
   district: string;
+  districtName: string;    // Ilce adi (display icin)
   neighborhood: string;
   address: string;
   postalCode?: string;
@@ -733,7 +735,18 @@ export const useCheckoutStore = create<CheckoutState & CheckoutActions>()(
 );
 ```
 
-### Step Navigation Component
+### V2 CheckoutSteps (Guncel)
+
+Numarali circle stepper kaldirildi. Text stepper kullaniliyor:
+
+```tsx
+// "Teslimat · Odeme · Onay" — nokta ayiricilar
+// Aktif adim: font-medium text-v2-text-primary + bronz underline (w-6 h-px bg-v2-accent)
+// Tamamlanan adim: text-v2-text-primary + inline check icon
+// Bekleyen adim: text-v2-text-muted
+```
+
+### Step Navigation Component (Legacy)
 
 ```tsx
 // src/components/checkout/CheckoutSteps.tsx
@@ -804,7 +817,18 @@ export function CheckoutSteps() {
 
 ## Payment Method Handling
 
-### Current Implementation (Cash on Delivery)
+### V2 PaymentForm (Guncel)
+
+Card-style radio butonlar kaldirildi. Border-b list items kullaniliyor:
+
+```tsx
+// Her odeme secenegi: border-b border-v2-border-subtle, py-4
+// Radio dot: w-4 h-4 rounded-full border (custom, shadcn RadioGroup degil)
+// Kredi karti secenegi: disabled={true}, "Yakinda" badge gosteriliyor
+// iyzico entegrasyonu geldiginde aktif edilecek
+```
+
+### Current Implementation (Cash on Delivery) (Legacy)
 
 ```tsx
 // src/components/checkout/PaymentForm.tsx
@@ -895,4 +919,50 @@ export const CHECKOUT_CONSTANTS = {
 
 ---
 
+## ShippingConfigProvider (DB-Driven Shipping Config)
+
+Kargo ayarlari artik veritabanindan (`SiteSetting` tablosu) yuklenmektedir.
+
+### Provider
+
+```typescript
+// src/components/providers/ShippingConfigProvider.tsx
+// Shop layout'u sarar — src/app/(shop)/layout.tsx
+
+import { useShippingConfig } from "@/components/providers/ShippingConfigProvider";
+
+// Herhangi bir (shop) component icinde:
+const { freeShippingThreshold, shippingCost } = useShippingConfig();
+// Varsayilan: freeShippingThreshold=500, shippingCost=49.9
+```
+
+### API Endpoint
+
+```typescript
+// GET /api/settings — Public, auth gerektirmez
+// Response: { freeShippingThreshold: number, shippingCost: number }
+```
+
+### Kullanim
+
+CartDrawer ve CheckoutSummary bu context'i kullanir. Hardcoded degerler yerine `useShippingConfig()` tercih edin.
+
+---
+
 *Bu skill checkout akisi, form validation, email entegrasyonu ve siparis islemleri icin referans olarak kullanilmalidir.*
+
+---
+
+## V2 Checkout Ozet
+
+| Oge | Eski | V2 |
+|-----|------|-----|
+| Steps | Numarali altin circle | Text stepper (Teslimat · Odeme · Onay) |
+| Form Input | LuxuryInput card-border | V2Input underline (border-b) |
+| Page Layout | Card wrapper | 12-col grid (7/5 split), card yok |
+| Summary | Card, yesil renkler | Card yok, mobile accordion, bronz accent |
+| Payment | Card-style radio | Border-b list items |
+| Review | 3 card, Radix Checkbox | Border-b section + "Duzenle" link, native checkbox |
+| Final CTA | MagneticButton / altin | Dolu siyah buton (bg-v2-text-primary) |
+
+**Detayli V2 pattern ornekleri:** `.claude/skills/halikarnas-v2-patterns.md`
