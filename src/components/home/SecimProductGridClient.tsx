@@ -26,7 +26,7 @@ export function SecimProductGridClient({ products }: SecimProductGridClientProps
   return (
     <section className="section-v2 container-v2">
       {/* Section heading + "See all" link */}
-      <div className="flex items-end justify-between mb-12 md:mb-16">
+      <div className="flex items-baseline justify-between mb-12 md:mb-16">
         <h2 className="font-serif font-light text-v2-section-sm md:text-v2-section text-v2-text-primary">
           Atölyeden
         </h2>
