@@ -91,7 +91,7 @@ export function Footer() {
             </p>
 
             {/* Contact */}
-            <div className="space-y-2 mb-6">
+            <div className="space-y-2">
               <a
                 href="mailto:info@halikarnassandals.com"
                 className="flex items-center gap-3 text-white/60 hover:text-white font-inter text-sm transition-colors"
@@ -114,37 +114,6 @@ export function Footer() {
                   No:12, 48400 Bodrum / Muğla
                 </span>
               </div>
-            </div>
-
-            {/* Social — plain SVG, no circles */}
-            <div className="flex gap-4">
-              <a
-                href="https://instagram.com/halikarnassandals"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white/40 hover:text-white transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram className="w-5 h-5" strokeWidth={1.5} />
-              </a>
-              <a
-                href="https://facebook.com/halikarnassandals"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white/40 hover:text-white transition-colors"
-                aria-label="Facebook"
-              >
-                <Facebook className="w-5 h-5" strokeWidth={1.5} />
-              </a>
-              <a
-                href="https://twitter.com/halikarnassandals"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white/40 hover:text-white transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter className="w-5 h-5" strokeWidth={1.5} />
-              </a>
             </div>
           </div>
 
@@ -219,29 +188,62 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-white/10">
         <div className="container-v2 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col gap-6 md:flex-row md:justify-between md:items-center md:gap-4">
             <p className="text-white/40 font-inter text-xs">
               &copy; {new Date().getFullYear()} Halikarnas. Tüm hakları saklıdır.
             </p>
-            <div className="flex items-center gap-6">
-              <Link
-                href="/sayfa/gizlilik-politikasi"
-                className="text-white/40 hover:text-white font-inter text-xs transition-colors"
-              >
-                Gizlilik
-              </Link>
-              <Link
-                href="/sayfa/kvkk"
-                className="text-white/40 hover:text-white font-inter text-xs transition-colors"
-              >
-                KVKK
-              </Link>
-              <Link
-                href="/sayfa/cerez-politikasi"
-                className="text-white/40 hover:text-white font-inter text-xs transition-colors"
-              >
-                Çerezler
-              </Link>
+
+            <div className="flex flex-col gap-6 md:flex-row md:items-center md:gap-8">
+              <div className="flex items-center gap-6">
+                <Link
+                  href="/sayfa/gizlilik-politikasi"
+                  className="text-white/40 hover:text-white font-inter text-xs transition-colors"
+                >
+                  Gizlilik
+                </Link>
+                <Link
+                  href="/sayfa/kvkk"
+                  className="text-white/40 hover:text-white font-inter text-xs transition-colors"
+                >
+                  KVKK
+                </Link>
+                <Link
+                  href="/sayfa/cerez-politikasi"
+                  className="text-white/40 hover:text-white font-inter text-xs transition-colors"
+                >
+                  Çerezler
+                </Link>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <a
+                  href="https://instagram.com/halikarnassandals"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/40 hover:text-white transition-colors"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="w-5 h-5" strokeWidth={1.5} />
+                </a>
+                <a
+                  href="https://facebook.com/halikarnassandals"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/40 hover:text-white transition-colors"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="w-5 h-5" strokeWidth={1.5} />
+                </a>
+                <a
+                  href="https://twitter.com/halikarnassandals"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/40 hover:text-white transition-colors"
+                  aria-label="Twitter"
+                >
+                  <Twitter className="w-5 h-5" strokeWidth={1.5} />
+                </a>
+              </div>
             </div>
           </div>
         </div>
