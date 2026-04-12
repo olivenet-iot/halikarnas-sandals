@@ -285,9 +285,9 @@ export function ProductDetailV2({
     <div className="bg-v2-bg-primary min-h-screen">
       {/* Product Hero Section */}
       <section className="container-v2 pt-8 md:pt-12 pb-12 md:pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-24 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Left: Gallery */}
-          <div>
+          <div className="lg:col-span-7">
             <ImageGalleryV2
               images={filteredImages}
               productName={product.name}
@@ -295,7 +295,7 @@ export function ProductDetailV2({
           </div>
 
           {/* Right: Product Info */}
-          <div className="lg:sticky lg:top-[88px] space-y-6 pb-20 md:pb-0">
+          <div className="lg:col-span-5 lg:sticky lg:top-[88px] lg:self-start lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto space-y-6 pb-20 md:pb-0">
             {/* Product Name */}
             <h1 className="font-serif font-light text-3xl md:text-4xl lg:text-[2.75rem] leading-[1.1] text-v2-text-primary">
               {product.name}
@@ -404,7 +404,7 @@ export function ProductDetailV2({
         variants={sectionRevealV2}
         className="container-v2 pb-12 md:pb-20"
       >
-        <div className="max-w-2xl space-y-12 md:space-y-16">
+        <div className="max-w-[900px] mx-auto space-y-12 md:space-y-16">
           {/* Urun Detaylari */}
           {(product.description || product.material) && (
             <div>
@@ -419,33 +419,33 @@ export function ProductDetailV2({
               {(product.material ||
                 product.soleType ||
                 product.heelHeight) && (
-                <dl className="space-y-2">
+                <dl className="mt-8 border-t border-v2-border-subtle">
                   {product.material && (
-                    <div className="flex justify-between py-3 border-b border-v2-border-subtle">
+                    <div className="grid grid-cols-2 py-5 border-b border-v2-border-subtle">
                       <dt className="font-inter text-sm text-v2-text-muted">
                         Materyal
                       </dt>
-                      <dd className="font-inter text-sm text-v2-text-primary">
+                      <dd className="font-inter text-sm text-v2-text-primary text-right">
                         {product.material}
                       </dd>
                     </div>
                   )}
                   {product.soleType && (
-                    <div className="flex justify-between py-3 border-b border-v2-border-subtle">
+                    <div className="grid grid-cols-2 py-5 border-b border-v2-border-subtle">
                       <dt className="font-inter text-sm text-v2-text-muted">
                         Taban
                       </dt>
-                      <dd className="font-inter text-sm text-v2-text-primary">
+                      <dd className="font-inter text-sm text-v2-text-primary text-right">
                         {product.soleType}
                       </dd>
                     </div>
                   )}
                   {product.heelHeight && (
-                    <div className="flex justify-between py-3 border-b border-v2-border-subtle">
+                    <div className="grid grid-cols-2 py-5 border-b border-v2-border-subtle">
                       <dt className="font-inter text-sm text-v2-text-muted">
                         {"Topuk Y\u00fcksekli\u011fi"}
                       </dt>
-                      <dd className="font-inter text-sm text-v2-text-primary">
+                      <dd className="font-inter text-sm text-v2-text-primary text-right">
                         {product.heelHeight}
                       </dd>
                     </div>
