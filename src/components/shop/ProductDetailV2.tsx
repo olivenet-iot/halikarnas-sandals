@@ -372,7 +372,7 @@ export function ProductDetailV2({
               <button
                 onClick={handleWishlistClick}
                 disabled={isWishlistLoading}
-                className="inline-flex items-center gap-2 font-inter text-xs text-v2-text-muted link-underline-v2 disabled:opacity-50"
+                className="inline-flex items-center gap-2 font-inter text-sm text-v2-text-muted hover:text-v2-text-primary transition-colors disabled:opacity-50"
               >
                 {isWishlistLoading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -384,7 +384,7 @@ export function ProductDetailV2({
                     )}
                   />
                 )}
-                {isWishlisted ? "Favorilerde" : "Favorilere Ekle"}
+                <span>{isWishlisted ? "Favorilerde" : "Favorilere Ekle"}</span>
               </button>
             </div>
 
