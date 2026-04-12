@@ -1,7 +1,7 @@
 import { HeroV2 } from "@/components/home/HeroV2";
 import { EditorialCategoryBlock } from "@/components/home/EditorialCategoryBlock";
 import { SecimProductGrid } from "@/components/home/SecimProductGrid";
-import { FullBleedEditorial } from "@/components/home/FullBleedEditorial";
+import { AtelierTeaser } from "@/components/home/AtelierTeaser";
 import { BrandStoryTeaser } from "@/components/home/BrandStoryTeaser";
 
 export default async function Home() {
@@ -10,14 +10,14 @@ export default async function Home() {
       {/* 1. Hero — asymmetric, video-ready */}
       <HeroV2 />
 
-      {/* 2. Editorial Category — 65/35 women/men */}
+      {/* 2. Editorial Category — asymmetric women/men */}
       <EditorialCategoryBlock />
 
       {/* 3. Seçki — featured product grid */}
       <SecimProductGrid />
 
-      {/* 4. Full-bleed editorial — atelier ambiance */}
-      <FullBleedEditorial />
+      {/* 4. Atölye teaser — bridge to /hikayemiz */}
+      <AtelierTeaser />
 
       {/* 5. Brand story teaser — pure typography */}
       <BrandStoryTeaser />
