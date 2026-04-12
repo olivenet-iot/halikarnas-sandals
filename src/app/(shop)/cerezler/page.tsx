@@ -43,7 +43,7 @@ export default function CerezlerPage() {
             kullandığımızı ve bunlar üzerindeki kontrolünüzü açıklar.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             1. Çerez Nedir?
           </h2>
           <p className="text-v2-text-muted">
@@ -53,7 +53,7 @@ export default function CerezlerPage() {
             hatırlanmasına ve oturum bilgilerinizin korunmasına yardımcı olur.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             2. Kullandığımız Çerez Türleri
           </h2>
           <h3 className="font-serif text-base text-v2-text-primary mt-6 mb-2">
@@ -84,7 +84,7 @@ export default function CerezlerPage() {
             sunmak için kullanılır.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             3. Çerezleri Yönetme
           </h2>
           <p className="text-v2-text-muted">
@@ -94,7 +94,7 @@ export default function CerezlerPage() {
             özelliklerinin düzgün çalışmamasına yol açabilir.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             4. Daha Fazla Bilgi
           </h2>
           <p className="text-v2-text-muted">

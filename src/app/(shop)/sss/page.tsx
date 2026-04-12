@@ -126,7 +126,7 @@ export default function FAQPage() {
       {/* Hero */}
       <section className="pt-32 pb-12 text-center">
         <div className="max-w-3xl mx-auto px-4">
-          <p className="text-[#8B6F47] tracking-widest text-xs font-inter uppercase">
+          <p className="text-v2-accent tracking-widest text-xs font-inter uppercase">
             Sikca Sorulan Sorular
           </p>
           <h1 className="font-serif font-light text-4xl md:text-5xl text-v2-text-primary mt-4">
@@ -145,7 +145,7 @@ export default function FAQPage() {
                 value={item.id}
                 className="border-t border-v2-border-subtle border-b-0"
               >
-                <AccordionTrigger className="font-serif text-lg hover:no-underline">
+                <AccordionTrigger className="font-serif font-light text-lg hover:no-underline">
                   {item.q}
                 </AccordionTrigger>
                 <AccordionContent className="font-inter text-sm text-v2-text-muted leading-relaxed">

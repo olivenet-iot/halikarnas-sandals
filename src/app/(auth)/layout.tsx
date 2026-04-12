@@ -12,7 +12,7 @@ export default function AuthLayout({
         <div className="max-w-md mx-auto text-center">
           <Link
             href="/"
-            className="text-heading-3 font-accent text-leather-800 tracking-wider"
+            className="text-heading-3 font-serif font-normal text-v2-text-primary tracking-wider"
           >
             HALIKARNAS
           </Link>

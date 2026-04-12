@@ -135,7 +135,7 @@ export function CartDrawer() {
       <SheetContent className="w-full sm:max-w-lg flex flex-col p-0" hideClose>
         <SheetHeader className="p-4 border-b border-v2-border-subtle">
           <div className="flex items-center justify-between">
-            <SheetTitle className="flex items-center gap-2 font-serif text-xl text-v2-text-primary">
+            <SheetTitle className="flex items-center gap-2 font-serif font-light text-xl text-v2-text-primary">
               <ShoppingBag className="h-5 w-5" />
               Sepetim
               {hasItems && (
@@ -231,7 +231,7 @@ export function CartDrawer() {
             <div className="w-24 h-24 bg-v2-bg-primary flex items-center justify-center mb-6">
               <ShoppingBag className="h-12 w-12 text-v2-text-muted" />
             </div>
-            <h3 className="font-serif text-lg text-v2-text-primary mb-2">
+            <h3 className="font-serif font-light text-lg text-v2-text-primary mb-2">
               Sepetiniz Boş
             </h3>
             <p className="text-sm text-v2-text-muted mb-6">

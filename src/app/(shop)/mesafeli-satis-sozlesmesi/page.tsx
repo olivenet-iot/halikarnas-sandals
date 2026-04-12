@@ -50,7 +50,7 @@ export default function MesafeliSatisSozlesmesiPage() {
             etmiş sayılır.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             1. Taraflar
           </h2>
           <h3 className="font-serif text-base text-v2-text-primary mt-6 mb-2">
@@ -93,7 +93,7 @@ export default function MesafeliSatisSozlesmesiPage() {
             onaylandığı anda kayıt altına alınır.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             2. Sözleşmenin Konusu
           </h2>
           <p className="text-v2-text-muted">
@@ -106,7 +106,7 @@ export default function MesafeliSatisSozlesmesiPage() {
             gereğince hak ve yükümlülüklerinin belirlenmesidir.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             3. Sözleşme Konusu Ürün ve Ödeme Bilgileri
           </h2>
           <p className="text-v2-text-muted">
@@ -122,7 +122,7 @@ export default function MesafeliSatisSozlesmesiPage() {
             tutarı aşan siparişlerde kargo ücreti Satıcı tarafından karşılanır.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             4. Genel Hükümler
           </h2>
           <ol className="list-[lower-alpha] list-inside space-y-2 text-v2-text-muted">
@@ -172,7 +172,7 @@ export default function MesafeliSatisSozlesmesiPage() {
             </li>
           </ol>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             5. Cayma Hakkı
           </h2>
           <p className="text-v2-text-muted">
@@ -218,7 +218,7 @@ export default function MesafeliSatisSozlesmesiPage() {
             sırasında açıkça belirtilir.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             6. İade Koşulları ve Prosedürü
           </h2>
           <ol className="list-[lower-alpha] list-inside space-y-2 text-v2-text-muted">
@@ -244,7 +244,7 @@ export default function MesafeliSatisSozlesmesiPage() {
             </li>
           </ol>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             7. Teslimat
           </h2>
           <p className="text-v2-text-muted">
@@ -257,7 +257,7 @@ export default function MesafeliSatisSozlesmesiPage() {
             sorumludur.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             8. Ödeme
           </h2>
           <p className="text-v2-text-muted">
@@ -276,7 +276,7 @@ export default function MesafeliSatisSozlesmesiPage() {
             gönderilir veya ürünle birlikte paket içinde teslim edilir.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             9. Temerrüt Hükümleri
           </h2>
           <p className="text-v2-text-muted">
@@ -290,7 +290,7 @@ export default function MesafeliSatisSozlesmesiPage() {
             feshedilmiş sayılacaktır.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             10. Şikayet ve İtirazlar
           </h2>
           <p className="text-v2-text-muted">
@@ -301,7 +301,7 @@ export default function MesafeliSatisSozlesmesiPage() {
             yetkilidir.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             11. Yürürlük
           </h2>
           <p className="text-v2-text-muted">

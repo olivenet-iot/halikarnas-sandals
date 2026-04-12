@@ -13,7 +13,7 @@ export default function HikayemizPage() {
       {/* ==================== SECTION 1 — TEZ (HERO) ==================== */}
       <section className="py-[120px] md:py-[180px] bg-v2-bg-primary">
         <div className="max-w-4xl mx-auto text-center px-4">
-          <span className="text-[#8B6F47] tracking-widest text-xs font-inter uppercase">
+          <span className="text-v2-accent tracking-widest text-xs font-inter uppercase">
             HALİKARNAS
           </span>
           <h1 className="font-serif font-light text-5xl md:text-7xl text-v2-text-primary leading-tight mt-6">
@@ -44,7 +44,7 @@ export default function HikayemizPage() {
 
             {/* Right — Text */}
             <div className="md:col-span-5">
-              <span className="text-[#8B6F47] tracking-widest text-xs font-inter uppercase">
+              <span className="text-v2-accent tracking-widest text-xs font-inter uppercase">
                 ZANAAT
               </span>
               <h2 className="font-serif font-light text-4xl md:text-5xl text-v2-text-primary mt-4">

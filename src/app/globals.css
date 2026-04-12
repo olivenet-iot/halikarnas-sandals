@@ -93,7 +93,7 @@
   }
 
   body {
-    @apply bg-luxury-cream text-luxury-charcoal font-body;
+    @apply bg-luxury-cream text-luxury-charcoal font-inter;
   }
 
   h1,
@@ -102,16 +102,11 @@
   h4,
   h5,
   h6 {
-    @apply font-serif font-normal text-luxury-primary;
+    @apply font-inter font-normal text-v2-text-primary;
   }
 
-  /* Luxury headings with refined tracking */
   h1 {
     @apply tracking-tight;
-  }
-
-  h2, h3 {
-    @apply tracking-normal;
   }
 
   /* Custom Scrollbar - Luxury Minimal */

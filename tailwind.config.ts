@@ -153,16 +153,11 @@ const config: Config = {
       fontFamily: {
         // V2 Design System
         inter: ["var(--font-inter)", "system-ui", "sans-serif"],
-        // Luxury typography
         serif: ["var(--font-cormorant)", "Georgia", "serif"],
-        sans: ["var(--font-dm-sans)", "system-ui", "sans-serif"],
-        // @deprecated — use font-serif instead
-        display: ["var(--font-cinzel)", "Georgia", "serif"],
-        // Legacy aliases
+        // Legacy aliases — map to Inter so any stale reference renders the V2 sans
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        body: ["var(--font-inter)", "system-ui", "sans-serif"],
         heading: ["var(--font-cormorant)", "Georgia", "serif"],
-        body: ["var(--font-dm-sans)", "system-ui", "sans-serif"],
-        // @deprecated — use font-serif instead
-        accent: ["var(--font-cinzel)", "Georgia", "serif"],
       },
       fontSize: {
         // V2 Design System typography

@@ -73,7 +73,7 @@ function NavbarDefault() {
             <Link
               href="/"
               className={cn(
-                "font-serif font-medium tracking-[0.25em] text-lg transition-colors duration-300",
+                "font-serif font-normal tracking-[0.25em] text-lg transition-colors duration-300",
                 textColor
               )}
             >

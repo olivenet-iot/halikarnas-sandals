@@ -37,7 +37,7 @@ function SizeTable({
 }) {
   return (
     <div>
-      <h2 className="font-serif text-2xl text-v2-text-primary text-center mb-8">
+      <h2 className="font-serif font-light text-2xl text-v2-text-primary text-center mb-8">
         {title}
       </h2>
       <table className="w-full border-t border-b border-v2-border-subtle">
@@ -93,7 +93,7 @@ export default function SizeGuidePage() {
       <div className="max-w-3xl mx-auto px-6 py-20 md:py-28">
         {/* Hero */}
         <div className="text-center mb-16">
-          <p className="text-[#8B6F47] tracking-widest text-xs font-inter uppercase">
+          <p className="text-v2-accent tracking-widest text-xs font-inter uppercase">
             BEDEN REHBERİ
           </p>
           <h1 className="font-serif font-light text-4xl md:text-5xl text-v2-text-primary mt-4">
@@ -128,7 +128,7 @@ export default function SizeGuidePage() {
 
         {/* Tips */}
         <section className="mb-16">
-          <h2 className="font-serif text-2xl text-v2-text-primary text-center mb-6">
+          <h2 className="font-serif font-light text-2xl text-v2-text-primary text-center mb-6">
             İpuçları
           </h2>
           <ul className="list-disc pl-5 space-y-2 font-inter text-sm text-v2-text-muted leading-relaxed">

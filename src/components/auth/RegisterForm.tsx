@@ -196,7 +196,7 @@ export function RegisterForm() {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-sand-200 p-8">
       <div className="text-center mb-6">
-        <h1 className="text-heading-4 font-accent text-leather-800 mb-2">
+        <h1 className="text-heading-4 font-serif font-normal text-v2-text-primary mb-2">
           Hesap Oluşturun
         </h1>
         <p className="text-body-sm text-leather-500">

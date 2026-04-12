@@ -123,12 +123,12 @@ export function AdminSidebar({
       <div className="flex items-center justify-between h-16 px-4 border-b">
         <Link href="/admin" className="flex items-center gap-2">
           {!isCollapsed && (
-            <span className="font-accent text-xl text-leather-800">
+            <span className="font-serif font-normal text-xl text-v2-text-primary">
               Halikarnas
             </span>
           )}
           {isCollapsed && (
-            <span className="font-accent text-xl text-leather-800">H</span>
+            <span className="font-serif font-normal text-xl text-v2-text-primary">H</span>
           )}
         </Link>
         {/* Mobile close button */}

@@ -86,7 +86,7 @@ export default function ContactPage() {
         <div className="max-w-2xl mx-auto px-4 sm:px-6">
           {/* Hero */}
           <div className="text-center mb-16">
-            <span className="text-[#8B6F47] tracking-widest text-xs font-inter uppercase">
+            <span className="text-v2-accent tracking-widest text-xs font-inter uppercase">
               Iletisim
             </span>
             <h1 className="font-serif font-light text-4xl md:text-5xl text-v2-text-primary mt-4">
@@ -231,7 +231,7 @@ export default function ContactPage() {
           </form>
 
           {/* Contact info line */}
-          <p className="text-[#8B6F47] font-inter text-sm mt-12 text-center">
+          <p className="text-v2-accent font-inter text-sm mt-12 text-center">
             info@halikarnassandals.com &middot; +90 252 123 45 67 &middot; Bodrum, Mugla
           </p>
         </div>

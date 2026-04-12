@@ -168,7 +168,7 @@ export default function OrderTrackingPage() {
         <div className="max-w-md mx-auto px-4 sm:px-6">
           {/* Hero */}
           <div className="text-center mb-14">
-            <span className="text-[#8B6F47] tracking-widest text-xs font-inter uppercase">
+            <span className="text-v2-accent tracking-widest text-xs font-inter uppercase">
               Siparis Takibi
             </span>
             <h1 className="font-serif font-light text-4xl md:text-5xl text-v2-text-primary mt-4">
@@ -265,7 +265,7 @@ export default function OrderTrackingPage() {
                   <p className="font-inter text-xs tracking-wide uppercase text-v2-text-muted mb-1">
                     Siparis Numarasi
                   </p>
-                  <h2 className="font-serif text-2xl text-v2-text-primary">{order.orderNumber}</h2>
+                  <h2 className="font-serif font-light text-2xl text-v2-text-primary">{order.orderNumber}</h2>
                   <p className="text-sm text-v2-text-muted mt-1">
                     Siparis Tarihi: {formatDate(order.createdAt)}
                   </p>

@@ -223,10 +223,10 @@ export default async function SiparisTamamlandiPage({ params }: PageProps) {
               )}
               <div className="border-t border-v2-border-subtle my-3" />
               <div className="flex justify-between">
-                <span className="font-serif font-light text-lg text-v2-text-primary">
+                <span className="font-inter font-medium text-lg text-v2-text-primary">
                   Toplam
                 </span>
-                <span className="font-serif font-light text-lg text-v2-text-primary">
+                <span className="font-inter font-medium text-lg text-v2-text-primary">
                   {formatPrice(Number(order.total))}
                 </span>
               </div>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, DM_Sans, Cormorant_Garamond, Cinzel } from "next/font/google";
+import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/providers";
 import { Toaster } from "@/components/ui/toaster";
@@ -12,25 +12,11 @@ const inter = Inter({
   display: "swap",
 });
 
-const dmSans = DM_Sans({
-  subsets: ["latin", "latin-ext"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-dm-sans",
-  display: "swap",
-});
-
 const cormorant = Cormorant_Garamond({
   subsets: ["latin", "latin-ext"],
   weight: ["300", "400", "600"],
   style: ["normal", "italic"],
   variable: "--font-cormorant",
-  display: "swap",
-});
-
-const cinzel = Cinzel({
-  subsets: ["latin", "latin-ext"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-cinzel",
   display: "swap",
 });
 
@@ -95,7 +81,7 @@ export default function RootLayout({
         <WebsiteJsonLd searchUrl="/arama" />
       </head>
       <body
-        className={`${inter.variable} ${dmSans.variable} ${cormorant.variable} ${cinzel.variable} font-body antialiased bg-v2-bg-primary`}
+        className={`${inter.variable} ${cormorant.variable} font-inter antialiased bg-v2-bg-primary`}
       >
         <AuthProvider>
           {children}

@@ -77,7 +77,7 @@ export function ForgotPasswordForm() {
         <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
           <CheckCircle className="h-8 w-8 text-green-600" />
         </div>
-        <h1 className="text-heading-4 font-accent text-leather-800 mb-2">
+        <h1 className="text-heading-4 font-serif font-normal text-v2-text-primary mb-2">
           E-posta Gönderildi
         </h1>
         <p className="text-body-sm text-leather-600 mb-6">
@@ -101,7 +101,7 @@ export function ForgotPasswordForm() {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-sand-200 p-8">
       <div className="text-center mb-6">
-        <h1 className="text-heading-4 font-accent text-leather-800 mb-2">
+        <h1 className="text-heading-4 font-serif font-normal text-v2-text-primary mb-2">
           Şifremi Unuttum
         </h1>
         <p className="text-body-sm text-leather-500">

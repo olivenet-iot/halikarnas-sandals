@@ -93,7 +93,7 @@ export function CheckoutSummary() {
       <div className="border-t border-v2-border-subtle mt-6 pt-4">
         <div className="flex justify-between items-center">
           <span className="text-lg font-medium text-v2-text-primary">Toplam</span>
-          <span className="font-serif text-xl text-v2-text-primary">
+          <span className="font-inter font-medium text-xl text-v2-text-primary">
             {formatPrice(total)}
           </span>
         </div>

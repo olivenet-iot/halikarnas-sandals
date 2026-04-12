@@ -27,7 +27,7 @@ export function InstagramFeed() {
         <span className="text-aegean-500 text-xs md:text-sm tracking-[0.2em] uppercase">
           @halikarnassandals
         </span>
-        <h2 className="font-accent text-3xl md:text-4xl text-leather-900 mt-2">
+        <h2 className="font-serif font-normal text-3xl md:text-4xl text-v2-text-primary mt-2">
           Instagram&apos;da Biz
         </h2>
       </motion.div>

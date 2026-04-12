@@ -51,7 +51,7 @@ export default function KvkkPage() {
             açıklanan amaçlarla işlenmektedir.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             1. Veri Sorumlusu
           </h2>
           <p className="text-v2-text-muted">
@@ -78,7 +78,7 @@ export default function KvkkPage() {
             </li>
           </ul>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             2. İşlenen Kişisel Veri Kategorileri
           </h2>
           <p className="text-v2-text-muted">
@@ -122,7 +122,7 @@ export default function KvkkPage() {
             </li>
           </ul>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             3. Kişisel Verilerin İşlenme Amaçları
           </h2>
           <p className="text-v2-text-muted">
@@ -164,7 +164,7 @@ export default function KvkkPage() {
             </li>
           </ul>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             4. Kişisel Verilerin İşlenme Hukuki Sebepleri
           </h2>
           <p className="text-v2-text-muted">
@@ -194,7 +194,7 @@ export default function KvkkPage() {
             </li>
           </ul>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             5. Kişisel Verilerin Aktarıldığı Üçüncü Kişiler
           </h2>
           <p className="text-v2-text-muted">
@@ -243,7 +243,7 @@ export default function KvkkPage() {
             çerçevesinde yurt dışına aktarılabilir.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             6. Kişisel Verilerin Toplanma Yöntemi
           </h2>
           <p className="text-v2-text-muted">
@@ -253,7 +253,7 @@ export default function KvkkPage() {
             ve log kayıtları gibi otomatik yollarla elde edilmektedir.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             7. İlgili Kişi Hakları (KVKK Madde 11)
           </h2>
           <p className="text-v2-text-muted">
@@ -294,7 +294,7 @@ export default function KvkkPage() {
             </li>
           </ul>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             8. Başvuru Yolları
           </h2>
           <p className="text-v2-text-muted">
@@ -323,7 +323,7 @@ export default function KvkkPage() {
             belirlenen tarifedeki ücret talep edilebilir.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             9. Çerez Politikası
           </h2>
           <p className="text-v2-text-muted">
@@ -339,7 +339,7 @@ export default function KvkkPage() {
             sayfamızı inceleyebilirsiniz.
           </p>
 
-          <h2 className="font-serif text-xl text-v2-text-primary mt-12 mb-4">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mt-12 mb-4">
             10. Güncellemeler
           </h2>
           <p className="text-v2-text-muted">
