@@ -114,15 +114,15 @@ export default function FavorilerimPage() {
                     />
                   </div>
                   <div>
-                    <p className="font-inter font-normal text-[15px] lg:text-base tracking-normal text-v2-text-primary line-clamp-1">
+                    <p className="font-inter font-normal text-[15px] lg:text-[17px] tracking-[0.005em] text-v2-text-primary line-clamp-1">
                       {item.product.name}
                     </p>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="font-inter text-sm text-v2-text-muted">
+                      <span className="font-inter font-normal text-sm tracking-[0.01em] text-v2-text-muted">
                         {formatPrice(Number(item.product.basePrice))}
                       </span>
                       {item.product.compareAtPrice && Number(item.product.compareAtPrice) > Number(item.product.basePrice) && (
-                        <span className="font-inter text-xs text-v2-text-muted/70 line-through">
+                        <span className="font-inter text-xs tracking-[0.01em] text-v2-text-muted/70 line-through">
                           {formatPrice(Number(item.product.compareAtPrice))}
                         </span>
                       )}
