@@ -3,24 +3,19 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Menu,
-  Search,
-  ShoppingBag,
-  Heart,
-} from "lucide-react";
+import { Menu, Search, ShoppingBag, Heart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cart-store";
 import { useUIStore } from "@/stores/ui-store";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useHydrated } from "@/hooks/useHydrated";
-import { UserMenu } from "./UserMenu";
 import { cn } from "@/lib/utils";
 
 /* ═══════════════════════════════════════════════
- * V2 DEFAULT NAVBAR
- * Logo left (serif) | KADIN ERKEK center | icons right
- * Transparent on homepage hero → solid v2-bg-primary after 80px
+ * V2 DEFAULT NAVBAR — left-aligned editorial layout
+ * Wordmark + Kadın/Erkek/Hikayemiz grouped left
+ * Search / Heart / User / Bag grouped right
+ * Transparent on homepage hero → solid after 80px
  * ═══════════════════════════════════════════════ */
 function NavbarDefault() {
   const pathname = usePathname();
@@ -42,7 +37,6 @@ function NavbarDefault() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // On homepage: transparent → solid. On other pages: always solid.
   const isTransparent = isHomepage && !isScrolled;
 
   const headerClasses = cn(
@@ -59,59 +53,70 @@ function NavbarDefault() {
   const NAV_LINKS = [
     { label: "Kadın", href: "/kadin" },
     { label: "Erkek", href: "/erkek" },
+    { label: "Hikayemiz", href: "/hikayemiz" },
   ];
+
+  const accountHref = isAuthenticated
+    ? "/hesabim"
+    : "/giris?callbackUrl=/hesabim";
 
   return (
     <header className={headerClasses}>
       <nav className="container-v2">
         <div className="flex items-center justify-between h-14 md:h-16">
-          {/* Mobile menu button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn("md:hidden", textColor)}
-            onClick={openMobileMenu}
-            aria-label="Menüyü aç"
-          >
-            <Menu className="h-5 w-5" strokeWidth={1.5} />
-          </Button>
+          {/* LEFT CLUSTER — hamburger (mobile) + wordmark + nav links (desktop) */}
+          <div className="flex items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn("lg:hidden -ml-2", textColor)}
+              onClick={openMobileMenu}
+              aria-label="Menüyü aç"
+            >
+              <Menu className="h-5 w-5" strokeWidth={1.5} />
+            </Button>
 
-          {/* Logo — Cormorant serif, font-medium when transparent for readability */}
-          <Link
-            href="/"
-            className={cn(
-              "font-serif font-medium tracking-[0.25em] text-lg transition-colors duration-300",
-              textColor
-            )}
-          >
-            HALIKARNAS
-          </Link>
+            <Link
+              href="/"
+              className={cn(
+                "font-serif font-medium tracking-[0.25em] text-lg transition-colors duration-300",
+                textColor
+              )}
+            >
+              HALIKARNAS
+            </Link>
 
-          {/* Desktop nav — 2 links, no dropdowns */}
-          <div className="hidden md:flex items-center gap-10">
-            {NAV_LINKS.map((item) => {
-              const isActive =
-                pathname === item.href ||
-                pathname.startsWith(item.href + "/");
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "font-inter text-xs tracking-[0.15em] uppercase transition-colors duration-300",
-                    isActive
-                      ? cn(textColor, "border-b border-current pb-0.5")
-                      : cn(mutedColor, "hover:opacity-100")
-                  )}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
+            <div className="hidden lg:flex items-center gap-10 lg:gap-12 ml-12 lg:ml-16">
+              {NAV_LINKS.map((item) => {
+                const isActive =
+                  pathname === item.href ||
+                  pathname.startsWith(item.href + "/");
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "group relative font-inter text-xs tracking-[0.15em] uppercase py-1 transition-colors duration-300",
+                      isActive
+                        ? textColor
+                        : cn(mutedColor, "hover:text-v2-text-primary")
+                    )}
+                  >
+                    {item.label}
+                    <span
+                      className={cn(
+                        "absolute left-0 bottom-0 h-px bg-current transition-[width] duration-500 ease-out",
+                        isActive ? "w-full" : "w-0 group-hover:w-full"
+                      )}
+                    />
+                  </Link>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Right actions — outline stroke icons */}
-          <div className="flex items-center gap-2">
+          {/* RIGHT CLUSTER — outline stroke icons */}
+          <div className="flex items-center gap-5 lg:gap-6">
             <Button
               variant="ghost"
               size="icon"
@@ -140,7 +145,16 @@ function NavbarDefault() {
               </Link>
             </Button>
 
-            <UserMenu />
+            <Button
+              variant="ghost"
+              size="icon"
+              asChild
+              className={cn("hidden sm:flex", textColor)}
+            >
+              <Link href={accountHref} aria-label="Hesabım">
+                <User className="h-5 w-5" strokeWidth={1.5} />
+              </Link>
+            </Button>
 
             <Button
               variant="ghost"
@@ -151,7 +165,7 @@ function NavbarDefault() {
             >
               <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
               {cartItemCount > 0 && (
-                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-v2-accent text-white text-[10px] flex items-center justify-center font-medium">
+                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-v2-text-primary text-v2-bg-primary text-[10px] flex items-center justify-center font-medium">
                   {cartItemCount > 9 ? "9+" : cartItemCount}
                 </span>
               )}
