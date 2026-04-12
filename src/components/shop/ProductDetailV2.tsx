@@ -284,10 +284,10 @@ export function ProductDetailV2({
   return (
     <div className="bg-v2-bg-primary min-h-screen">
       {/* Product Hero Section */}
-      <section className="container-v2 pt-8 md:pt-12 pb-12 md:pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+      <section className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 pt-8 md:pt-12 pb-12 md:pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-start">
           {/* Left: Gallery */}
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-6">
             <ImageGalleryV2
               images={filteredImages}
               productName={product.name}
@@ -372,14 +372,14 @@ export function ProductDetailV2({
               <button
                 onClick={handleWishlistClick}
                 disabled={isWishlistLoading}
-                className="inline-flex items-center gap-1.5 font-inter text-xs text-v2-text-muted link-underline-v2 disabled:opacity-50"
+                className="inline-flex items-center gap-2 font-inter text-xs text-v2-text-muted link-underline-v2 disabled:opacity-50"
               >
                 {isWishlistLoading ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <Heart
                     className={cn(
-                      "h-3.5 w-3.5",
+                      "w-4 h-4",
                       isWishlisted && "fill-current"
                     )}
                   />
@@ -402,7 +402,7 @@ export function ProductDetailV2({
         initial="hidden"
         animate={infoInView ? "visible" : "hidden"}
         variants={sectionRevealV2}
-        className="container-v2 pb-12 md:pb-20"
+        className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 mt-16 lg:mt-32 pb-12 md:pb-20"
       >
         <div className="max-w-[900px] mx-auto space-y-12 md:space-y-16">
           {/* Urun Detaylari */}
@@ -503,7 +503,7 @@ export function ProductDetailV2({
           animate={relatedInView ? "visible" : "hidden"}
           variants={sectionRevealV2}
           viewport={viewportV2}
-          className="container-v2 section-v2 border-t border-v2-border-subtle"
+          className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 section-v2 border-t border-v2-border-subtle"
         >
           <h2 className="font-serif font-light text-v2-section-sm md:text-v2-section text-v2-text-primary mb-10 md:mb-16">
 {"At\u00f6lyeden Di\u011ferleri"}

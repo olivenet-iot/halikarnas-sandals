@@ -115,15 +115,13 @@ export function ImageGalleryV2({ images, productName }: ImageGalleryV2Props) {
       </div>
 
       {images.length > 1 && (
-        <div className="flex justify-center gap-1.5 pt-4 lg:hidden">
+        <div className="flex justify-center gap-2 pt-4 lg:hidden">
           {images.map((_, i) => (
             <span
               key={i}
               className={cn(
-                "h-1 rounded-full transition-all duration-300",
-                activeIndex === i
-                  ? "w-6 bg-v2-text-primary"
-                  : "w-1 bg-v2-border-subtle"
+                "h-px w-8 bg-v2-text-primary transition-opacity duration-300",
+                activeIndex === i ? "opacity-100" : "opacity-20"
               )}
             />
           ))}

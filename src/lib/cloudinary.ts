@@ -63,8 +63,8 @@ export function getThumbnailUrl(url: string): string {
  */
 export function getProductImageUrl(url: string): string {
   return optimizeCloudinaryUrl(url, {
-    width: 800,
-    height: 1000,
+    width: 1200,
+    height: 1500,
     quality: "auto:good",
   });
 }
