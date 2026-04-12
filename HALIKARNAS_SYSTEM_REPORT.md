@@ -2,9 +2,9 @@
 
 > Bu rapor, Halikarnas Sandals e-ticaret platformunun tum codebase'ini, mimarisini, is mantigini ve teknik detaylarini belgelemektedir. Baska bir LLM instance'inin sistemi tamamen kavrayabilmesi icin hazirlanmistir.
 > 
-> **Rapor Tarihi:** 2026-04-11  
+> **Rapor Tarihi:** 2026-04-13  
 > **Rapor Kapsami:** Tum kaynak kodu, veritabani semasi, API katmani, frontend, admin paneli, is mantigi  
-> **Son Guncelleme:** V2 tasarim sistemi migrasyonu tamamlandi (anasayfa, listeleme, urun detay, cart drawer, checkout, yardimci sayfalar, hikayemiz, hesabim, navbar, footer). Yeni Gelenler ve Koleksiyonlar feature'lari silindi. Prisma schema guncellendi. V2 form component'leri shared dosyaya cikarildi (`src/components/ui/v2-form.tsx`).
+> **Son Guncelleme:** Session 3 — Navbar left-align editorial layout (eba676d), product card isim/fiyat hiyerarsisi ters cevrildi (468bcd9), **typography komple konsolide edildi** (499cc88) — Cinzel ve DM Sans fontlari next/font + tailwind + globals.css'den tamamen silindi, proje iki fonta indirildi (Inter + Cormorant Garamond), proje kokunde `FONT_AUDIT.md` referans dokumani olusturuldu (392 satir). **URL yapisi flatten edildi** (0708de0) — `/[gender]/[category]/[sku]` 3-segment yapisindan `/[gender]/[slug]` 2-segment yapisina gecildi, `/kadin/[category]` ve `/erkek/[category]` dinamik route'lari **komple silindi**, Prisma migration `20260412120000_flatten_product_urls` uygulandi (Product.categoryId nullable, slug @@unique([slug, gender]) composite). PDP Khaite pattern'ine gecti (4730558, 383f27d, 779ea1e) — editorial image stack + sticky purchase panel, mobilde CSS snap-scroll + hairline dot indicator, wishlist inline icon+label. 7 legacy component fiziksel silindi (ProductCard, ProductGrid, CategoryPage, FilterSidebar, SortSelect, EditorialQuote, ProductShowcase). UserMenu.tsx silindi. Admin panelinden /admin/kategoriler sayfasi kaldirildi (API duruyor). V2 kapsam sayfalarina: anasayfa, listeleme (root), urun detay, cart drawer, checkout, yardimci sayfalar, hikayemiz, hesabim, navbar, footer, siparis-tamamlandi, yasal sayfalar dahil.
 
 ---
 
@@ -77,12 +77,12 @@ halikarnas-sandals/
 │   │   ├── (shop)/                 # Public magaza sayfalari (Navbar+Footer layout)
 │   │   │   ├── page.tsx            # Anasayfa
 │   │   │   ├── layout.tsx          # Navbar, MobileMenu, SearchDialog, CartDrawer, Footer
-│   │   │   ├── kadin/              # Kadin sandalet kategorisi
-│   │   │   ├── erkek/              # Erkek sandalet kategorisi
+│   │   │   ├── kadin/              # Kadin sandalet kategorisi (+ [slug] urun detay alt route'u)
+│   │   │   ├── erkek/              # Erkek sandalet kategorisi (+ [slug] urun detay alt route'u)
 │   │   │   ├── arama/              # Arama sonuclari
 │   │   │   ├── odeme/              # Checkout/odeme (V2)
 │   │   │   ├── siparis/[token]/    # Siparis onay
-│   │   │   ├── siparis-tamamlandi/[token]/  # Siparis basarili
+│   │   │   ├── siparis-tamamlandi/[token]/  # Siparis basarili (V2)
 │   │   │   ├── siparis-takip/      # Siparis takip
 │   │   │   ├── hesabim/            # Kullanici hesap paneli (V2, nested routes)
 │   │   │   │   ├── layout.tsx      # AccountSidebar ile layout (V2)
@@ -95,6 +95,9 @@ halikarnas-sandals/
 │   │   │   ├── iletisim/           # Iletisim formu (V2)
 │   │   │   ├── sss/               # Sikca sorulan sorular (V2)
 │   │   │   ├── beden-rehberi/      # Beden tablosu (V2)
+│   │   │   ├── mesafeli-satis-sozlesmesi/  # Mesafeli satis sozlesmesi (V2, yasal)
+│   │   │   ├── kvkk/               # KVKK aydinlatma metni (V2, yasal)
+│   │   │   ├── cerezler/           # Cerez politikasi (V2, yasal)
 │   │   │   └── sayfa/[slug]/       # Dinamik CMS sayfalari
 │   │   ├── (auth)/                 # Auth sayfalari (minimal layout, logo + form)
 │   │   │   ├── layout.tsx          # Minimal auth layout (no navbar/footer)
@@ -106,7 +109,6 @@ halikarnas-sandals/
 │   │   │   ├── layout.tsx          # AdminShell (sidebar+header), auth kontrol
 │   │   │   ├── page.tsx            # Dashboard
 │   │   │   ├── urunler/            # Urun yonetimi (list, create, edit, import)
-│   │   │   ├── kategoriler/        # Kategori yonetimi
 │   │   │   ├── siparisler/         # Siparis yonetimi
 │   │   │   ├── kullanicilar/       # Kullanici yonetimi
 │   │   │   ├── kuponlar/           # Kupon yonetimi
@@ -137,9 +139,9 @@ halikarnas-sandals/
 │   ├── components/                 # React componentleri (102 dosya)
 │   │   ├── ui/                     # shadcn/ui base componentleri (27 dosya)
 │   │   │   └── luxury/             # Ozel luks animasyon componentleri (8 dosya)
-│   │   ├── layout/                 # Navbar, Footer, MobileMenu, CartDrawer, SearchDialog, UserMenu
+│   │   ├── layout/                 # Navbar (left-aligned V2), Footer, MobileMenu, CartDrawer, SearchDialog (UserMenu.tsx Session 3'te silindi)
 │   │   ├── home/                   # Anasayfa sectionlari (V2: 7 aktif + InstagramFeed)
-│   │   ├── shop/                   # Urun listeleme, detay, filtre (V2: 9 aktif + 5 legacy [category])
+│   │   ├── shop/                   # Urun listeleme, detay, filtre (Session 3'te 5 legacy shop component silindi — sadece V2 aktif)
 │   │   ├── checkout/               # Odeme adim componentleri — V2 (7 dosya)
 │   │   ├── account/                # Hesap yonetimi componentleri (10 dosya)
 │   │   ├── admin/                  # Admin panel componentleri (10+ dosya)
@@ -217,6 +219,8 @@ halikarnas-sandals/
 ```
 
 **Not:** `public/` klasoru mevcut degil — tum gorseller Cloudinary CDN ve Unsplash URL'leri uzerinden sunuluyor. Statik asset'ler veritabaninda URL olarak tutuluyor.
+
+**Not (Session 3):** `src/app/(shop)/kadin/[category]/` ve `src/app/(shop)/erkek/[category]/` dizinleri komple silindi (URL flattening). Yerine `src/app/(shop)/kadin/[slug]/page.tsx` ve `src/app/(shop)/erkek/[slug]/page.tsx` tek-segment urun detay route'lari geldi. `src/app/admin/kategoriler/` dizini de silindi (UI tamamen kaldirildi, API duruyor). Proje kokunde `FONT_AUDIT.md` (392 satir, read-only) typography inventorysi referans dokumani olarak duruyor.
 
 ---
 
@@ -439,22 +443,36 @@ font-display: ['Cinzel', serif]              // Luks etiketler
 | URL | Dosya | Amac |
 |-----|-------|------|
 | `/` | `src/app/(shop)/page.tsx` | Anasayfa (Hero, Featured, Categories, Newsletter) |
-| `/kadin` | `src/app/(shop)/kadin/page.tsx` | Kadin sandalet katalogu |
-| `/kadin/[category]` | `src/app/(shop)/kadin/[category]/page.tsx` | Kadin kategori sayfasi |
-| `/kadin/[category]/[sku]` | `src/app/(shop)/kadin/[category]/[sku]/page.tsx` | Kadin urun detay |
+| `/kadin` | `src/app/(shop)/kadin/page.tsx` | Kadin sandalet katalogu (CategoryPageV2 — kategori chip'leri Session 3'te kaldirildi) |
+| `/kadin/[slug]` | `src/app/(shop)/kadin/[slug]/page.tsx` | **Session 3 YENI** — Kadin urun detay (2-segment slug-based URL, eski 3-segment `/kadin/[category]/[sku]` yapisini degistirdi) |
 | `/erkek` | `src/app/(shop)/erkek/page.tsx` | Erkek sandalet katalogu |
-| `/erkek/[category]` | `src/app/(shop)/erkek/[category]/page.tsx` | Erkek kategori sayfasi |
-| `/erkek/[category]/[sku]` | `src/app/(shop)/erkek/[category]/[sku]/page.tsx` | Erkek urun detay |
-| `/arama` | `src/app/(shop)/arama/page.tsx` | Arama sonuclari sayfasi |
+| `/erkek/[slug]` | `src/app/(shop)/erkek/[slug]/page.tsx` | **Session 3 YENI** — Erkek urun detay (2-segment slug-based URL) |
+| `/arama` | `src/app/(shop)/arama/page.tsx` | Arama sonuclari sayfasi (Session 3'te legacy ProductCard/ProductGrid → ProductCardV2/ProductGridV2'ye gecti) |
 | `/odeme` | `src/app/(shop)/odeme/page.tsx` | Odeme sayfasi (V2, 3 adimli checkout) |
 | `/siparis/[token]` | `src/app/(shop)/siparis/[token]/page.tsx` | Siparis detay (onay oncesi) |
-| `/siparis-tamamlandi/[token]` | `src/app/(shop)/siparis-tamamlandi/[token]/page.tsx` | Siparis basarili sayfasi |
+| `/siparis-tamamlandi/[token]` | `src/app/(shop)/siparis-tamamlandi/[token]/page.tsx` | Siparis basarili sayfasi (V2 — sakin ton, urun fotograflari, border-b section'lar, 80x80 urun gorselleri cart drawer pattern'inde) |
 | `/siparis-takip` | `src/app/(shop)/siparis-takip/page.tsx` | Siparis takip formu (V2) |
 | `/hikayemiz` | `src/app/(shop)/hikayemiz/page.tsx` | Marka hikayesi (V2, 3 section: Tez/Zanaat/CTA) |
 | `/iletisim` | `src/app/(shop)/iletisim/page.tsx` | Iletisim formu (V2) |
 | `/sss` | `src/app/(shop)/sss/page.tsx` | Sikca sorulan sorular (V2) |
 | `/beden-rehberi` | `src/app/(shop)/beden-rehberi/page.tsx` | Beden tablosu (V2) |
+| `/mesafeli-satis-sozlesmesi` | `src/app/(shop)/mesafeli-satis-sozlesmesi/page.tsx` | Mesafeli satis sozlesmesi (V2 — 6502 sayili Kanun cercevesinde 11 maddelik sablon, satici bilgileri TODO placeholder) |
+| `/kvkk` | `src/app/(shop)/kvkk/page.tsx` | KVKK aydinlatma metni (V2 — 6698 sayili KVKK Madde 10, veri kategorileri, Madde 11 haklari, basvuru yolu) |
+| `/cerezler` | `src/app/(shop)/cerezler/page.tsx` | Cerez politikasi (V2, minimal placeholder) |
 | `/sayfa/[slug]` | `src/app/(shop)/sayfa/[slug]/page.tsx` | Dinamik CMS sayfalari |
+
+**Session 3 — Silinen Route'lar:**
+- `/kadin/[category]` (kadin kategori sayfasi) — **SILINDI** — URL flattening, alt kategori sayfalari feature olarak kaldirildi
+- `/kadin/[category]/[sku]` (kadin urun detay) — **SILINDI** — yerine `/kadin/[slug]`
+- `/erkek/[category]` (erkek kategori sayfasi) — **SILINDI**
+- `/erkek/[category]/[sku]` (erkek urun detay) — **SILINDI** — yerine `/erkek/[slug]`
+- `/urun/[slug]` (legacy urun detay) — **SILINDI** (Tur 3'te zaten yoktu, Session 3'te 5 kirik link fix'lendi: CartDrawer, siparis detay, metadata.ts, JsonLd, admin/urunler)
+
+**URL yapisi politikasi (Session 3 sonrasi):**
+- Urun detay URL'leri 2-segment `/[gender]/[slug]` (gender = "kadin" veya "erkek")
+- Slug benzersizligi `@@unique([slug, gender])` composite — ayni slug farkli gender'larda var olabilir
+- UNISEX urunler hem `/kadin/[slug]` hem `/erkek/[slug]` altinda fallback ile bulunur (`getProductBySlug(slug, gender)` helper)
+- `getProductUrl()` helper fonksiyonu 2-segment URL doner
 
 #### Hesap Sayfalari (Auth gerekli, `hesabim/` nested routes)
 
@@ -486,7 +504,7 @@ font-display: ['Cinzel', serif]              // Luks etiketler
 | `/admin/urunler/yeni` | `src/app/admin/urunler/yeni/page.tsx` | Yeni urun olustur |
 | `/admin/urunler/import` | `src/app/admin/urunler/import/page.tsx` | Toplu urun import (CSV) |
 | `/admin/urunler/[id]` | `src/app/admin/urunler/[id]/page.tsx` | Urun duzenle |
-| `/admin/kategoriler` | `src/app/admin/kategoriler/page.tsx` | Kategori yonetimi |
+| ~~`/admin/kategoriler`~~ | **SILINDI (Session 3)** | Kategori yonetimi UI'i kaldirildi — API route'lari (`/api/admin/categories/*`) backward compat icin duruyor, AdminSidebar'dan link silindi |
 | `/admin/siparisler` | `src/app/admin/siparisler/page.tsx` | Siparis listesi |
 | `/admin/siparisler/[id]` | `src/app/admin/siparisler/[id]/page.tsx` | Siparis detay |
 | `/admin/kullanicilar` | `src/app/admin/kullanicilar/page.tsx` | Kullanici listesi |
@@ -510,19 +528,19 @@ font-display: ['Cinzel', serif]              // Luks etiketler
 | (tumu) | `src/app/error.tsx` | Global hata sayfasi |
 | (tumu) | `src/app/not-found.tsx` | 404 sayfasi |
 
-**Toplam:** 49 sayfa dosyasi (page.tsx), 5 layout dosyasi, 1 loading.tsx, 1 error.tsx, 1 not-found.tsx
+**Toplam:** 49 sayfa dosyasi (page.tsx), 5 layout dosyasi, 1 loading.tsx, 1 error.tsx, 1 not-found.tsx. Session 3'te 4 dynamic [category] route'u silindi, 2 [slug] route'u eklendi, 1 admin sayfasi (`/admin/kategoriler`) silindi, 3 yasal sayfa (Tur 6'da) eklenmis durumda — net olarak sayfa sayisi onceki raporla ayni mertebede (~49).
 
 ### 5.2 Layout Hiyerarsisi
 
 ```
 Root Layout (src/app/layout.tsx)
-├── Fontlar: Inter (V2 body), Cormorant Garamond (V2 serif headings), DM Sans (legacy), Cinzel (legacy)
+├── Fontlar (Session 3 sonrasi): Inter (V2 body + basliklar), Cormorant Garamond (V2 serif basliklar) — Cinzel ve DM Sans komple silindi
 ├── AuthProvider (NextAuth SessionProvider)
 ├── Toaster (Toast bildirimleri)
 ├── OrganizationJsonLd + WebsiteJsonLd (SEO)
 │
 ├── (shop) Layout (src/app/(shop)/layout.tsx)
-│   ├── Navbar (V2: bg-v2-bg-primary, 2 link KADIN/ERKEK, font-inter uppercase)
+│   ├── Navbar (V2 left-aligned editorial — Session 3: wordmark sol, yaninda KADIN / ERKEK / HIKAYEMIZ linkleri, saginda Search/Heart/User/Bag outline ikonlar w-5 h-5, avatar circle silindi, scroll=0 dahil her zaman bg-v2-bg-primary)
 │   ├── MobileMenu (V2: full-screen overlay bg-v2-bg-primary, buyuk serif linkler)
 │   ├── SearchDialog (tam ekran arama)
 │   ├── CartDrawer (sag taraftan slide-in sepet)
@@ -549,16 +567,18 @@ Root Layout (src/app/layout.tsx)
 
 Component'ler **feature-based** (ozellik bazli) yapilandirilmis:
 
-#### `src/components/layout/` (6 dosya) — Sayfa iskeleti
+#### `src/components/layout/` (5 dosya — Session 3'te UserMenu silindi) — Sayfa iskeleti
 
 | Component | Dosya | Amac |
 |-----------|-------|------|
-| `Navbar` | `Navbar.tsx` | V2 navigasyon — bg-v2-bg-primary, 2 link (KADIN/ERKEK), font-inter uppercase, logo Cormorant tracking-[0.25em]. Cinematic variant silindi. |
+| `Navbar` | `Navbar.tsx` | **V2 left-aligned editorial** (Session 3 — commit eba676d): wordmark sol, yaninda font-inter uppercase tracking-[0.2em] KADIN / ERKEK / HIKAYEMIZ linkleri, saginda Search / Heart / User / Bag outline ikonlar (w-5 h-5, ince stroke), avatar circle silindi, dropdown yok, wordmark font-normal (Footer ile tutarlilik), breakpoint lg, her zaman bg-v2-bg-primary (scroll=0 dahil — ce5d73b hotfix'i) |
 | `Footer` | `Footer.tsx` | V2 footer — bg-v2-bg-dark (#2A2A26), entegre newsletter formu, 3 sutun linkler (Alisveris/Yardim/Kurumsal), section header'lari text-v2-accent, sosyal ikonlar outline stroke |
 | `MobileMenu` | `MobileMenu.tsx` | V2 mobil menu — full-screen overlay bg-v2-bg-primary, buyuk serif linkler (font-serif font-light text-4xl), body scroll lock |
-| `CartDrawer` | `CartDrawer.tsx` | Kayan sepet paneli — urun listesi, miktar kontrolu, silme |
+| `CartDrawer` | `CartDrawer.tsx` | Kayan sepet paneli — urun listesi, miktar kontrolu, silme. Session 3'te kirik `/urun/[slug]` linki `getProductUrl()`'e gecirildi |
 | `SearchDialog` | `SearchDialog.tsx` | Tam ekran arama — debounced arama, populer aramalar |
-| `UserMenu` | `UserMenu.tsx` | Kullanici dropdown — giris/cikis, admin link, hesap linkleri |
+
+**Session 3 — Silinen:**
+- `UserMenu.tsx` — **SILINDI** (eba676d). Dropdown tamamen kaldirildi, yerini navbar sag kosesindeki inline User outline ikonu aldi. Kullanicinin giris/cikis erisimi navbar ikonundan direkt `/hesabim` / `/giris`'e yonlendiriyor.
 
 #### `src/components/home/` (8 dosya) — Anasayfa sectionlari
 
@@ -583,33 +603,33 @@ Component'ler **feature-based** (ozellik bazli) yapilandirilmis:
 4. FullBleedEditorial (atmosfer gorseli)
 5. BrandStoryTeaser (sade tipografi)
 
-#### `src/components/shop/` (15 dosya) — Urun listeleme ve detay
+#### `src/components/shop/` (9 dosya — Session 3'te 5 legacy dosya + 2 luxury dosya silindi) — Urun listeleme ve detay
 
-**V2 AKTIF:**
+**V2 AKTIF (Session 3 sonrasi — sadece bunlar kaldi):**
 
 | Component | Dosya | Amac |
 |-----------|-------|------|
-| `ProductCardV2` | `ProductCardV2.tsx` | V2 urun karti — aspect-[3/4], hover image swap, minimal tipografi |
+| `ProductCardV2` | `ProductCardV2.tsx` | V2 urun karti — aspect-[3/4], hover image swap. **Session 3: isim/fiyat hiyerarsisi ters cevrildi** (468bcd9) — isim font-inter baskin (`lg:text-[17px]`, tracking-[0.005em]), fiyat muted (tracking-[0.01em]). Fotograf-isim gap `mt-4 → mt-5 lg:mt-6`. 57e901a'da isim typography micro-tune edildi. |
 | `ProductGridV2` | `ProductGridV2.tsx` | V2 urun grid — 1/2/3 sutun, gap-v2-gap-sm |
-| `CategoryPageV2` | `CategoryPageV2.tsx` | V2 kategori sayfasi — pill tag alt kategori, inline filtreler |
+| `CategoryPageV2` | `CategoryPageV2.tsx` | V2 kategori sayfasi — **Session 3'te kategori chip'leri silindi** (0708de0): `categories` prop, `toggleCategory` state, `selectedCategories` filter kaldirildi. Artik sadece renk/beden/sort filtreleri var |
 | `FilterToolbarV2` | `FilterToolbarV2.tsx` | V2 filtre toolbar — inline renk swatch, beden/siralama dropdown |
-| `ProductDetailV2` | `ProductDetailV2.tsx` | V2 urun detay — ardisik section'lar, tab yok, sticky sag kolon |
-| `ImageGalleryV2` | `ImageGalleryV2.tsx` | V2 gorsel galerisi — aspect-[3/4], max-h-[85vh], yatay thumbnail, zoom yok |
+| `ProductDetailV2` | `ProductDetailV2.tsx` | V2 urun detay — **Session 3 Khaite pattern** (4730558 + 383f27d): `lg:grid-cols-12` grid, col-span-6 sol (image stack) + col-span-5 sag (sticky purchase panel, lg:self-start, lg:max-h-[calc(100vh-120px)] overflow-y-auto), lower section max-w-[900px], spec rows grid-cols-2 right-aligned, container `max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20` (PDP-only, container-v2 degil) |
+| `ImageGalleryV2` | `ImageGalleryV2.tsx` | **Session 3 yeniden yazildi** (~70 satir, 4730558 + 383f27d): desktop dikey editorial stack (aspect-[4/5]), mobile CSS snap-scroll horizontal carousel + IntersectionObserver ile hairline dot indicator (h-px w-8 opacity 100/20), thumbnail row kaldirildi, framer-motion AnimatePresence silindi. Cloudinary `getProductImageUrl` 800×1000 → 1200×1500 (retina). Wishlist butonu inline icon+label (h-4 gap-2, 779ea1e fix) |
 | `ColorSelectorV2` | `ColorSelectorV2.tsx` | V2 renk secimi — kare swatch, ring-v2-text-primary |
 | `SizeSelectorV2` | `SizeSelectorV2.tsx` | V2 beden secimi — outline stili, v2-accent low stock |
 | `MobileAddToCartBarV2` | `MobileAddToCartBarV2.tsx` | V2 mobil bar — bg-v2-bg-dark, md:hidden |
 
-**LEGACY — HALA KULLANIMDA (dynamic [category] route'lari tarafindan):**
+**Session 3 — Fiziksel Silinen Legacy Shop Component'leri (0708de0):**
 
-| Component | Dosya | Not |
-|-----------|-------|-----|
-| `ProductCard` | `ProductCard.tsx` | /kadin/[category] ve /erkek/[category]'de kullaniliyor |
-| `ProductGrid` | `ProductGrid.tsx` | /kadin/[category] ve /erkek/[category]'de kullaniliyor |
-| `CategoryPage` | `CategoryPage.tsx` | Dynamic [category] route'larinda aktif |
-| `FilterSidebar` | `FilterSidebar.tsx` | Dynamic [category] route'larinda aktif |
-| `SortSelect` | `SortSelect.tsx` | Dynamic [category] route'larinda aktif |
+| Dosya | Neden silindi |
+|-------|---------------|
+| `ProductCard.tsx` | Dynamic [category] route'lari kaldirildi, artik kullanan yok |
+| `ProductGrid.tsx` | Ayni sebep |
+| `CategoryPage.tsx` | Ayni sebep |
+| `FilterSidebar.tsx` | Ayni sebep |
+| `SortSelect.tsx` | Ayni sebep |
 
-**Not:** Cinematic koleksiyon component'leri (CinematicScroll, ScrollProgress, frames/) Tur 3'te fiziksel olarak silindi. Legacy shop component'lerin cogu da temizlendi — sadece dynamic [category] route'larinin kullandigi 5 legacy component kaldi.
+**Not:** Legacy component'ler Tur 3'te [category] route'lari hala duruyor diye korunmustu. Session 3'te `/arama` sayfasi legacy ProductCard/ProductGrid'den ProductCardV2/ProductGridV2'ye gecirildikten sonra bu 5 dosyanin hicbir kullanicisi kalmadi ve komple silindi. Luxury component'lerden de `EditorialQuote` ve `ProductShowcase` (= `ProductCardLuxury` + `ProductGridLuxury`) silindi.
 
 **Not:** `src/components/cart/` dizini Tur 3'te silindi (CartPage, CartItem, CartSummary, CouponInput, EmptyCart). Sepet islevseligi tamamen CartDrawer (layout/ icinde) uzerinden calismaktadir.
 
@@ -709,7 +729,7 @@ Component'ler **feature-based** (ozellik bazli) yapilandirilmis:
 | `Toast` | `toast.tsx` |
 | `Toaster` | `toaster.tsx` |
 
-#### `src/components/ui/luxury/` (8 dosya) — Luks animasyon componentleri
+#### `src/components/ui/luxury/` (6 dosya — Session 3'te EditorialQuote ve ProductShowcase silindi) — Luks animasyon componentleri
 
 | Component | Export'lar | Amac |
 |-----------|-----------|------|
@@ -718,9 +738,9 @@ Component'ler **feature-based** (ozellik bazli) yapilandirilmis:
 | `ParallaxImage` | `ParallaxImage`, `ParallaxLayeredImage` | Parallax gorsel efekti |
 | `MagneticButton` | `MagneticButton`, `ArrowIcon` | Manyetik hover efektli buton |
 | `VideoBackground` | `VideoBackground`, `AnimatedGradientBackground` | Video arkaplan ve gradient overlay |
-| `EditorialQuote` | `EditorialQuote`, `EditorialText` | Editoryal alinti gorunumu |
 | `ScrollIndicator` | `ScrollIndicator`, `ChevronBounce` | Scroll ilerleme gostergesi |
-| `ProductShowcase` | `ProductCardLuxury`, `ProductGridLuxury` | Luks urun kartlari |
+
+**Session 3 — Silinen:** `EditorialQuote.tsx` (EditorialQuote, EditorialText) ve `ProductShowcase.tsx` (ProductCardLuxury, ProductGridLuxury) 0708de0 commit'inde fiziksel olarak silindi — legacy [category] route'lari kaldirildi, kullanicisi kalmadi.
 
 #### Diger Componentler
 
@@ -1024,21 +1044,36 @@ interface UIState {
 | `terracotta-50` - `terracotta-900` | Deprecated |
 | `leather-50` - `leather-900` | Deprecated |
 
-### 6.2 Typography
+### 6.2 Typography — Session 3 Konsolidasyonu
 
-#### V2 Font Kullanimi (AKTIF)
+**2026-04-12 (commit 499cc88) — Typography komple yeniden sekillendirildi.** Cinzel ve DM Sans fontlari next/font loader, tailwind fontFamily token'lari, globals.css cascade ve 10 kod kullanimi dahil **hic kalinti birakmadan silindi**. Proje artik **iki font**'tan olusuyor: Inter + Cormorant Garamond.
+
+**Referans belge:** Proje kokunde `FONT_AUDIT.md` (392 satir) — Session 3 oncesi ve sonrasi typography inventorysi, cascade diyagrami, hard-coded renk tespiti, kullanim grafigi. Read-only referans olarak korunuyor.
+
+#### Yuklu Fontlar (next/font)
 
 | Token | Font Ailesi | Weight'ler | Kullanim |
 |-------|-------------|-----------|----------|
-| `font-serif` / `font-heading` | Cormorant Garamond | 300, 400, 600 + italic | V2 basliklar, urun adlari (genelde font-light / 300) |
-| `font-inter` | Inter | 400, 500 | V2 body text, label'lar, butonlar, UI elementleri |
+| `font-serif` / `font-heading` | Cormorant Garamond | 300, 400, 600 + italic | V2 basliklar (genelde font-light / 300), urun isimleri eskiden boyleydi — Session 3'te ProductCardV2'de font-inter'a gecti |
+| `font-inter` / `font-sans` / `font-body` | Inter | 400, 500 | Body text, label'lar, butonlar, UI elementleri, urun isimleri, order totals, heading cascade (globals.css h1-h6 artik bunu kullaniyor) |
 
-#### Legacy Fontlar (yuklu ama V2'de kullanilmiyor)
+> **Not:** `font-sans`, `font-body` ve `font-heading` token'lari tailwind.config.ts'de **Inter/Cormorant'a alias olarak duruyor** — globals.css'deki legacy referanslar calisir kalsin diye (temizligi buyuk bir refactor gerektiriyor, ama fontun kendisi Inter). `font-display` ve `font-accent` token'lari **komple silindi** (Cinzel referansi idi).
 
-| Token | Font Ailesi | Durum |
-|-------|-------------|-------|
-| `font-sans` / `font-body` | DM Sans | Legacy — font-inter kullanin |
-| `font-accent` / `font-display` | Cinzel | Legacy/Deprecated — font-serif kullanin |
+#### Session 3 Typography Degisiklikleri (499cc88 detay)
+
+**next/font loader:** Cinzel ve DM Sans import'lari `src/app/layout.tsx`'den silindi. Artik sadece `Inter` ve `Cormorant_Garamond` yuklu — font dosyasi indirme sayisi **4 → 2** (her font aile icin bir dosya).
+
+**tailwind.config.ts:** `font-display` (Cinzel), `font-accent` (Cinzel), `font-body` (DM Sans olarak tanimliydi) token'lari silindi. `font-body` alias olarak duruyordu — Session 3'te `font-body tailwind alias silindi`.
+
+**globals.css cascade:** `h1-h6` base rule eskiden `font-serif` + legacy petrol rengi (#1E5F74 — teal) enjekte ediyordu, bu saglamsiz bir cascade bombasiydi — her font-inter yazan heading hala serif gorunuyordu. Session 3'te base rule **font-inter + text-v2-text-primary**'ye cevrildi. Bu nedenle ~28 headinge ayrica `font-light` eklenmesi gerekti (yasal sayfalar, SSS, beden rehberi, CartDrawer, CheckoutSummary).
+
+**Hard-coded renkler:** 7 hard-coded `#8B6F47` (v2-accent hex) → `text-v2-accent` token'ina cevrildi.
+
+**Navbar wordmark:** `font-medium → font-normal` (Footer wordmark'i ile tutarlilik saglanmasi icin).
+
+**Order totals:** `CheckoutSummary` ve `siparis-tamamlandi/[token]/page.tsx`'de siparis toplamlari `font-inter font-medium` olarak isaretlendi.
+
+**Favorilerim kartlari:** ProductCardV2 ile tam eslestirildi (eskiden farkli font ailesi kullaniyordu).
 
 #### V2 Font Boyut Token'lari (tailwind.config.ts)
 
@@ -1092,8 +1127,8 @@ font-inter text-v2-label uppercase tracking-[0.2em] text-v2-text-muted
 | Demo gorseller | Unsplash | Seed data'da sabit URL'ler |
 | Placeholder gorseller | Placehold.co | Yukleme durumlari icin |
 | Ikonlar | Lucide React | SVG ikon kutuphanesi (komponentler) |
-| Fontlar | Google Fonts (self-hosted) | DM Sans, Cormorant Garamond, Cinzel |
-| Logo | Yok (metin bazli) | "HALIKARNAS" text logo — `font-display` ile |
+| Fontlar | Google Fonts (next/font, self-hosted) | **Session 3 sonrasi: sadece Inter + Cormorant Garamond** (Cinzel ve DM Sans komple silindi) |
+| Logo | Yok (metin bazli) | "HALIKARNAS" text logo — `font-serif tracking-[0.25em]` ile (Cinzel referansi `font-display` kaldirildi) |
 
 **Gorsel Boyut Sabitleri** (`src/lib/constants.ts`):
 - thumbnail: 100x100
@@ -1656,7 +1691,7 @@ export const db = new PrismaClient({
 |------|-----|-------------|----------|
 | `id` | String | PK, cuid() | Urun ID |
 | `name` | String | - | Urun adi |
-| `slug` | String | unique, @@index | URL slug |
+| `slug` | String | @@index, `@@unique([slug, gender])` composite | URL slug. **Session 3 (migration 20260412120000_flatten_product_urls):** Global `@unique` silindi, yerine gender ile composite unique kondu — ayni slug `kadin` ve `erkek` altinda paralel var olabilir (UNISEX urunler icin ozellikle onemli) |
 | `description` | String | @db.Text | Detayli aciklama |
 | `shortDescription` | String? | - | Kisa aciklama |
 | `basePrice` | Decimal | @db.Decimal(10,2) | Taban fiyat |
@@ -1673,7 +1708,7 @@ export const db = new PrismaClient({
 | `status` | ProductStatus | default: DRAFT | DRAFT, ACTIVE, ARCHIVED |
 | `isFeatured` | Boolean | default: false, @@index | One cikan mi |
 | `isBestSeller` | Boolean | default: false, @@index | Cok satan mi |
-| `categoryId` | String | FK → Category, @@index | Kategori ID |
+| `categoryId` | String? | FK → Category (onDelete: SetNull), @@index | Kategori ID. **Session 3'te NOT NULL → nullable** (migration 20260412120000_flatten_product_urls) — kategori UI'i admin panelinden kaldirildi, yeni urunler kategorisiz olusturulabiliyor, eski urunler kategori silinmesinde null olur. Public frontend'de kategori filtreleri zaten yok. |
 | `gender` | Gender? | @@index | ERKEK, KADIN, UNISEX |
 | `viewCount` | Int | default: 0 | Goruntulenme sayisi |
 | `soldCount` | Int | default: 0 | Satilan adet |
@@ -1681,9 +1716,9 @@ export const db = new PrismaClient({
 | `updatedAt` | DateTime | @updatedAt | Guncelleme tarihi |
 | `publishedAt` | DateTime? | - | Yayinlanma tarihi |
 
-**Iliskiler:** category, variants[], images[], reviews[], cartItems[], orderItems[], wishlistItems[]
+**Iliskiler:** category (opsiyonel), variants[], images[], reviews[], cartItems[], orderItems[], wishlistItems[]
 
-**Not:** `isNew` alani ve `collections` iliskisi Tur 3 refactorda silindi (migration: `remove_isNew_and_collections`).
+**Not:** `isNew` alani ve `collections` iliskisi Tur 3 refactorda silindi (migration: `remove_isNew_and_collections`). Session 3'te `categoryId` nullable'a cevrildi ve slug unique constraint'i global'den per-gender composite'ine cevrildi (migration: `flatten_product_urls`).
 
 #### ProductVariant (Urun Varyanti)
 
@@ -2036,6 +2071,14 @@ erDiagram
 
 Migration dosyalari `prisma/migrations/` altinda tutulmaktadir. Schema degisiklikleri `npx prisma migrate dev` ile uygulanir.
 
+**Migration listesi (kronolojik):**
+
+| Migration | Tarih | Aciklama |
+|-----------|-------|----------|
+| `20251226143119_init` | 2025-12-26 | Initial schema — 18 model, 6 enum, tum tablolar ilk kurulum |
+| `20260411000000_remove_isNew_and_collections` | 2026-04-11 | Tur 3: Collection / CollectionProduct tablolari silindi, Product.isNew alani silindi, Product.collections iliskisi silindi |
+| `20260412120000_flatten_product_urls` | 2026-04-12 | **Session 3 — URL flattening:** (1) `Product.categoryId` NOT NULL → NULL (`DROP NOT NULL`), (2) `Product_categoryId_fkey` rebuild (`ON DELETE SET NULL`), (3) global `Product_slug_key` unique index drop, (4) yeni composite unique `Product_slug_gender_key` (`slug`, `gender`) |
+
 ### 8.7 Seed Data (`prisma/seed.ts`, 722 satir)
 
 Seed script'i su verileri olusturur:
@@ -2076,6 +2119,8 @@ Her urun icin: 3+ Unsplash gorseli, coklu renk x beden varyantlari (rastgele 5-2
 - Odeme Secenekleri (odeme-secenekleri)
 - Kariyer (kariyer)
 
+> **Not:** `/kvkk` ve `/cerezler` URL'lerinde bu CMS sayfalarindan **farkli**, dedike V2 sablon dosyalari mevcuttur (`src/app/(shop)/kvkk/page.tsx`, `src/app/(shop)/cerezler/page.tsx`). Next.js App Router'da dosya bazli route dinamik `/sayfa/[slug]` route'undan oncelikli calistigi icin `/kvkk` kullanicilari V2 sablon sayfasini gorur — seed'deki CMS kaydi soz konusu slug icin `/sayfa/[slug]` fallback olarak atlanir. Launch oncesi hangisinin kullanilacagi (dosya-tabanli mi CMS-tabanli mi) tercih edilmeli.
+
 **6. Site Ayarlari (7 adet):**
 - `free_shipping_threshold`: "500"
 - `standard_shipping_cost`: "29.90"
@@ -2093,13 +2138,22 @@ Her urun icin: 3+ Unsplash gorseli, coklu renk x beden varyantlari (rastgele 5-2
 
 **Hiyerarsi:** Product → ProductVariant → ProductImage
 
-- Her urun bir kategoriye ait (`categoryId` zorunlu)
+- **Session 3 sonrasi:** Her urunun bir kategoriye ait olmasi **zorunlu degil** (`categoryId` nullable). Urunler direkt `gender` ile filtrelenir, kategori sadece admin API'sinde backward compat icin duruyor.
 - Varyantlar beden x renk kombinasyonlarini temsil eder
 - Her varyant icin ayri stok takibi
 - Varyant seviyesinde fiyat override mumkun (`variant.price`)
 - Urun durumu: DRAFT (taslak) → ACTIVE (aktif) → ARCHIVED (arsivlenmis)
 - Ozellikler: isFeatured, isBestSeller flag'leri ile vitrin yonetimi (isNew silindi)
 - Istatistikler: viewCount, soldCount alanlarinda sayim
+
+**URL yapisi (Session 3 — flatten):**
+- Urun detay URL'leri **2-segment `/[gender]/[slug]`** (orn: `/kadin/bodrum-sandalet`, `/erkek/antalya-deri`)
+- Eski format: `/kadin/[category]/[sku]` → **SILINDI**
+- Legacy `/urun/[slug]` route'u da yok (Session 3'te 5 kirik link fix'lendi: CartDrawer, siparis detay, metadata.ts, JsonLd, admin/urunler listesi)
+- Slug benzersizligi per-gender composite (`@@unique([slug, gender])`) — UNISEX urunler hem kadin hem erkek altinda fallback ile cozulur (`getProductBySlug(slug, gender)` query helper)
+- `getProductUrl(product)` helper fonksiyonu 2-segment URL doner (src/lib/utils.ts)
+- Product slug'lari SKU degil, `slugify(product.name)` ile uretilir (`src/lib/utils.ts`)
+- **Public frontend'de kategori filtreleri yok** — root `/kadin` ve `/erkek` sayfalarinda sadece renk/beden/fiyat/sort filtreleri var. Kategori Prisma schema'sinda ve admin API'sinde duruyor ama UI'dan tamamen kaldirildi.
 
 **Fiyatlandirma:**
 - `basePrice`: Ana fiyat (TRY)
@@ -2321,7 +2375,7 @@ await db.productVariant.update({
 | **Yeni Urun** | `/admin/urunler/yeni` | Urun olusturma — ProductForm ile kapsamli form |
 | **Urun Duzenle** | `/admin/urunler/[id]` | Urun guncelleme — varyant, gorsel yonetimi |
 | **Urun Import** | `/admin/urunler/import` | CSV'den toplu urun import |
-| **Kategoriler** | `/admin/kategoriler` | Kategori CRUD — inline duzenleme |
+| ~~**Kategoriler**~~ | ~~`/admin/kategoriler`~~ | **SILINDI (Session 3)** — Kategori yonetimi UI'i tamamen kaldirildi (0708de0). AdminSidebar'dan link silindi, ProductForm'dan `categoryId` selector'i silindi, zod schema categoryId nullable optional yapildi. API route'lari (`/api/admin/categories/*`) backward compat icin duruyor ama UI'dan erisilemiyor. |
 | **Siparisler** | `/admin/siparisler` | Siparis listesi — durum filtresi, arama |
 | **Siparis Detay** | `/admin/siparisler/[id]` | Siparis detay — durum degistirme, fatura, kargo, notlar |
 | **Kullanicilar** | `/admin/kullanicilar` | Kullanici listesi — rol filtresi, arama |
@@ -2342,8 +2396,8 @@ await db.productVariant.update({
 
 | Entity | Olustur | Oku | Guncelle | Sil |
 |--------|---------|-----|----------|-----|
-| Product | Evet (+ varyant/gorsel) | Evet | Evet | Evet (soft/hard) |
-| Category | Evet | Evet | Evet | Evet (urun kontrolu ile) |
+| Product | Evet (+ varyant/gorsel, categoryId opsiyonel) | Evet | Evet | Evet (soft/hard). Session 3: ProductForm'dan kategori selector silindi, POST/PATCH slug uniqueness per-gender kontrolu (`findFirst({ slug, gender })`) |
+| Category | ~~Evet~~ API duruyor ama admin UI'sinden erisim yok (Session 3) | Evet | ~~Evet~~ API only | ~~Evet~~ API only |
 | Order | Hayir (musteri tarafindan) | Evet | Evet (durum) | Hayir |
 | User | Hayir (kayit ile) | Evet | Evet (rol) | Hayir |
 | Coupon | Evet | Evet | Evet | Evet (kullanim kontrolu ile) |
@@ -2601,26 +2655,38 @@ npm run db:studio      # npx prisma studio
 
 ### 15.4 V2 Migrasyonu Sonrasi Teknik Borclar
 
-**COZULENLER (Tur 1-4'te kapandi):**
-- ~~Legacy component temizligi~~ — 50+ orphan component fiziksel olarak silindi
-- ~~Hakkimizda sayfasi V2~~ → `/hikayemiz` olarak yeniden tasarlandi
-- ~~Koleksiyonlar V2 uyarlamasi~~ → Feature komple silindi
-- ~~Sepet/Checkout V2 redesign~~ → CartDrawer V2, Checkout V2 tamamlandi
+**COZULENLER (Tur 1-6'da kapandi):**
+- ~~Legacy component temizligi~~ — 50+ orphan component fiziksel olarak silindi (Tur 3)
+- ~~Hakkimizda sayfasi V2~~ → `/hikayemiz` olarak yeniden tasarlandi (Tur 3)
+- ~~Koleksiyonlar V2 uyarlamasi~~ → Feature komple silindi (Tur 3)
+- ~~Sepet/Checkout V2 redesign~~ → CartDrawer V2, Checkout V2 tamamlandi (Tur 1-4)
 - ~~Root layout bg-luxury-cream~~ → V2 token'larina gecirildi
 - ~~Shipping cost hardcoded~~ → DB-driven, ShippingConfigProvider context
+- ~~Hesabim sayfalari V2 redesign~~ → **TAMAMLANDI** (Tur 5, commit 6d65bf4)
+- ~~Yasal zorunlu sayfalar~~ → `/mesafeli-satis-sozlesmesi`, `/kvkk`, `/cerezler` eklendi (Tur 6)
+- ~~Siparis-tamamlandi V2~~ → Tur 6'da editorial pattern'e gecirildi
+
+**COZULENLER (Session 3'te kapandi):**
+- ~~Dynamic category pages V2 migrasyonu~~ → **Dynamic [category] route'lari komple SILINDI** (0708de0). V2'ye gecirilmedi, feature olarak kaldirildi. 5 legacy shop component (ProductCard, ProductGrid, CategoryPage, FilterSidebar, SortSelect) ve 2 luxury component fiziksel silindi.
+- ~~Kullanilmayan account component'leri~~ → Silindi
+- ~~/urun/[slug] kirik linkleri~~ → 5 kirik link fix'lendi (CartDrawer, siparis detay, metadata.ts, JsonLd, admin/urunler)
+- ~~/arama sayfasi legacy component'ler~~ → ProductCardV2/ProductGridV2'ye gecti
+- ~~Typography Cinzel/DM Sans karmasasi~~ → Session 3'te komple temizlendi (499cc88). FONT_AUDIT.md referans olarak duruyor.
+- ~~Typography cascade bombasi (h1-h6 font-serif + legacy petrol rengi)~~ → globals.css'de defused, font-inter + v2-text-primary'ye gecti
+- ~~UserMenu dropdown~~ → Silindi, inline navbar ikonuna gecti
 
 **HALA ACIK:**
-1. **Dynamic category pages V2 migrasyonu:** `/kadin/[category]` ve `/erkek/[category]` hala legacy CategoryPage, ProductCard, ProductGrid, FilterSidebar, SortSelect kullaniyor — V2'ye gecirilmeli
-2. **Auth sayfalari V2 redesign:** Giris, kayit, sifremi-unuttum, sifre-sifirla — eski tasarimda
-3. ~~**Hesabim sayfalari V2 redesign:**~~ → **TAMAMLANDI** (commit 6d65bf4)
-4. **Admin paneli LEGACY:** V2 kapsam disinda — launch sonrasi refactor edilebilir
-5. **Deprecated renk token'lari temizligi:** Tum sayfalar V2'ye gectikten sonra tailwind.config.ts'deki eski token'lar silinmeli
-6. **Gercek urun fotografciligi:** Su an Unsplash/Cloudinary placeholder gorseller kullaniliyor — profesyonel cekimler gerekli
-7. **iyzico/PayTR odeme entegrasyonu:** Hala %0 — **LAUNCH ONCESI KRITIK** (kredi karti odemesi yok, sadece Kapida Odeme)
-8. **Kargo API entegrasyonu:** Su an manuel — MNG/Yurtici API entegrasyonu gerekli
-9. **Test coverage:** Hala %0 — hicbir test yok
-10. **CI/CD pipeline:** Hala %0 — pipeline yok
-11. **Cart API userId TODO:** Auth session entegrasyonu cart API'de hala eksik — gelecek auth turu icin
+1. **Auth sayfalari V2 redesign:** Giris, kayit, sifremi-unuttum, sifre-sifirla — kismen iyilesti (Cinzel silindi, serif/v2-text-primary'e gecti), **ama layout hala legacy** — tam V2 redesign bekliyor
+2. **Admin paneli LEGACY:** V2 kapsam disinda — launch sonrasi refactor edilebilir. Session 3'te kategori UI'i silindi (tek V2-yonlu eylemdi).
+3. **Deprecated renk token'lari temizligi:** Kismen cozuldu — 7 hard-coded #8B6F47 → text-v2-accent, ama `sand-*`, `leather-*`, `aegean-*`, `terracotta-*`, `luxury-*` scale'leri hala tailwind.config.ts'de duruyor
+4. **Gercek urun fotografciligi:** Su an Unsplash/Cloudinary placeholder gorseller kullaniliyor — profesyonel cekimler gerekli
+5. **iyzico/PayTR odeme entegrasyonu:** Hala %0 — **LAUNCH ONCESI KRITIK**
+6. **Kargo API entegrasyonu:** Su an manuel — MNG/Yurtici API entegrasyonu gerekli
+7. **Test coverage:** Hala %0 — hicbir test yok
+8. **CI/CD pipeline:** Hala %0 — pipeline yok
+9. **Cart API userId TODO:** Auth session entegrasyonu cart API'de hala eksik
+10. **CMS yasal sayfalar overlap:** `/kvkk` ve `/cerezler` icin hem dosya-bazli V2 sayfa hem seed'deki CMS sayfasi var — launch oncesi tercih edilmeli
+11. **Tailwind font token alias karmasasi:** `font-sans`, `font-body`, `font-heading` hala tailwind.config.ts'de Inter/Cormorant alias'i olarak duruyor (legacy referanslar icin) — temizligi buyuk bir refactor gerektiriyor
 
 ---
 
@@ -2666,7 +2732,7 @@ Tum API route'lari ayni pattern'i takip eder:
 
 ### 16.4 Tutarsizliklar
 
-1. **Legacy vs V2 renk token'lari:** V2 sayfalari `v2-*` token kullanirken, legacy sayfalar (admin, auth, dynamic [category]) hala `luxury-*`, `sand-*`, `aegean-*` kullaniyor. Codebase'de iki farkli tasarim dili var.
+1. **Legacy vs V2 renk token'lari:** V2 sayfalari `v2-*` token kullanirken, legacy sayfalar (admin, auth) hala `luxury-*`, `sand-*`, `aegean-*` kullaniyor. Session 3'te dynamic [category] route'lari silindigi icin bu kategori eridi — kalan sadece admin ve auth. Codebase'de hala iki tasarim dili var.
 2. **Guest vs Auth cart:** Client-side Zustand store ve server-side Cart modeli arasinda tam senkronizasyon yok
 3. **Shipping cost DB vs constants:** `constants.ts`'de varsayilan degerler var, ama runtime'da `ShippingConfigProvider` DB'den aliyor. Tutarsizlik riski azaldi ama constants.ts'deki degerler fallback olarak korunuyor.
 
@@ -2721,7 +2787,7 @@ V2 migrasyonu asagidaki stratejiyi takip ediyor:
 | `isValidTurkishPhone(phone)` | Telefon dogrulama | `isValidTurkishPhone("5321234567")` → true |
 | `formatPhone(phone)` | Telefon formati | `formatPhone("5321234567")` → "0532 123 45 67" |
 | `absoluteUrl(path)` | Tam URL | `absoluteUrl("/urun/sandalet")` → "https://site.com/urun/sandalet" |
-| `getProductUrl(product)` | Urun URL'i | → `/kadin/bodrum-sandalet/HS-W-AEG-001` |
+| `getProductUrl(product)` | Urun URL'i (Session 3'te 2-segment) | → `/kadin/bodrum-sandalet` |
 
 ### 17.3 Turkiye Konum Verileri (`src/lib/turkey-locations.ts`, 1278 satir)
 
@@ -2751,7 +2817,7 @@ V2 migrasyonu asagidaki stratejiyi takip ediyor:
 
 4. **Turkce URL yapisi:** Tum route'lar Turkce (orn: `/kadin`, `/erkek`, `/odeme`, `/hesabim`). Bu, SEO ve kullanici deneyimi icin tutarli bir karar.
 
-5. **Gender-based routing:** Urunler cinsiyet bazli URL yapisi kullanir (`/kadin/[category]/[sku]`, `/erkek/[category]/[sku]`). Bu, geleneksel e-ticaret pattern'i.
+5. **Gender-based flat routing:** Urunler **2-segment cinsiyet bazli URL** yapisi kullanir (`/kadin/[slug]`, `/erkek/[slug]`). Session 3'te eski 3-segment `/kadin/[category]/[sku]` yapisindan gecildi — kategori alt route'lari komple kaldirildi, slug uniqueness per-gender composite oldu.
 
 6. **No public/ directory:** Statik asset'ler yerel dosya sistemi yerine tamamen Cloudinary CDN ve harici URL'ler uzerinden sunuluyor. Logo bile metin bazli.
 
@@ -2780,25 +2846,27 @@ Tum email template'leri HTML formatinda, inline CSS ile stilize edilmis:
 
 ### 17.7 Proje Istatistikleri
 
-| Metrik | Deger |
+| Metrik | Deger (Session 3 sonrasi) |
 |--------|-------|
-| Toplam TypeScript/TSX dosyasi | 254 |
-| React component'leri | 102 |
-| V2 component (aktif) | 25+ (home: 7, shop: 9, checkout: 6, layout: 6, helper pages: 5+) |
-| Legacy component (hala kullanimda) | 5 (shop: dynamic [category] route'lari icin) |
+| Toplam TypeScript/TSX dosyasi | ~247 (Session 3: ~45 dosyada net −2518/+143 satir, 7 legacy component fiziksel silindi, 2 yeni [slug] route'u eklendi) |
+| React component'leri | ~95 (Session 3: net −7) |
+| V2 component (aktif) | 25+ (home: 7, shop: 9, checkout: 6, layout: 5 — UserMenu silindi, helper pages: 5+) |
+| Legacy component (hala kullanimda) | **0** — Session 3'te kalan 5 legacy shop component silindi |
 | API route dosyasi | 46 |
 | HTTP handler (method) | 80+ |
-| Sayfa dosyasi (page.tsx) | 49 |
+| Sayfa dosyasi (page.tsx) | ~49 (net: −4 [category] route dosyasi, +2 [slug] route dosyasi, −1 admin/kategoriler) |
 | Layout dosyasi | 5 |
 | Zustand store | 5 |
 | Custom hook | 10 |
 | Prisma modeli | 18 |
 | Prisma enum | 6 |
+| Prisma migration | 3 (init, remove_isNew_and_collections, flatten_product_urls) |
 | shadcn/ui component | 27 |
-| Luxury component | 8 (16 export) |
+| Luxury component | 6 (Session 3: EditorialQuote ve ProductShowcase silindi) |
 | Email template | 6 |
 | Utility fonksiyon | 15+ |
-| Dokumantasyon dosyasi | 9 (docs/) + CLAUDE.md + README.md |
+| Dokumantasyon dosyasi | 9 (docs/) + CLAUDE.md + README.md + **FONT_AUDIT.md** (392 satir, Session 3) + HALIKARNAS_SYSTEM_REPORT.md |
+| **Font loading count** | **2** (Inter + Cormorant Garamond) — Session 3'te Cinzel ve DM Sans silindi, onceden 4 font yukleniyordu |
 | Store dosyasi toplam satir | 667 |
 | Hook dosyasi toplam satir | 602 |
 | Schema dosyasi satir | 603 |
@@ -2819,7 +2887,7 @@ Tum email template'leri HTML formatinda, inline CSS ile stilize edilmis:
 | Gorsel Yonetimi | %80 | Cloudinary entegre, upload calisiyor |
 | Favori Listesi | %100 | API + UI + server sync |
 | SEO | %90 | Metadata, JSON-LD, structured data |
-| V2 Tasarim Migrasyonu | %90 | Anasayfa, listeleme (root), urun detay, cart drawer, checkout, yardimci sayfalar, hikayemiz, hesabim, navbar, footer tamamlandi; auth, dynamic [category] bekleniyor |
+| V2 Tasarim Migrasyonu | %95 | Anasayfa, listeleme, urun detay (Khaite pattern), cart, checkout, yardimci sayfalar, hikayemiz, hesabim, navbar (left-aligned), footer, siparis-tamamlandi, yasal sayfalar tamamlandi; dynamic [category] route'lari komple silindi; **typography konsolide** (Inter + Cormorant); **auth** ve **admin** LEGACY |
 | **Odeme Entegrasyonu** | **%0** | **KRITIK — Henuz baslanmamis** |
 | Test | %0 | Hicbir test yok |
 | CI/CD | %0 | Pipeline yok |
@@ -2837,39 +2905,59 @@ Tum email template'leri HTML formatinda, inline CSS ile stilize edilmis:
 | Sayfa / Bilesen | Durum | Notlar |
 |-------|-------|--------|
 | Anasayfa (`/`) | **V2 TAMAMLANDI** | HeroV2, EditorialCategoryBlock, SecimProductGrid (4-urun esit grid), FullBleedEditorial, BrandStoryTeaser |
-| `/kadin` (root) | **V2 TAMAMLANDI** | CategoryPageV2, ProductCardV2, ProductGridV2, FilterToolbarV2 |
+| `/kadin` (root) | **V2 TAMAMLANDI** | CategoryPageV2, ProductCardV2, ProductGridV2, FilterToolbarV2. Session 3'te kategori chip'leri silindi. |
 | `/erkek` (root) | **V2 TAMAMLANDI** | CategoryPageV2, ProductCardV2, ProductGridV2, FilterToolbarV2 |
-| `/kadin/[category]` | LEGACY | V2 migrasyonu bekleniyor — CategoryPage, ProductCard, ProductGrid, FilterSidebar, SortSelect |
-| `/erkek/[category]` | LEGACY | V2 migrasyonu bekleniyor — ayni legacy component'ler |
-| Urun Detay (`/*/[category]/[sku]`) | **V2 TAMAMLANDI** | ProductDetailV2, ImageGalleryV2, ColorSelectorV2 (kare swatch), SizeSelectorV2 (outline), MobileAddToCartBarV2 |
+| ~~`/kadin/[category]`, `/erkek/[category]`~~ | **SILINDI (Session 3)** | V2'ye gecirilmedi — feature olarak komple kaldirildi. Dynamic kategori sayfalari artik yok (0708de0). |
+| ~~`/kadin/[category]/[sku]`, `/erkek/[category]/[sku]`~~ | **SILINDI (Session 3)** | 3-segment urun detay yapisi kaldirildi |
+| Urun Detay `/kadin/[slug]`, `/erkek/[slug]` | **V2 TAMAMLANDI (Khaite pattern)** | Session 3 (4730558 + 383f27d + 779ea1e): ProductDetailV2 `lg:grid-cols-12` (col-span-6 + col-span-5), ImageGalleryV2 dikey editorial stack / mobil snap-scroll + hairline dot, sticky sag purchase panel, wishlist inline icon+label, 1200×1500 retina gorseller. URL 2-segment, slug-based (eski 3-segment ve `/urun/[slug]` kaldirildi) |
 | `/sss` | **V2 TAMAMLANDI** | Merkez hizali tek kolon, minimal form |
 | `/iletisim` | **V2 TAMAMLANDI** | Merkez hizali tek kolon, minimal form |
 | `/siparis-takip` | **V2 TAMAMLANDI** | Merkez hizali tek kolon, minimal form |
 | `/beden-rehberi` | **V2 TAMAMLANDI** | Merkez hizali tek kolon, tablo |
+| `/siparis-tamamlandi/[token]` | **V2 TAMAMLANDI** | Yesil tik + mavi email banner + card'lar silindi, Cormorant baslik "Siparisiniz alindi.", border-b section'lar, 80x80 urun fotograflari (Product.images primary relation, fallback ShoppingBag), Ucretsiz/indirim bronz |
+| `/mesafeli-satis-sozlesmesi`, `/kvkk`, `/cerezler` | **V2 YENI** | Yasal zorunlu sayfalar — sablon metinler, TODO placeholder'lar (satici bilgileri), launch oncesi hukuk inceleme notu |
 | `/hikayemiz` (eski `/hakkimizda`) | **V2 YENI TASARIM** | 3 section: Tez, Zanaat, CTA |
-| Navbar (default) | **V2 TAMAMLANDI** | Cinematic variant silindi |
+| Navbar (default) | **V2 TAMAMLANDI — Session 3: left-aligned editorial** | eba676d + ce5d73b: wordmark sol + KADIN/ERKEK/HIKAYEMIZ yaninda, saginda Search/Heart/User/Bag outline ikonlar, avatar circle silindi, UserMenu dropdown silindi, scroll=0 dahil her zaman bg-v2-bg-primary, breakpoint lg |
 | Footer | **V2 TAMAMLANDI** | bg-v2-bg-dark (#2A2A26), section label'lari text-white/50 |
 | MobileMenu | **V2 TAMAMLANDI** | Full-screen overlay, serif linkler |
 | CartDrawer | **V2 TAMAMLANDI** | ShippingConfigProvider context kullanir |
 | **Checkout (`/odeme`)** | **V2 TAMAMLANDI** | Text stepper, underline form, no cards, mobile accordion summary |
 | `/sepet` | **SILINDI** | Drawer kullaniliyor |
 | `/koleksiyonlar`, `/yeni-gelenler`, `/hakkimizda` | **SILINDI** | Feature'lar komple kaldirildi |
-| Auth (giris, kayit, sifremi-unuttum, sifre-sifirla) | LEGACY | V2 migrasyonu bekleniyor |
+| Auth (giris, kayit, sifremi-unuttum, sifre-sifirla) | KISMEN | Session 3'te Cinzel silindi, globals.css cascade duzeldi, serif/v2-text-primary'e gecti — **layout hala legacy**, tam V2 redesign bekliyor |
 | Hesabim/* (siparislerim, adreslerim, favorilerim, bilgilerim, sifre-degistir) | **V2 TAMAMLANDI** | Sidebar text-only (bronz left-border), flat list layout, V2Input/V2Select form'lar, card wrapper'lar silindi, kirmizi uyari yok, ProductCardV2 favorilerde |
-| Admin Paneli | LEGACY | V2 kapsam disinda — launch sonrasi refactor edilebilir |
+| Admin Paneli | LEGACY | V2 kapsam disinda — launch sonrasi refactor edilebilir. Session 3'te sadece bir V2-yonlu eylem oldu: `/admin/kategoriler` sayfasi ve sidebar link'i silindi, ProductForm'dan kategori selector'i cikarildi (0708de0) |
 
-### 18.2 Component Ciftleri (Eski / Yeni)
+### 18.2 Component Ciftleri (Eski / Yeni) — Session 3 sonrasi
 
 | Legacy Component | V2 Component | Durum |
 |-----------------|-------------|-------|
-| `ProductCard.tsx` | `ProductCardV2.tsx` | V2 aktif, legacy hala [category] route'larinda kullaniliyor |
-| `ProductGrid.tsx` | `ProductGridV2.tsx` | V2 aktif, legacy hala [category] route'larinda kullaniliyor |
-| `CategoryPage.tsx` | `CategoryPageV2.tsx` | V2 root'ta aktif, legacy [category] route'larinda |
-| `FilterSidebar.tsx` | `FilterToolbarV2.tsx` | V2 aktif, legacy [category] route'larinda |
-| `SortSelect.tsx` | (FilterToolbarV2'ye dahil) | Legacy [category] route'larinda |
+| ~~`ProductCard.tsx`~~ | `ProductCardV2.tsx` | **Legacy SILINDI (Session 3)** — [category] route'lari kaldirildi, /arama V2'ye gecti |
+| ~~`ProductGrid.tsx`~~ | `ProductGridV2.tsx` | **Legacy SILINDI (Session 3)** |
+| ~~`CategoryPage.tsx`~~ | `CategoryPageV2.tsx` | **Legacy SILINDI (Session 3)** |
+| ~~`FilterSidebar.tsx`~~ | `FilterToolbarV2.tsx` | **Legacy SILINDI (Session 3)** |
+| ~~`SortSelect.tsx`~~ | (FilterToolbarV2'ye dahil) | **Legacy SILINDI (Session 3)** |
+| ~~`UserMenu.tsx`~~ | (Inline navbar User icon) | **Legacy SILINDI (Session 3)** — dropdown yerine direkt ikon |
+| ~~`EditorialQuote.tsx`~~ | — | **Legacy luxury SILINDI (Session 3)** |
+| ~~`ProductShowcase.tsx`~~ (ProductCardLuxury, ProductGridLuxury) | `ProductCardV2` | **Legacy luxury SILINDI (Session 3)** |
 
 **Silinen legacy component'ler (artik codebase'de yok):**
-HeroSection, FeaturedProducts, FeaturedProductsCarousel, NewArrivals, NewArrivalsCarousel, CategoryCards, FeaturedCollection, FeaturedCategories, BestSellers, CraftsmanshipMini, BrandPromise, BrandStory, Features, Newsletter, ProductDetail, ImageGallery, ColorSelector, SizeSelector, MobileAddToCartBar, CinematicScroll, ScrollProgress, IntroFrame, CollectionFrame, OutroFrame, CartPage, CartItem, CartSummary, CouponInput, EmptyCart
+
+Tur 1-4'te silinenler: HeroSection, FeaturedProducts, FeaturedProductsCarousel, NewArrivals, NewArrivalsCarousel, CategoryCards, FeaturedCollection, FeaturedCategories, BestSellers, CraftsmanshipMini, BrandPromise, BrandStory, Features, Newsletter, ProductDetail, ImageGallery, ColorSelector, SizeSelector, MobileAddToCartBar, CinematicScroll, ScrollProgress, IntroFrame, CollectionFrame, OutroFrame, CartPage, CartItem, CartSummary, CouponInput, EmptyCart
+
+Session 3'te silinenler: ProductCard, ProductGrid, CategoryPage, FilterSidebar, SortSelect, UserMenu, EditorialQuote, ProductShowcase
+
+### 18.2b Typography System v2 (Consolidated — Session 3)
+
+**2026-04-12, commit 499cc88** — Proje'nin font sistemi komple konsolide edildi. Bu, V2 migrasyon yolunda bir "clean-up" turu oldu.
+
+**Oncesi:** 4 font yukleniyordu: Inter + Cormorant Garamond + DM Sans + Cinzel. globals.css h1-h6 cascade `font-serif` + legacy petrol rengi (#1E5F74) enjekte ediyordu — her `font-inter` yazan heading hala serif goruniyordu. Component'lerde hard-coded #8B6F47 renkler vardi.
+
+**Sonrasi:** 2 font: **Inter** + **Cormorant Garamond**. next/font + tailwind + globals.css + 10 kod kullanimi temizlendi. Cascade artik `font-inter` + `text-v2-text-primary`. ~28 headinge `font-light` eklendi (yasal sayfalar, SSS, beden rehberi, CartDrawer, CheckoutSummary). 7 hard-coded `#8B6F47` → `text-v2-accent`.
+
+**Referans belgesi:** `FONT_AUDIT.md` (proje kokunde, 392 satir) — Session 3 oncesi ve sonrasi typography inventorysi, degisiklik gerekcesi, etki listesi. Read-only belge.
+
+**Kalan artiklar:** `font-sans`, `font-body`, `font-heading` token'lari tailwind.config.ts'de Inter/Cormorant'a alias olarak duruyor — globals.css'deki legacy referanslar calisir kalsin diye. Tam temizlik icin buyuk bir refactor gerekiyor.
 
 ### 18.3 Urun Detay V2 — Kaldirilan Ogeler
 
@@ -2899,13 +2987,18 @@ Urun detay sayfasi V2 migrasyonunda su ogeler kaldirildi:
 | `ShippingForm` | LuxuryInput/Select/Textarea | V2Input/V2Select/V2Textarea underline wrappers (forwardRef korundu), altin asterisk → bronz. **Not:** Tur 5'te bu wrapper'lar `src/components/ui/v2-form.tsx` shared dosyasina cikarildi. |
 | `OrderReview` | 3 card, Radix Checkbox, SSL yesil bandi | Border-b section'lar + "Duzenle" linkleri, native checkbox, SSL silindi, final buton dolu siyah |
 
-### 18.5 Sonraki Turlarda Beklenenler
+### 18.5 Sonraki Turlarda Beklenenler (Session 3 sonrasi)
 
-1. Dynamic category pages V2 migrasyonu (`/kadin/[category]`, `/erkek/[category]`)
-2. Auth sayfalari (giris, kayit, sifremi-unuttum, sifre-sifirla) V2 redesign
-3. Deprecated renk token'larinin tailwind.config.ts'den kaldirilmasi
-4. Kalan legacy shop component temizligi (5 dosya — dynamic [category] V2'ye gectikten sonra)
-5. Kullanilmayan account component'lerinin silinmesi (AccountStats, OrderTimeline, WishlistCard, AddressCard)
+1. ~~Dynamic category pages V2 migrasyonu~~ → **ÇÖZÜLDÜ** — feature silindi
+2. ~~Kalan legacy shop component temizligi~~ → **ÇÖZÜLDÜ** — 5 dosya silindi
+3. ~~Kullanilmayan account component'lerinin silinmesi~~ → **ÇÖZÜLDÜ**
+4. ~~Typography konsolidasyonu~~ → **ÇÖZÜLDÜ** — Cinzel + DM Sans silindi
+5. Auth sayfalari (giris, kayit, sifremi-unuttum, sifre-sifirla) V2 redesign — hala acik
+6. Tailwind.config.ts'deki legacy renk scale'lerinin (`sand-*`, `aegean-*`, `terracotta-*`, `leather-*`, `luxury-*`) temizligi
+7. `font-sans` / `font-body` / `font-heading` alias token'larinin tam temizligi
+8. Admin paneli V2 (kapsam disinda ama sonradan degerlendirilebilir)
+9. iyzico odeme entegrasyonu (launch oncesi kritik)
+10. Yasal sayfalardaki TODO placeholder'larin doldurulmasi
 
 ### 18.6 V2 Tasarim Prensipleri
 
@@ -2926,7 +3019,7 @@ Urun detay sayfasi V2 migrasyonunda su ogeler kaldirildi:
 
 ## 19. Son Refactor Ozeti (Nisan 2026)
 
-Bu rapor guncellemesi dort buyuk refactor turunu kapsar:
+Bu rapor guncellemesi on-dort refactor turunu kapsar (6 Session 2 + 8 Session 3):
 
 **Tur 1 — V2 Design System Pass (commit 4e9c77e)**
 - 51 dosya degisti, 450 ekleme, 3614 silme
@@ -2974,10 +3067,130 @@ Bu rapor guncellemesi dort buyuk refactor turunu kapsar:
 - DeleteAccountDialog: kirmizi yok, underline trigger, v2 modal stili
 - ShippingForm.tsx artik shared v2-form.tsx'den import ediyor
 
-**Toplam etki (5 tur):** 170+ dosya degisti/silindi, codebase'de 50+ legacy component fiziksel olarak kaldirildi, 1 Prisma migration uygulandi. V2 tasarim sistemi anasayfa, listeleme, urun detay, cart, checkout, yardimci sayfalar, hikayemiz ve hesabim icin tamamlandi. Kalan legacy alanlar: auth, admin paneli, dynamic category route'lari.
+**Tur 6 — Yasal Sayfalar + Siparis Tamamlandi V2 (commit c020a5b + 0fbf91b)**
+- **Yasal sayfalar (c020a5b):** Checkout onay adiminda linkli olan `/mesafeli-satis-sozlesmesi` ve `/kvkk` 404 doner durumdaydi. Uc yeni V2 sayfa eklendi:
+  - `/mesafeli-satis-sozlesmesi` — 6502 sayili Kanun ve Mesafeli Sozlesmeler Yonetmeligi cercevesinde 11 maddelik sozlesme sablonu (322 satir)
+  - `/kvkk` — 6698 sayili KVKK Madde 10 aydinlatma metni (veri kategorileri, isleme amaclari, Madde 11 haklari, basvuru yolu, 360 satir)
+  - `/cerezler` — minimal cerez politikasi placeholder (120 satir)
+  - Tum metinler "sablon" olarak isaretli, satici bilgileri (unvan, adres, vergi no, MERSIS) TODO placeholder, launch oncesi hukuk inceleme uyarisi
+- **Siparis tamamlandi V2 (0fbf91b):** `src/app/(shop)/siparis-tamamlandi/[token]/page.tsx` tek dosya refactor'u
+  - Silindi: yesil dairesel CheckCircle ikonu, mavi/aegean email banner + Mail ikonu, all-caps "SIPARISINIZ BASARIYLA OLUSTURULDU!", `sand-50` card wrapper, section basi ikonlari (Truck/Package/CheckCircle/Mail), `text-heading-3 font-accent` Cinzel tipografi, shadcn Button + `btn-primary`, `Separator` component
+  - Yeni: bronz "Tesekkurler" label + Cormorant "Siparisiniz alindi." + muted e-posta satiri (e-posta bold, link degil), 6 section border-b ile ayrilmis (Siparis Numarasi / Teslimat Adresi / Tahmini Teslimat / Odeme Yontemi / Urunler / Toplam)
+  - Urun listesi: 80x80 fotoğraf + isim + renk/beden/adet + fiyat (CartDrawer pattern) — Prisma `include` genisletildi (OrderItem → Product → images where isPrimary), ürün silinmis edge case'inde ShoppingBag fallback
+  - Toplam: "Ucretsiz" ve indirim `text-v2-accent` (bronz) — yesil YASAK
+  - Butonlar: outline siyah "Siparisimi Takip Et" → `/siparis/[token]` + dolu siyah "Alisverise Devam Et →" → `/` (anasayfa)
+  - User email fallback: `order.guestEmail || order.user?.email || ""` — query'e user relation eklendi
+  - Global 404 (`src/app/not-found.tsx`) zaten V2 uyumlu, fallback UI degismedi
 
-**Launch oncesi kritik path:** iyzico entegrasyonu (kredi karti odeme). Diger legacy alanlar (auth, admin) islevsel ama V2 disinda — launch sonrasi refactor edilebilir.
+**Toplam etki (Session 2, 6 tur):** 175+ dosya degisti/silindi, codebase'de 50+ legacy component fiziksel olarak kaldirildi, 2 Prisma migration uygulandi, 3 yasal zorunlu sayfa eklendi.
 
 ---
 
-*Bu rapor, Halikarnas Sandals codebase'inin kapsamli bir analizini icermektedir. 254 dosya incelenmis, tum modeller, API endpoint'leri, componentler, state yonetimi, is mantigi ve konfigurasyonlar detayli olarak belgelenmistir. Son guncelleme: 2026-04-11, V2 tasarim sistemi migrasyonu (5 tur tamamlandi, hesabim dahil).*
+### Session 3 — 8 Tur (2026-04-12, kronolojik)
+
+**Tur 7 — Navbar Left-Aligned Editorial (commit eba676d + ce5d73b)**
+- Navbar komple yeniden dizildi: wordmark sol, KADIN/ERKEK/HIKAYEMIZ linkleri wordmark'in hemen yaninda, font-inter uppercase tracking-[0.2em]
+- Sag kose: Search / Heart / User / Bag outline ikonlar (w-5 h-5, ince stroke)
+- Avatar circle (aegean teal dolgu) komple silindi
+- UserMenu.tsx **fiziksel silindi** — dropdown kaldirildi, User ikonu direkt hesap sayfasina yonlendiriyor
+- Breakpoint md → lg
+- Wordmark `font-medium → font-normal` (Footer ile tutarlilik — ama bu degisiklik Tur 9'da oldu)
+- Hikayemiz linki eklenmis
+- Hotfix (ce5d73b): Navbar scroll=0 dahil her zaman `bg-v2-bg-primary` (eskiden transparent olabiliyordu), hero fotografi navbar altina tasmiyor
+
+**Tur 8 — Product Card Hiyerarsi Inversiyonu (commit 468bcd9)**
+- ProductCardV2: urun ismi `font-inter` **primary** (baskin) oldu, eski `font-serif text-muted`'dan dondu
+- Fiyat `text-muted` **recessive** oldu
+- Fotograf-isim gap: `mt-4 → mt-5 lg:mt-6`
+- Section alignment duzeltmeleri
+
+**Tur 9 — Typography Audit + Konsolidasyon (commit 499cc88) — FONT_AUDIT.md uretildi**
+- **FONT_AUDIT.md** (proje kokunde, 392 satir) read-only inventory belgesi uretildi
+- **Cinzel** ve **DM Sans** fontlari next/font loader (`src/app/layout.tsx`), tailwind.config.ts fontFamily token'lari (`font-display`, `font-accent`, `font-body`), ve 10 kod kullanimi dahil **komple silindi**
+- globals.css h1-h6 cascade defused: eskiden `font-serif` + legacy petrol rengi (#1E5F74) enjekte ediyordu (her `font-inter` heading hala serif goruniyordu), artik `font-inter` + `text-v2-text-primary`
+- ~28 headinge `font-light` eklendi (yasal sayfalar: mesafeli-satis-sozlesmesi/kvkk/cerezler; SSS, beden rehberi, CartDrawer, CheckoutSummary)
+- Favorilerim kartlari ProductCardV2 ile eslestirildi (eskiden font ailesi farkliydi)
+- Order totals (`CheckoutSummary` + `siparis-tamamlandi/[token]/page.tsx`): `font-inter font-medium`
+- 7 hard-coded `#8B6F47` → `text-v2-accent`
+- Navbar wordmark `font-medium → font-normal` (Footer ile tutarlilik)
+- `font-body` tailwind alias silindi
+- Font loading count **4 → 2** (Inter + Cormorant Garamond)
+
+**Tur 10 — Product Card Typography Micro-tuning (commit 57e901a)**
+- Kart ismi `lg:text-base → lg:text-[17px]`, `tracking-[0.005em]` (daha acik harf araligi)
+- Fiyat: `tracking-[0.01em]`
+- Minimal "tune" turu, buyuk bir degisiklik degil ama kullanici perception'i icin onemli
+
+**Tur 11 — URL Flattening + Kategori Kaldirma + Legacy Temizlik (commit 0708de0)**
+Buyuk bir tur — 45 dosya, +143 / −2518 satir (net −2375).
+
+**Prisma migration `20260412120000_flatten_product_urls`:**
+- `Product.categoryId` NOT NULL → NULL (DROP NOT NULL)
+- `Product_categoryId_fkey` rebuild: `ON DELETE SET NULL`
+- Global `Product_slug_key` unique index drop
+- Yeni composite unique: `Product_slug_gender_key` (`slug`, `gender`)
+
+**URL yapisi:**
+- `/kadin/[category]/[sku]` → `/kadin/[slug]` (2-segment)
+- `/kadin/[category]/` ve `/erkek/[category]/` dizinleri **komple silindi**
+- Yeni `/[gender]/[slug]/page.tsx` route dosyalari (kadin + erkek)
+- `getProductBySlug(slug, gender)` yeni query helper, UNISEX fallback'li
+- `getProductUrl()` 2-segment URL doner
+
+**UI:**
+- CategoryPageV2: kategori chip'leri silindi (`categories` prop, `toggleCategory` state, `selectedCategories` filter)
+- 5 kirik `/urun/[slug]` linki fix'lendi: CartDrawer, order detail, metadata.ts, JsonLd, admin/urunler
+- `/arama` sayfasi legacy ProductCard/ProductGrid → ProductCardV2/ProductGridV2
+
+**Fiziksel silinen 7 legacy component:**
+- `ProductCard.tsx`, `ProductGrid.tsx`, `CategoryPage.tsx`, `FilterSidebar.tsx`, `SortSelect.tsx` (shop/)
+- `ui/luxury/EditorialQuote.tsx`, `ui/luxury/ProductShowcase.tsx`
+
+**Admin:**
+- `/admin/kategoriler/` dizini silindi
+- AdminSidebar'dan kategori link'i kaldirildi
+- ProductForm'dan `categoryId` selector silindi
+- Zod schema `categoryId` nullable optional
+- POST/PATCH slug uniqueness per-gender (`findFirst({ slug, gender })`)
+
+**Tailwind:** `font-body` alias silindi
+
+**Tur 12 — PDP Editorial Image Stack + Sticky Panel / Khaite Pattern (commit 4730558)**
+- `ImageGalleryV2` komple yeniden yazildi (~70 satir)
+- **Desktop (lg+):** fotograflar dikey editorial yigin, `aspect-[4/5]`, sol kolon
+- **Mobile (<lg):** CSS snap-scroll horizontal carousel, `IntersectionObserver` ile dot indicator
+- Thumbnail row kaldirildi
+- framer-motion `AnimatePresence` kaldirildi
+- `getThumbnailUrl` import silindi
+- `ProductDetailV2` grid: `md:grid-cols-2 → lg:grid-cols-12`, `col-span-7/5`
+- Sag panel: `lg:self-start`, `lg:max-h-[calc(100vh-120px)]`, `lg:overflow-y-auto` (sticky purchase panel)
+- Lower section: `max-w-2xl → max-w-[900px] mx-auto`
+- Spec rows (Materyal/Taban/Topuk): `flex → grid-cols-2` right-aligned
+
+**Tur 13 — PDP Rafinasyon (commit 383f27d)**
+- Sol kolon `col-span-7 → 6`, gap `lg:gap-12 → lg:gap-16`
+- Cloudinary `getProductImageUrl`: 800×1000 → **1200×1500** (retina sharpness)
+- Mobile dot indicator: "pill grow" → "uniform hairline" (`h-px w-8`, opacity 100/20)
+- Lower section mt: `mt-24 → mt-16 lg:mt-32` (mobilde daha hizli)
+- PDP-only container: `container-v2 → max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20`
+- Wishlist ikon `h-3.5 → h-4`, gap `1.5 → 2` (inline-flex)
+
+**Tur 14 — Wishlist Button Inline Fix (commit 779ea1e)**
+- Wishlist button display sorunu: kalp ikonu ve label ayni satirda inline-flex ile hizalandi
+- Kucuk bir fix ama PDP'de gorsel bir bozukluk duzeltti
+
+---
+
+**Toplam etki (Session 2 + Session 3, 14 tur):** 220+ dosya degisti/silindi, codebase'de 50+ legacy component fiziksel olarak kaldirildi (Session 3'te ek 8 dosya: 5 shop + 2 luxury + 1 UserMenu), 3 Prisma migration uygulandi, 3 yasal zorunlu sayfa eklendi, proje iki fonta indirgendi, URL yapisi 2-segment'e flatten edildi, dynamic [category] route'lari komple feature olarak kaldirildi, navbar left-aligned editorial layout'a gecti, PDP Khaite pattern'ine gecti.
+
+**V2 migrasyon durumu (Session 3 sonrasi):** Anasayfa, listeleme (root), urun detay (Khaite), cart, checkout, yardimci sayfalar, hikayemiz, hesabim, navbar, footer, siparis-tamamlandi, yasal sayfalar tamamlandi. **Auth** ve **admin** LEGACY kalmaya devam ediyor — launch sonrasi degerlendirilecek.
+
+**Launch oncesi kritik path:**
+1. iyzico entegrasyonu (kredi karti odeme)
+2. Yasal sayfalarda TODO placeholder'larin gercek satici bilgileriyle doldurulmasi (unvan, adres, vergi no, MERSIS, sikayet/basvuru kanallari) ve hukuk muhasebeci incelemesi
+
+Diger legacy alanlar (auth, admin) islevsel ama V2 disinda — launch sonrasi refactor edilebilir.
+
+---
+
+*Bu rapor, Halikarnas Sandals codebase'inin kapsamli bir analizini icermektedir. ~247 TS/TSX dosyasi, 18 Prisma modeli, 3 migration, 46 API route dosyasi, 49 sayfa, 5 Zustand store, ~95 React component ve V2 design system tam kapsami. Son guncelleme: **2026-04-13, Session 3** — Navbar left-aligned editorial, Product card hiyerarsi inversiyonu, Typography konsolidasyonu (Cinzel + DM Sans silindi, FONT_AUDIT.md uretildi), URL flattening (`/[gender]/[slug]`), Prisma migration 20260412120000_flatten_product_urls, dynamic [category] route'lari komple kaldirildi, PDP Khaite editorial pattern (sticky purchase panel + editorial image stack). Toplam 14 refactor turu (Session 2: 6 + Session 3: 8) kapsami.*
