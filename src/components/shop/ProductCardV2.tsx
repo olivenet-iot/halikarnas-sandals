@@ -106,16 +106,16 @@ export function ProductCardV2({
         </div>
 
         {/* Info */}
-        <div className="mt-4">
-          <h3 className="font-serif font-normal text-sm tracking-[-0.01em] text-v2-text-muted">
+        <div className="mt-5 lg:mt-6">
+          <h3 className="font-inter font-normal text-[15px] lg:text-base tracking-normal text-v2-text-primary">
             {name}
           </h3>
           <div className="flex items-baseline gap-3 mt-2">
-            <span className="font-inter text-sm text-v2-text-primary">
+            <span className="font-inter text-sm text-v2-text-muted">
               {formatPrice(price)}
             </span>
             {compareAtPrice && compareAtPrice > price && (
-              <span className="font-inter text-xs text-v2-text-muted line-through">
+              <span className="font-inter text-xs text-v2-text-muted/70 line-through">
                 {formatPrice(compareAtPrice)}
               </span>
             )}
