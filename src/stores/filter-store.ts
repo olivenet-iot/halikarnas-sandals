@@ -11,17 +11,12 @@ export type SortOption =
   | "popular";
 
 interface FilterState {
-  // Filter values
-  categories: string[];
   sizes: string[];
   colors: string[];
   priceRange: [number, number];
   sort: SortOption;
   search: string;
 
-  // Actions
-  setCategories: (categories: string[]) => void;
-  toggleCategory: (category: string) => void;
   setSizes: (sizes: string[]) => void;
   toggleSize: (size: string) => void;
   setColors: (colors: string[]) => void;
@@ -31,13 +26,11 @@ interface FilterState {
   setSearch: (search: string) => void;
   clearFilters: () => void;
 
-  // Computed
   hasActiveFilters: () => boolean;
   getActiveFilterCount: () => number;
 }
 
 const initialState = {
-  categories: [] as string[],
   sizes: [] as string[],
   colors: [] as string[],
   priceRange: [0, 10000] as [number, number],
@@ -47,19 +40,6 @@ const initialState = {
 
 export const useFilterStore = create<FilterState>()((set, get) => ({
   ...initialState,
-
-  setCategories: (categories) => {
-    set({ categories });
-  },
-
-  toggleCategory: (category) => {
-    const { categories } = get();
-    if (categories.includes(category)) {
-      set({ categories: categories.filter((c) => c !== category) });
-    } else {
-      set({ categories: [...categories, category] });
-    }
-  },
 
   setSizes: (sizes) => {
     set({ sizes });
@@ -104,9 +84,8 @@ export const useFilterStore = create<FilterState>()((set, get) => ({
   },
 
   hasActiveFilters: () => {
-    const { categories, sizes, colors, priceRange, search } = get();
+    const { sizes, colors, priceRange, search } = get();
     return (
-      categories.length > 0 ||
       sizes.length > 0 ||
       colors.length > 0 ||
       priceRange[0] > 0 ||
@@ -116,9 +95,8 @@ export const useFilterStore = create<FilterState>()((set, get) => ({
   },
 
   getActiveFilterCount: () => {
-    const { categories, sizes, colors, priceRange, search } = get();
+    const { sizes, colors, priceRange, search } = get();
     let count = 0;
-    count += categories.length;
     count += sizes.length;
     count += colors.length;
     if (priceRange[0] > 0 || priceRange[1] < 10000) count += 1;

@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { formatPrice, formatDate } from "@/lib/utils";
+import { formatPrice, formatDate, getProductUrl } from "@/lib/utils";
 
 const ORDER_STATUS_LABELS: Record<string, string> = {
   PENDING: "Onay Bekliyor",
@@ -46,6 +46,7 @@ export default async function SiparisDetayPage({ params }: PageProps) {
           product: {
             select: {
               slug: true,
+              gender: true,
               images: {
                 where: { isPrimary: true },
                 take: 1,
@@ -94,10 +95,12 @@ export default async function SiparisDetayPage({ params }: PageProps) {
           ÜRÜNLER
         </span>
         <div className="space-y-4">
-          {order.items.map((item) => (
+          {order.items.map((item) => {
+            const productUrl = getProductUrl(item.product);
+            return (
             <div key={item.id} className="flex gap-4">
               <Link
-                href={`/urun/${item.product.slug}`}
+                href={productUrl}
                 className="w-[60px] h-[60px] flex-shrink-0 overflow-hidden bg-v2-bg-primary"
               >
                 <Image
@@ -110,7 +113,7 @@ export default async function SiparisDetayPage({ params }: PageProps) {
               </Link>
               <div className="flex-1 min-w-0">
                 <Link
-                  href={`/urun/${item.product.slug}`}
+                  href={productUrl}
                   className="font-inter text-sm text-v2-text-primary hover:underline underline-offset-4"
                 >
                   {item.productName}
@@ -124,7 +127,8 @@ export default async function SiparisDetayPage({ params }: PageProps) {
                 {formatPrice(Number(item.total))}
               </span>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Subtotals */}

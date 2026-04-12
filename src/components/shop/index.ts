@@ -1,12 +1,3 @@
-// Legacy — still used by /kadin/[category], /erkek/[category], /arama
-export { ProductCard } from "./ProductCard";
-export type { ProductCardProps } from "./ProductCard";
-export { ProductGrid } from "./ProductGrid";
-export { FilterSidebar, FilterTrigger } from "./FilterSidebar";
-export { SortSelect } from "./SortSelect";
-export { CategoryPage } from "./CategoryPage";
-
-// V2
 export { ProductDetailV2 } from "./ProductDetailV2";
 export { ProductCardV2 } from "./ProductCardV2";
 export { ProductGridV2 } from "./ProductGridV2";

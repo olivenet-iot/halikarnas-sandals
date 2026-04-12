@@ -6,6 +6,4 @@ export { TextReveal, TextFadeIn, LetterSpacingReveal } from "./TextReveal";
 export { ParallaxImage, ParallaxLayeredImage } from "./ParallaxImage";
 export { MagneticButton, ArrowIcon } from "./MagneticButton";
 export { VideoBackground, AnimatedGradientBackground } from "./VideoBackground";
-export { EditorialQuote, EditorialText } from "./EditorialQuote";
 export { ScrollIndicator, ChevronBounce } from "./ScrollIndicator";
-export { ProductCardLuxury, ProductGridLuxury } from "./ProductShowcase";

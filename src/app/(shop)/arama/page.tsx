@@ -21,8 +21,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
-import { ProductGrid } from "@/components/shop/ProductGrid";
-import { ProductCardProps } from "@/components/shop/ProductCard";
+import { ProductGridV2 } from "@/components/shop/ProductGridV2";
+import type { ProductCardV2Props } from "@/components/shop/ProductCardV2";
 
 const sortOptions = [
   { value: "relevance", label: "Önerilen" },
@@ -44,7 +44,7 @@ function SearchContent() {
   const queryParam = searchParams.get("q") || "";
 
   const [query, setQuery] = useState(queryParam);
-  const [products, setProducts] = useState<ProductCardProps[]>([]);
+  const [products, setProducts] = useState<ProductCardV2Props[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [total, setTotal] = useState(0);
   const [sort, setSort] = useState("relevance");
@@ -84,7 +84,6 @@ function SearchContent() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     performSearch(query);
-    // Update URL
     const url = new URL(window.location.href);
     url.searchParams.set("q", query);
     window.history.pushState({}, "", url.toString());
@@ -95,12 +94,12 @@ function SearchContent() {
   };
 
   return (
-    <div className="container py-8 md:py-12">
+    <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24 pt-[100px] md:pt-[120px] pb-16">
       {/* Search Header */}
       <div className="mb-8">
         <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-leather-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-v2-text-muted" />
             <Input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -122,16 +121,15 @@ function SearchContent() {
       {queryParam && (
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-leather-900">
+            <h1 className="font-serif font-light text-2xl md:text-3xl text-v2-text-primary">
               &quot;{queryParam}&quot; için arama sonuçları
             </h1>
-            <p className="text-leather-600 mt-1">
+            <p className="font-inter text-sm text-v2-text-muted mt-1">
               {isLoading ? "Aranıyor..." : `${total} sonuç bulundu`}
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Sort */}
             <Select value={sort} onValueChange={(value) => { setSort(value); performSearch(query); }}>
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="Sırala" />
@@ -145,7 +143,6 @@ function SearchContent() {
               </SelectContent>
             </Select>
 
-            {/* Filter Sheet */}
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
@@ -204,19 +201,19 @@ function SearchContent() {
       {/* Results */}
       {isLoading ? (
         <div className="flex items-center justify-center py-24">
-          <Loader2 className="h-8 w-8 animate-spin text-aegean-600" />
+          <Loader2 className="h-8 w-8 animate-spin text-v2-accent" />
         </div>
       ) : products.length > 0 ? (
-        <ProductGrid products={products} columns={4} />
+        <ProductGridV2 products={products} />
       ) : queryParam ? (
         <div className="text-center py-16">
-          <div className="w-24 h-24 mx-auto rounded-full bg-sand-100 flex items-center justify-center mb-6">
-            <Search className="w-10 h-10 text-sand-400" />
+          <div className="w-24 h-24 mx-auto bg-v2-bg-primary flex items-center justify-center mb-6">
+            <Search className="w-10 h-10 text-v2-text-muted" />
           </div>
-          <h2 className="text-xl font-semibold text-leather-900 mb-2">
+          <h2 className="font-serif font-light text-xl text-v2-text-primary mb-2">
             &quot;{queryParam}&quot; için sonuç bulunamadı
           </h2>
-          <p className="text-leather-600 mb-6">
+          <p className="font-inter text-sm text-v2-text-muted mb-6">
             Farklı anahtar kelimeler deneyin veya kategorilere göz atın.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
@@ -230,7 +227,7 @@ function SearchContent() {
         </div>
       ) : (
         <div className="text-center py-16">
-          <p className="text-leather-600">
+          <p className="font-inter text-sm text-v2-text-muted">
             Aramak istediğiniz ürünü yukarıdaki alana yazın.
           </p>
         </div>
@@ -243,9 +240,9 @@ export default function SearchPage() {
   return (
     <Suspense
       fallback={
-        <div className="container py-8 md:py-12">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24 pt-[120px]">
           <div className="flex items-center justify-center py-24">
-            <Loader2 className="h-8 w-8 animate-spin text-aegean-600" />
+            <Loader2 className="h-8 w-8 animate-spin text-v2-accent" />
           </div>
         </div>
       }

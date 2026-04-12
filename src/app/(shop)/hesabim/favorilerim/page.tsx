@@ -85,11 +85,8 @@ export default function FavorilerimPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 mt-12">
           {items.map((item) => {
             const productUrl = getProductUrl({
-              sku: item.product.sku,
+              slug: item.product.slug,
               gender: item.product.gender,
-              category: item.product.categorySlug
-                ? { slug: item.product.categorySlug }
-                : null,
             });
 
             return (

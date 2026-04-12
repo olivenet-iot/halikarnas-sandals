@@ -4,27 +4,26 @@ import { ProductDetailV2 } from "@/components/shop/ProductDetailV2";
 import { ProductJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import { getProductUrl } from "@/lib/utils";
 import {
-  getProduct,
+  getProductBySlug,
   getRelatedProducts,
   transformProductData,
 } from "@/lib/product-queries";
 
 interface Props {
-  params: Promise<{ category: string; sku: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { category, sku } = await params;
-  const product = await getProduct(category, sku, "KADIN");
+  const { slug } = await params;
+  const product = await getProductBySlug(slug, "KADIN");
 
   if (!product) {
     return { title: "Urun Bulunamadi" };
   }
 
   const productUrl = getProductUrl({
-    sku: product.sku || product.id,
+    slug: product.slug,
     gender: product.gender,
-    category: product.category,
   });
 
   return {
@@ -42,8 +41,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function KadinProductPage({ params }: Props) {
-  const { category, sku } = await params;
-  const product = await getProduct(category, sku, "KADIN");
+  const { slug } = await params;
+  const product = await getProductBySlug(slug, "KADIN");
 
   if (!product) {
     notFound();
@@ -58,22 +57,13 @@ export default async function KadinProductPage({ params }: Props) {
   const productData = transformProductData(product);
 
   const productUrl = getProductUrl({
-    sku: product.sku || product.id,
+    slug: product.slug,
     gender: product.gender,
-    category: product.category,
   });
 
   const breadcrumbItems = [
     { name: "Ana Sayfa", url: "/" },
     { name: "Kadin", url: "/kadin" },
-    ...(product.category
-      ? [
-          {
-            name: product.category.name,
-            url: `/kadin/${product.category.slug}`,
-          },
-        ]
-      : []),
     { name: product.name, url: productUrl },
   ];
 
@@ -81,6 +71,7 @@ export default async function KadinProductPage({ params }: Props) {
     name: product.name,
     description: product.description || "",
     slug: product.slug,
+    gender: product.gender,
     images: product.images.map((img) => ({ url: img.url })),
     basePrice: Number(product.basePrice),
     salePrice: product.compareAtPrice ? Number(product.basePrice) : null,

@@ -1,12 +1,6 @@
-import { db } from "@/lib/db";
 import { ProductForm } from "@/components/admin/ProductForm";
 
-export default async function NewProductPage() {
-  const categories = await db.category.findMany({
-    orderBy: { name: "asc" },
-    select: { id: true, name: true, gender: true, slug: true },
-  });
-
+export default function NewProductPage() {
   return (
     <div className="space-y-6">
       <div>
@@ -16,7 +10,7 @@ export default async function NewProductPage() {
         </p>
       </div>
 
-      <ProductForm categories={categories} />
+      <ProductForm />
     </div>
   );
 }

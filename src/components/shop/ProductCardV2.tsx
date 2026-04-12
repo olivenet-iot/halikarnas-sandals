@@ -25,18 +25,13 @@ export interface ProductCardV2Props {
 export function ProductCardV2({
   id,
   name,
-  sku,
+  slug,
   gender,
   price,
   compareAtPrice,
   images,
-  categorySlug,
 }: ProductCardV2Props) {
-  const productUrl = getProductUrl({
-    sku,
-    gender,
-    category: categorySlug ? { slug: categorySlug } : null,
-  });
+  const productUrl = getProductUrl({ slug, gender });
 
   const [isWishlistLoading, setIsWishlistLoading] = useState(false);
   const { data: session } = useSession();

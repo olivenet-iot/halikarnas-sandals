@@ -28,7 +28,7 @@ const productSchema = z.object({
   sku: z.string().optional(),
   basePrice: z.coerce.number().min(0),
   compareAtPrice: z.coerce.number().optional().nullable(),
-  categoryId: z.string().min(1, "Kategori gerekli"),
+  categoryId: z.string().nullable().optional(),
   gender: z.enum(["KADIN", "ERKEK", "UNISEX"]).optional().nullable(),
   status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]),
   isFeatured: z.boolean(),
@@ -106,9 +106,12 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = productSchema.parse(body);
 
-    // Check slug uniqueness
-    const existingSlug = await db.product.findUnique({
-      where: { slug: validatedData.slug },
+    // Check slug uniqueness per gender
+    const existingSlug = await db.product.findFirst({
+      where: {
+        slug: validatedData.slug,
+        gender: validatedData.gender ?? null,
+      },
     });
 
     if (existingSlug) {
@@ -157,7 +160,7 @@ export async function POST(request: NextRequest) {
         sku: validatedData.sku || null,
         basePrice: validatedData.basePrice,
         compareAtPrice: validatedData.compareAtPrice || null,
-        categoryId: validatedData.categoryId,
+        categoryId: validatedData.categoryId ?? null,
         gender: validatedData.gender || null,
         status: validatedData.status,
         isFeatured: validatedData.isFeatured,

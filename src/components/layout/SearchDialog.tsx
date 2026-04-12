@@ -194,9 +194,8 @@ export function SearchDialog() {
                     >
                       <Link
                         href={getProductUrl({
-                          sku: result.sku,
+                          slug: result.slug,
                           gender: result.gender,
-                          category: result.categorySlug ? { slug: result.categorySlug } : null,
                         })}
                         onClick={handleResultClick}
                         className="flex items-center gap-4 p-3 rounded-lg hover:bg-sand-50 transition-colors"

@@ -183,23 +183,12 @@ export function absoluteUrl(path: string): string {
   return `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}${path}`;
 }
 
-/**
- * Product URL interface for getProductUrl
- */
 interface ProductForUrl {
-  sku: string;
+  slug: string;
   gender: "ERKEK" | "KADIN" | "UNISEX" | null;
-  category?: { slug: string } | null;
 }
 
-/**
- * Generate product URL based on gender, category, and SKU
- * Format: /[gender]/[category-slug]/[sku]
- * Example: /kadin/bodrum-sandalet/BS-001
- */
 export function getProductUrl(product: ProductForUrl): string {
-  // UNISEX and null gender default to "kadin"
   const genderPath = product.gender === "ERKEK" ? "erkek" : "kadin";
-  const categorySlug = product.category?.slug || "urun";
-  return `/${genderPath}/${categorySlug}/${product.sku}`;
+  return `/${genderPath}/${product.slug}`;
 }

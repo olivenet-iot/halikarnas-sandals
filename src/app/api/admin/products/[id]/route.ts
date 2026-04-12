@@ -28,7 +28,7 @@ const productSchema = z.object({
   sku: z.string().optional().nullable(),
   basePrice: z.coerce.number().min(0).optional(),
   compareAtPrice: z.coerce.number().optional().nullable(),
-  categoryId: z.string().min(1).optional(),
+  categoryId: z.string().nullable().optional(),
   gender: z.enum(["KADIN", "ERKEK", "UNISEX"]).optional().nullable(),
   status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]).optional(),
   isFeatured: z.boolean().optional(),
@@ -103,10 +103,15 @@ export async function PATCH(
       return NextResponse.json({ error: "Ürün bulunamadı" }, { status: 404 });
     }
 
-    // Check slug uniqueness if changing
+    // Check slug uniqueness per gender if changing
+    const targetGender = validatedData.gender ?? existing.gender;
     if (validatedData.slug && validatedData.slug !== existing.slug) {
-      const slugExists = await db.product.findUnique({
-        where: { slug: validatedData.slug },
+      const slugExists = await db.product.findFirst({
+        where: {
+          slug: validatedData.slug,
+          gender: targetGender ?? null,
+          id: { not: id },
+        },
       });
       if (slugExists) {
         return NextResponse.json(

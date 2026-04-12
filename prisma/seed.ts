@@ -245,7 +245,9 @@ Geniş kalıbı ve rahat yapısıyla uzun yürüyüşlerde bile konfor sağlayan
 
     // Create product
     const createdProduct = await prisma.product.upsert({
-      where: { slug: product.slug },
+      where: {
+        slug_gender: { slug: product.slug, gender: product.gender },
+      },
       update: {},
       create: {
         ...product,

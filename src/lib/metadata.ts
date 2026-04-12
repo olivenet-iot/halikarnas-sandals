@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { getProductUrl } from "@/lib/utils";
 
 const BASE_URL = process.env.NEXTAUTH_URL || "https://halikarnassandals.com";
 
@@ -60,6 +61,7 @@ export interface ProductMetaData {
   name: string;
   description: string;
   slug: string;
+  gender: "ERKEK" | "KADIN" | "UNISEX" | null;
   images: { url: string }[];
   basePrice: number;
   salePrice?: number | null;
@@ -74,7 +76,7 @@ export function generateProductMetadata(product: ProductMetaData): Metadata {
       title: product.name,
       description,
       image: product.images[0]?.url,
-      path: `/urun/${product.slug}`,
+      path: getProductUrl(product),
     }),
     other: {
       "product:price:amount": price.toString(),

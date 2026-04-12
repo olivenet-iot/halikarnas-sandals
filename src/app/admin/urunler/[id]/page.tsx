@@ -9,25 +9,18 @@ interface PageProps {
 export default async function EditProductPage({ params }: PageProps) {
   const { id } = await params;
 
-  const [product, categories] = await Promise.all([
-    db.product.findUnique({
-      where: { id },
-      include: {
-        variants: true,
-        images: { orderBy: { position: "asc" } },
-      },
-    }),
-    db.category.findMany({
-      orderBy: { name: "asc" },
-      select: { id: true, name: true, gender: true, slug: true },
-    }),
-  ]);
+  const product = await db.product.findUnique({
+    where: { id },
+    include: {
+      variants: true,
+      images: { orderBy: { position: "asc" } },
+    },
+  });
 
   if (!product) {
     notFound();
   }
 
-  // Transform for form
   const formProduct = {
     id: product.id,
     name: product.name,
@@ -37,7 +30,6 @@ export default async function EditProductPage({ params }: PageProps) {
     sku: product.sku || "",
     basePrice: Number(product.basePrice),
     compareAtPrice: product.compareAtPrice ? Number(product.compareAtPrice) : null,
-    categoryId: product.categoryId,
     // Gender is required in form, fallback to KADIN if null
     gender: product.gender ?? "KADIN" as const,
     status: product.status,
@@ -72,10 +64,7 @@ export default async function EditProductPage({ params }: PageProps) {
         <p className="text-gray-500 mt-1">{product.name}</p>
       </div>
 
-      <ProductForm
-        product={formProduct}
-        categories={categories}
-      />
+      <ProductForm product={formProduct} />
     </div>
   );
 }

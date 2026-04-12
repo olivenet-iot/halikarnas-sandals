@@ -5,7 +5,6 @@ import { getProductUrl } from "@/lib/utils";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXTAUTH_URL || "https://halikarnassandals.com";
 
-  // Static pages
   const staticPages = [
     "",
     "/kadin",
@@ -21,48 +20,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === "" ? 1 : 0.8,
   }));
 
-  // Products
   const products = await db.product.findMany({
     where: { status: "ACTIVE" },
     select: {
       slug: true,
-      sku: true,
       gender: true,
       updatedAt: true,
-      category: {
-        select: { slug: true },
-      },
     },
   });
 
   const productPages = products.map((product) => ({
-    url: `${baseUrl}${getProductUrl({
-      sku: product.sku || product.slug,
-      gender: product.gender,
-      category: product.category,
-    })}`,
+    url: `${baseUrl}${getProductUrl(product)}`,
     lastModified: product.updatedAt,
     changeFrequency: "daily" as const,
     priority: 0.9,
   }));
 
-  // Categories
-  const categories = await db.category.findMany({
-    where: { isActive: true },
-    select: { slug: true, gender: true, updatedAt: true },
-  });
-
-  const categoryPages = categories.map((cat) => {
-    const genderPath = cat.gender === "ERKEK" ? "erkek" : "kadin";
-    return {
-      url: `${baseUrl}/${genderPath}/${cat.slug}`,
-      lastModified: cat.updatedAt,
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    };
-  });
-
-  // Legal/static pages
   const pages = await db.page.findMany({
     where: { isActive: true },
     select: { slug: true, updatedAt: true },
@@ -75,10 +48,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.3,
   }));
 
-  return [
-    ...staticPages,
-    ...productPages,
-    ...categoryPages,
-    ...legalPages,
-  ];
+  return [...staticPages, ...productPages, ...legalPages];
 }

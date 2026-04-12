@@ -121,7 +121,7 @@ model Address {
 model Product {
   id               String        @id @default(cuid())
   name             String
-  slug             String        @unique
+  slug             String
   description      String        @db.Text
   shortDescription String?
   basePrice        Decimal       @db.Decimal(10, 2)
@@ -146,8 +146,8 @@ model Product {
   isBestSeller     Boolean       @default(false)
 
   // Relations
-  categoryId       String
-  category         Category      @relation(fields: [categoryId], references: [id])
+  categoryId       String?
+  category         Category?     @relation(fields: [categoryId], references: [id])
 
   gender           Gender?
 
@@ -167,6 +167,7 @@ model Product {
   orderItems       OrderItem[]
   wishlistItems    WishlistItem[]
 
+  @@unique([slug, gender])
   @@index([categoryId])
   @@index([status])
   @@index([gender])

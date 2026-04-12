@@ -1,3 +1,5 @@
+import { getProductUrl } from "@/lib/utils";
+
 const BASE_URL = process.env.NEXTAUTH_URL || "https://halikarnassandals.com";
 
 export function OrganizationJsonLd() {
@@ -42,6 +44,7 @@ interface ProductJsonLdProps {
     name: string;
     description: string;
     slug: string;
+    gender: "ERKEK" | "KADIN" | "UNISEX" | null;
     images: { url: string }[];
     basePrice: number;
     salePrice?: number | null;
@@ -67,7 +70,7 @@ export function ProductJsonLd({ product }: ProductJsonLdProps) {
     },
     offers: {
       "@type": "Offer",
-      url: `${BASE_URL}/urun/${product.slug}`,
+      url: `${BASE_URL}${getProductUrl(product)}`,
       priceCurrency: "TRY",
       price: price,
       priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)

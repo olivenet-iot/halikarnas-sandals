@@ -190,11 +190,10 @@ async function ProductsTable({
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
                           <Link
-                            href={product.sku ? getProductUrl({
-                              sku: product.sku,
+                            href={getProductUrl({
+                              slug: product.slug,
                               gender: product.gender as "ERKEK" | "KADIN" | "UNISEX" | null,
-                              category: product.category,
-                            }) : `/urun/${product.slug}`}
+                            })}
                             target="_blank"
                           >
                             <Eye className="h-4 w-4 mr-2" />

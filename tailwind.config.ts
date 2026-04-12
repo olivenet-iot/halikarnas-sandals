@@ -154,9 +154,8 @@ const config: Config = {
         // V2 Design System
         inter: ["var(--font-inter)", "system-ui", "sans-serif"],
         serif: ["var(--font-cormorant)", "Georgia", "serif"],
-        // Legacy aliases — map to Inter so any stale reference renders the V2 sans
+        // Legacy aliases — still referenced by .btn-luxury* and .price in globals.css
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        body: ["var(--font-inter)", "system-ui", "sans-serif"],
         heading: ["var(--font-cormorant)", "Georgia", "serif"],
       },
       fontSize: {

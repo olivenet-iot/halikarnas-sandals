@@ -16,10 +16,11 @@ import { Separator } from "@/components/ui/separator";
 import { useCartStore, CartItem } from "@/stores/cart-store";
 import { useShippingConfig } from "@/components/providers/ShippingConfigProvider";
 import { useHydrated } from "@/hooks/useHydrated";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getProductUrl } from "@/lib/utils";
 
 function CartItemCard({ item }: { item: CartItem }) {
   const { updateQuantity, removeItem } = useCartStore();
+  const productUrl = getProductUrl(item);
 
   return (
     <motion.div
@@ -30,7 +31,7 @@ function CartItemCard({ item }: { item: CartItem }) {
       className="flex gap-4 py-4"
     >
       {/* Product Image */}
-      <Link href={`/urun/${item.slug}`} className="flex-shrink-0">
+      <Link href={productUrl} className="flex-shrink-0">
         <div className="relative w-20 h-20 overflow-hidden bg-v2-bg-primary">
           {item.image ? (
             <Image
@@ -50,7 +51,7 @@ function CartItemCard({ item }: { item: CartItem }) {
       {/* Product Info */}
       <div className="flex-1 min-w-0">
         <Link
-          href={`/urun/${item.slug}`}
+          href={productUrl}
           className="text-sm font-medium text-v2-text-primary hover:text-v2-accent transition-colors line-clamp-1"
         >
           {item.name}

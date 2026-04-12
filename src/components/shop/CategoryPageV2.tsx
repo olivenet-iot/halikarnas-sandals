@@ -5,15 +5,7 @@ import { X } from "lucide-react";
 import { ProductGridV2 } from "./ProductGridV2";
 import { FilterToolbarV2 } from "./FilterToolbarV2";
 import { useFilterStore } from "@/stores/filter-store";
-import { cn } from "@/lib/utils";
 import { colorOptions } from "@/lib/constants";
-
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  count?: number;
-}
 
 interface ListingProduct {
   id: string;
@@ -36,7 +28,6 @@ interface CategoryPageV2Props {
   title: string;
   description?: string;
   products: ListingProduct[];
-  categories: Category[];
   gender: "women" | "men" | "unisex";
 }
 
@@ -47,20 +38,17 @@ export function CategoryPageV2({
   title,
   description,
   products,
-  categories,
   gender,
 }: CategoryPageV2Props) {
   const [visibleCount, setVisibleCount] = useState(INITIAL_COUNT);
 
   const {
-    categories: selectedCategories,
     sizes: selectedSizes,
     colors: selectedColors,
     priceRange,
     sort,
     clearFilters,
     hasActiveFilters,
-    toggleCategory,
     toggleSize,
     toggleColor,
   } = useFilterStore();
@@ -70,15 +58,8 @@ export function CategoryPageV2({
     return Math.max(...products.map((p) => p.price), 5000);
   }, [products]);
 
-  // Filter and sort
   const filteredProducts = useMemo(() => {
     let result = [...products];
-
-    if (selectedCategories.length > 0) {
-      result = result.filter(
-        (p) => p.categorySlug && selectedCategories.includes(p.categorySlug)
-      );
-    }
 
     if (selectedSizes.length > 0) {
       result = result.filter(
@@ -141,25 +122,13 @@ export function CategoryPageV2({
     }
 
     return result;
-  }, [
-    products,
-    selectedCategories,
-    selectedSizes,
-    selectedColors,
-    priceRange,
-    sort,
-  ]);
+  }, [products, selectedSizes, selectedColors, priceRange, sort]);
 
   const visibleProducts = filteredProducts.slice(0, visibleCount);
   const hasMore = visibleCount < filteredProducts.length;
 
-  // Active filter tags for display
   const activeFilterTags = useMemo(() => {
     const tags: { type: string; value: string; label: string }[] = [];
-    selectedCategories.forEach((slug) => {
-      const cat = categories.find((c) => c.slug === slug);
-      if (cat) tags.push({ type: "category", value: slug, label: cat.name });
-    });
     selectedSizes.forEach((size) => {
       tags.push({ type: "size", value: size, label: size });
     });
@@ -176,20 +145,10 @@ export function CategoryPageV2({
       });
     }
     return tags;
-  }, [
-    selectedCategories,
-    selectedSizes,
-    selectedColors,
-    priceRange,
-    categories,
-    maxPrice,
-  ]);
+  }, [selectedSizes, selectedColors, priceRange, maxPrice]);
 
   const handleRemoveFilter = (type: string, value: string) => {
     switch (type) {
-      case "category":
-        toggleCategory(value);
-        break;
       case "size":
         toggleSize(value);
         break;
@@ -214,38 +173,13 @@ export function CategoryPageV2({
             {description}
           </p>
         )}
-
-        {/* Subcategory pills */}
-        {categories.length > 0 && (
-          <div className="flex gap-8 md:gap-10 mt-8 overflow-x-auto pb-2 -mx-1 px-1 hide-scrollbar">
-            {categories.map((cat) => {
-              const isActive = selectedCategories.includes(cat.slug);
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => toggleCategory(cat.slug)}
-                  className={cn(
-                    "shrink-0 pb-1 font-inter text-sm transition-colors duration-300",
-                    isActive
-                      ? "text-v2-text-primary border-b border-v2-accent"
-                      : "text-v2-text-muted hover:text-v2-text-primary"
-                  )}
-                >
-                  {cat.name}
-                </button>
-              );
-            })}
-          </div>
-        )}
       </div>
 
       {/* Toolbar + Grid */}
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-24 pb-v2-section-mobile md:pb-v2-section">
         {/* Filter toolbar */}
         <div className="mb-8">
-          <FilterToolbarV2
-            gender={gender}
-          />
+          <FilterToolbarV2 gender={gender} />
         </div>
 
         {/* Active filter tags */}

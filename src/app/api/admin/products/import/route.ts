@@ -115,7 +115,9 @@ export async function POST(request: NextRequest) {
 
         // Upsert product
         const product = await prisma.product.upsert({
-          where: { slug: handle },
+          where: {
+            slug_gender: { slug: handle, gender },
+          },
           update: {
             name: title,
             description,

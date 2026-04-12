@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -57,7 +57,6 @@ const productSchema = z.object({
   sku: z.string().optional(),
   basePrice: z.number().min(0, "Fiyat 0'dan küçük olamaz"),
   compareAtPrice: z.number().nullable(),
-  categoryId: z.string().min(1, "Kategori seçiniz"),
   gender: z.enum(["KADIN", "ERKEK", "UNISEX"]),
   status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]),
   isFeatured: z.boolean(),
@@ -73,16 +72,8 @@ const productSchema = z.object({
 
 type ProductFormData = z.infer<typeof productSchema>;
 
-interface Category {
-  id: string;
-  name: string;
-  gender: "KADIN" | "ERKEK" | "UNISEX" | null;
-  slug: string;
-}
-
 interface ProductFormProps {
   product?: ProductFormData & { id: string };
-  categories: Category[];
 }
 
 const SIZES = ["35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"];
@@ -120,7 +111,7 @@ function generateSKU(name: string, size: string, color?: string): string {
   return `${prefix}-${size}-${colorCode}-${random}`;
 }
 
-export function ProductForm({ product, categories }: ProductFormProps) {
+export function ProductForm({ product }: ProductFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [variantMode, setVariantMode] = useState<"manual" | "matrix">("manual");
   const [stagedImages, setStagedImages] = useState<StagedImage[]>([]);
@@ -146,7 +137,6 @@ export function ProductForm({ product, categories }: ProductFormProps) {
       sku: "",
       basePrice: 0,
       compareAtPrice: null,
-      categoryId: "",
       gender: undefined,
       status: "DRAFT",
       isFeatured: false,
@@ -177,32 +167,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
 
   const [newImageUrl, setNewImageUrl] = useState("");
 
-  // Watch gender for category filtering
   const selectedGender = watch("gender");
-
-  // Filter categories based on selected gender
-  const filteredCategories = useMemo(() => {
-    if (!selectedGender) return categories;
-    return categories.filter(
-      (cat) => !cat.gender || cat.gender === selectedGender || cat.gender === "UNISEX"
-    );
-  }, [categories, selectedGender]);
-
-  // Reset category if it becomes incompatible with selected gender
-  useEffect(() => {
-    const currentCategoryId = watch("categoryId");
-    if (!currentCategoryId || !selectedGender) return;
-
-    const currentCategory = categories.find((c) => c.id === currentCategoryId);
-    if (
-      currentCategory &&
-      currentCategory.gender &&
-      currentCategory.gender !== selectedGender &&
-      currentCategory.gender !== "UNISEX"
-    ) {
-      setValue("categoryId", "");
-    }
-  }, [selectedGender, categories, watch, setValue]);
 
   // Auto-generate slug when name changes
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -227,14 +192,8 @@ export function ProductForm({ product, categories }: ProductFormProps) {
       let uploadedImages: { url: string; color?: string; position: number }[] = [];
 
       if (stagedImages.length > 0) {
-        // Validate required fields for proper folder structure
         if (!data.gender) {
           throw new Error("Gorselleri yuklemek icin cinsiyet secimi zorunludur.");
-        }
-
-        const selectedCategory = categories.find((c) => c.id === data.categoryId);
-        if (!selectedCategory) {
-          throw new Error("Gorselleri yuklemek icin kategori secimi zorunludur.");
         }
 
         if (!data.sku) {
@@ -247,14 +206,12 @@ export function ProductForm({ product, categories }: ProductFormProps) {
           stagedImages,
           {
             gender: data.gender.toLowerCase(),
-            categorySlug: selectedCategory.slug,
+            categorySlug: "genel",
             productSlug: data.slug || generateSlug(data.name),
             sku: data.sku,
           },
           (current, total) => setUploadProgress({ current, total })
         );
-
-        console.log("✅ Gorseller yuklendi:", uploadedImages.length);
       }
 
       // STEP 2: Combine existing images with newly uploaded ones
@@ -500,15 +457,13 @@ export function ProductForm({ product, categories }: ProductFormProps) {
                 />
               </div>
 
-              {/* Warning if missing required fields */}
-              {stagedImages.length > 0 && (!selectedGender || !watch("categoryId") || !watch("sku")) && (
+              {stagedImages.length > 0 && (!selectedGender || !watch("sku")) && (
                 <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
                   <p className="text-sm text-amber-700">
                     Gorsellerin dogru klasore yuklenmesi icin lutfen:
                   </p>
                   <ul className="text-sm text-amber-600 list-disc list-inside mt-1">
                     {!selectedGender && <li>Cinsiyet secin</li>}
-                    {!watch("categoryId") && <li>Kategori secin</li>}
                     {!watch("sku") && <li>Ana SKU girin</li>}
                   </ul>
                 </div>
@@ -817,43 +772,6 @@ export function ProductForm({ product, categories }: ProductFormProps) {
                 {!selectedGender && (
                   <p className="text-sm text-amber-600">
                     Lutfen once cinsiyet secin
-                  </p>
-                )}
-              </div>
-
-              {/* 2. Category (Required - Depends on Gender) */}
-              <div className="space-y-2">
-                <Label>
-                  Kategori <span className="text-red-500">*</span>
-                </Label>
-                <Select
-                  value={watch("categoryId")}
-                  onValueChange={(v) => setValue("categoryId", v)}
-                  disabled={!selectedGender}
-                >
-                  <SelectTrigger className={!selectedGender ? "bg-gray-100 cursor-not-allowed" : ""}>
-                    <SelectValue
-                      placeholder={
-                        selectedGender
-                          ? "Kategori secin..."
-                          : "Once cinsiyet secin"
-                      }
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {filteredCategories.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.categoryId && (
-                  <p className="text-sm text-red-600">{errors.categoryId.message}</p>
-                )}
-                {selectedGender && filteredCategories.length === 0 && (
-                  <p className="text-sm text-amber-600">
-                    Bu cinsiyet icin tanimli kategori yok
                   </p>
                 )}
               </div>

@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   Package,
-  FolderTree,
   ShoppingCart,
   Users,
   Settings,
@@ -58,11 +57,6 @@ const navItems = [
     href: "/admin/siparisler",
     icon: ShoppingCart,
     badge: "pendingOrders",
-  },
-  {
-    title: "Kategoriler",
-    href: "/admin/kategoriler",
-    icon: FolderTree,
   },
   {
     title: "Kullanıcılar",

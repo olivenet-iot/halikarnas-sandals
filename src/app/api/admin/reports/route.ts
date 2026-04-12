@@ -209,7 +209,13 @@ async function getProductsReport(startDate: Date, endDate: Date) {
   });
 
   const categories = await prisma.category.findMany({
-    where: { id: { in: categoryStats.map((c) => c.categoryId) } },
+    where: {
+      id: {
+        in: categoryStats
+          .map((c) => c.categoryId)
+          .filter((id): id is string => id !== null),
+      },
+    },
     select: { id: true, name: true },
   });
 

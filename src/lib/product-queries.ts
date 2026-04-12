@@ -3,16 +3,14 @@ import type { ProductCardV2Props } from "@/components/shop/ProductCardV2";
 
 type GenderFilter = "ERKEK" | "KADIN";
 
-export async function getProduct(
-  categorySlug: string,
-  sku: string,
+export async function getProductBySlug(
+  slug: string,
   gender: GenderFilter
 ) {
   try {
     const product = await prisma.product.findFirst({
       where: {
-        sku,
-        category: { slug: categorySlug },
+        slug,
         gender: { in: [gender, "UNISEX"] },
         status: "ACTIVE",
       },
@@ -46,14 +44,13 @@ export async function getProduct(
 
 export async function getRelatedProducts(
   productId: string,
-  categoryId: string | null,
+  _categoryId: string | null,
   gender: GenderFilter
 ): Promise<ProductCardV2Props[]> {
   try {
     const products = await prisma.product.findMany({
       where: {
         id: { not: productId },
-        categoryId: categoryId || undefined,
         status: "ACTIVE",
         gender: { in: [gender, "UNISEX"] },
       },
@@ -90,7 +87,7 @@ export async function getRelatedProducts(
 }
 
 type ProductWithRelations = NonNullable<
-  Awaited<ReturnType<typeof getProduct>>
+  Awaited<ReturnType<typeof getProductBySlug>>
 >;
 
 export function transformProductData(product: ProductWithRelations) {

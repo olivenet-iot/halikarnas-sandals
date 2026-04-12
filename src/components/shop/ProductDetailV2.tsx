@@ -182,9 +182,8 @@ export function ProductDetailV2({
   };
 
   const productUrl = getProductUrl({
-    sku: product.sku,
+    slug: product.slug,
     gender: product.gender,
-    category: product.category,
   });
 
   const handleAddToCart = () => {

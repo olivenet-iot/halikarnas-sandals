@@ -82,11 +82,9 @@ export function WishlistCard({
     : null;
   const isOnSale = comparePrice && comparePrice > price;
 
-  // Generate product URL
   const productUrl = getProductUrl({
-    sku: product.sku,
+    slug: product.slug,
     gender: product.gender,
-    category: product.categorySlug ? { slug: product.categorySlug } : null,
   });
 
   return (

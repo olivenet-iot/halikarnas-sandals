@@ -63,48 +63,14 @@ async function getProducts() {
   }
 }
 
-async function getCategories() {
-  try {
-    const categories = await prisma.category.findMany({
-      where: {
-        gender: "ERKEK",
-        isActive: true,
-      },
-      orderBy: { position: "asc" },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        _count: {
-          select: { products: true },
-        },
-      },
-    });
-
-    return categories.map((cat) => ({
-      id: cat.id,
-      name: cat.name,
-      slug: cat.slug,
-      count: cat._count.products,
-    }));
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    return [];
-  }
-}
-
 export default async function ErkekPage() {
-  const [products, categories] = await Promise.all([
-    getProducts(),
-    getCategories(),
-  ]);
+  const products = await getProducts();
 
   return (
     <CategoryPageV2
       title="Erkek"
       description="El yapımı hakiki deri erkek sandaletleri."
       products={products}
-      categories={categories}
       gender="men"
     />
   );

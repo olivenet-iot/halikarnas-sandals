@@ -42,11 +42,8 @@ export function SecimProductGridClient({ products }: SecimProductGridClientProps
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10">
         {displayProducts.map((product) => {
           const url = getProductUrl({
-            sku: product.sku,
+            slug: product.slug,
             gender: product.gender,
-            category: product.categorySlug
-              ? { slug: product.categorySlug }
-              : null,
           });
           const mainImage =
             product.images[0]?.url || "/images/product-placeholder.jpg";
