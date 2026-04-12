@@ -1,8 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { CheckCircle, Package, Truck, Mail } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
+import { ShoppingBag } from "lucide-react";
 import { db } from "@/lib/db";
 import { formatPrice, formatDate } from "@/lib/utils";
 import { notFound } from "next/navigation";
@@ -16,7 +15,6 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { token } = await params;
 
-  // Fetch order to get orderNumber for metadata
   const order = await db.order.findUnique({
     where: { trackingToken: token },
     select: { orderNumber: true },
@@ -33,11 +31,24 @@ export async function generateMetadata({
 export default async function SiparisTamamlandiPage({ params }: PageProps) {
   const { token } = await params;
 
-  // Fetch order from database using trackingToken (secure, non-guessable)
   const order = await db.order.findUnique({
     where: { trackingToken: token },
     include: {
-      items: true,
+      items: {
+        include: {
+          product: {
+            select: {
+              slug: true,
+              images: {
+                where: { isPrimary: true },
+                select: { url: true, alt: true },
+                take: 1,
+              },
+            },
+          },
+        },
+      },
+      user: { select: { email: true } },
     },
   });
 
@@ -45,157 +56,202 @@ export default async function SiparisTamamlandiPage({ params }: PageProps) {
     notFound();
   }
 
+  const customerEmail = order.guestEmail || order.user?.email || "";
+
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Success Icon */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 mb-6">
-            <CheckCircle className="h-12 w-12 text-green-600" />
-          </div>
-          <h1 className="text-heading-3 font-accent text-leather-800 mb-2">
-            SİPARİŞİNİZ BAŞARIYLA OLUŞTURULDU!
+    <div className="min-h-screen bg-v2-bg-primary">
+      <div className="max-w-3xl mx-auto px-6 lg:px-10 py-16 lg:py-24">
+        {/* Hero */}
+        <div className="text-center">
+          <span className="font-inter text-xs tracking-[0.2em] uppercase text-v2-accent">
+            Teşekkürler
+          </span>
+          <h1 className="font-serif font-light text-3xl md:text-4xl text-v2-text-primary mt-6">
+            Siparişiniz alındı.
           </h1>
-          <p className="text-body-lg text-leather-600">
-            Sipariş Numarası:{" "}
-            <span className="font-semibold text-aegean-600">
+          {customerEmail && (
+            <p className="font-inter text-sm md:text-base text-v2-text-muted mt-4">
+              Sipariş onayı{" "}
+              <strong className="font-medium text-v2-text-primary">
+                {customerEmail}
+              </strong>{" "}
+              adresine gönderildi.
+            </p>
+          )}
+        </div>
+
+        {/* Sections */}
+        <div className="mt-16">
+          {/* Sipariş Numarası */}
+          <section className="border-b border-v2-border-subtle py-6">
+            <h2 className="font-inter text-xs tracking-[0.2em] uppercase text-v2-text-muted mb-3">
+              Sipariş Numarası
+            </h2>
+            <p className="font-mono text-base md:text-lg text-v2-text-primary">
               {order.orderNumber}
-            </span>
-          </p>
-        </div>
+            </p>
+          </section>
 
-        {/* Email Notification */}
-        <div className="bg-aegean-50 border border-aegean-200 rounded-lg p-4 mb-8 flex items-center gap-3">
-          <Mail className="h-5 w-5 text-aegean-600 flex-shrink-0" />
-          <p className="text-body-sm text-aegean-800">
-            Sipariş onayı{" "}
-            <span className="font-semibold">{order.guestEmail}</span> adresine
-            gönderildi.
-          </p>
-        </div>
-
-        {/* Order Details */}
-        <div className="bg-sand-50 rounded-xl p-6 mb-8">
-          <h2 className="text-heading-5 font-accent text-leather-800 mb-6">
-            SİPARİŞ DETAYLARI
-          </h2>
-
-          {/* Shipping Info */}
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <Truck className="h-5 w-5 text-aegean-600" />
-              <h3 className="font-semibold text-leather-800">
-                Teslimat Adresi
-              </h3>
-            </div>
-            <div className="text-body-sm text-leather-600 space-y-1 ml-7">
-              <p className="font-medium">{order.shippingName}</p>
-              <p>{order.shippingAddress}</p>
-              <p>
-                {order.shippingDistrict}/{order.shippingCity}
+          {/* Teslimat Adresi */}
+          <section className="border-b border-v2-border-subtle py-6">
+            <h2 className="font-inter text-xs tracking-[0.2em] uppercase text-v2-text-muted mb-3">
+              Teslimat Adresi
+            </h2>
+            <div className="font-inter text-sm md:text-base space-y-1">
+              <p className="font-medium text-v2-text-primary">
+                {order.shippingName}
               </p>
-              <p>{order.shippingPhone}</p>
+              <p className="text-v2-text-muted">{order.shippingAddress}</p>
+              <p className="text-v2-text-muted">
+                {order.shippingDistrict} / {order.shippingCity}
+              </p>
+              <p className="text-v2-text-muted">{order.shippingPhone}</p>
             </div>
-          </div>
+          </section>
 
-          <Separator className="my-4" />
+          {/* Tahmini Teslimat */}
+          <section className="border-b border-v2-border-subtle py-6">
+            <h2 className="font-inter text-xs tracking-[0.2em] uppercase text-v2-text-muted mb-3">
+              Tahmini Teslimat
+            </h2>
+            <p className="font-inter text-sm md:text-base text-v2-text-primary">
+              3–5 iş günü
+            </p>
+          </section>
 
-          {/* Delivery Estimate */}
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-2">
-              <Package className="h-5 w-5 text-aegean-600" />
-              <h3 className="font-semibold text-leather-800">
-                Tahmini Teslimat
-              </h3>
-            </div>
-            <p className="text-body-sm text-leather-600 ml-7">3-5 iş günü</p>
-          </div>
-
-          <Separator className="my-4" />
-
-          {/* Payment Info */}
-          <div className="mb-6">
-            <h3 className="font-semibold text-leather-800 mb-2">Ödeme</h3>
-            <p className="text-body-sm text-leather-600">
+          {/* Ödeme Yöntemi */}
+          <section className="border-b border-v2-border-subtle py-6">
+            <h2 className="font-inter text-xs tracking-[0.2em] uppercase text-v2-text-muted mb-3">
+              Ödeme Yöntemi
+            </h2>
+            <p className="font-inter text-sm md:text-base text-v2-text-primary">
               {order.paymentMethod}
             </p>
-          </div>
+          </section>
 
-          <Separator className="my-4" />
+          {/* Ürünler */}
+          <section className="border-b border-v2-border-subtle py-6">
+            <h2 className="font-inter text-xs tracking-[0.2em] uppercase text-v2-text-muted mb-3">
+              Ürünler
+            </h2>
+            <div>
+              {order.items.map((item) => {
+                const imageUrl = item.product?.images?.[0]?.url ?? null;
+                const imageAlt =
+                  item.product?.images?.[0]?.alt ?? item.productName;
+                const meta = [
+                  item.variantColor,
+                  `Beden: ${item.variantSize}`,
+                  `× ${item.quantity}`,
+                ]
+                  .filter(Boolean)
+                  .join(" · ");
 
-          {/* Order Items */}
-          <div className="mb-6">
-            <h3 className="font-semibold text-leather-800 mb-3">Ürünler</h3>
-            <div className="space-y-2">
-              {order.items.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex justify-between text-body-sm"
-                >
-                  <span className="text-leather-600">
-                    {item.productName} ({item.variantSize}) x{item.quantity}
-                  </span>
-                  <span className="font-medium text-leather-800">
-                    {formatPrice(Number(item.total))}
-                  </span>
-                </div>
-              ))}
+                return (
+                  <div
+                    key={item.id}
+                    className="flex gap-4 items-center py-3"
+                  >
+                    <div className="relative w-20 h-20 flex-shrink-0 bg-v2-bg-primary overflow-hidden">
+                      {imageUrl ? (
+                        <Image
+                          src={imageUrl}
+                          alt={imageAlt}
+                          fill
+                          sizes="80px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <ShoppingBag className="h-7 w-7 text-v2-text-muted" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-inter text-sm md:text-base text-v2-text-primary line-clamp-1">
+                        {item.productName}
+                      </p>
+                      <p className="font-inter text-xs text-v2-text-muted mt-1">
+                        {meta}
+                      </p>
+                    </div>
+                    <p className="font-inter text-sm md:text-base text-v2-text-primary ml-auto">
+                      {formatPrice(Number(item.total))}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
-          </div>
+          </section>
 
-          <Separator className="my-4" />
-
-          {/* Order Summary */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-body-sm">
-              <span className="text-leather-600">Ara Toplam</span>
-              <span className="text-leather-800">
-                {formatPrice(Number(order.subtotal))}
-              </span>
-            </div>
-            <div className="flex justify-between text-body-sm">
-              <span className="text-leather-600">Kargo</span>
-              <span className="text-leather-800">
-                {Number(order.shippingCost) === 0
-                  ? "Ücretsiz"
-                  : formatPrice(Number(order.shippingCost))}
-              </span>
-            </div>
-            {Number(order.discount) > 0 && (
-              <div className="flex justify-between text-body-sm">
-                <span className="text-green-600">
-                  İndirim{" "}
-                  {order.couponCode && (
-                    <span className="text-body-xs">({order.couponCode})</span>
-                  )}
-                </span>
-                <span className="text-green-600">
-                  -{formatPrice(Number(order.discount))}
+          {/* Toplam */}
+          <section className="border-b border-v2-border-subtle py-6">
+            <h2 className="font-inter text-xs tracking-[0.2em] uppercase text-v2-text-muted mb-3">
+              Toplam
+            </h2>
+            <div className="space-y-2 font-inter text-sm md:text-base">
+              <div className="flex justify-between">
+                <span className="text-v2-text-muted">Ara Toplam</span>
+                <span className="text-v2-text-primary">
+                  {formatPrice(Number(order.subtotal))}
                 </span>
               </div>
-            )}
-            <Separator className="my-2" />
-            <div className="flex justify-between text-body-lg font-semibold">
-              <span className="text-leather-800">Toplam</span>
-              <span className="text-leather-900">
-                {formatPrice(Number(order.total))}
-              </span>
+              <div className="flex justify-between">
+                <span className="text-v2-text-muted">Kargo</span>
+                <span
+                  className={
+                    Number(order.shippingCost) === 0
+                      ? "text-v2-accent"
+                      : "text-v2-text-primary"
+                  }
+                >
+                  {Number(order.shippingCost) === 0
+                    ? "Ücretsiz"
+                    : formatPrice(Number(order.shippingCost))}
+                </span>
+              </div>
+              {Number(order.discount) > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-v2-text-muted">
+                    İndirim
+                    {order.couponCode ? ` (${order.couponCode})` : ""}
+                  </span>
+                  <span className="text-v2-accent">
+                    −{formatPrice(Number(order.discount))}
+                  </span>
+                </div>
+              )}
+              <div className="border-t border-v2-border-subtle my-3" />
+              <div className="flex justify-between">
+                <span className="font-serif font-light text-lg text-v2-text-primary">
+                  Toplam
+                </span>
+                <span className="font-serif font-light text-lg text-v2-text-primary">
+                  {formatPrice(Number(order.total))}
+                </span>
+              </div>
             </div>
-          </div>
+          </section>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button variant="outline" size="lg" asChild>
-            <Link href={`/siparis/${order.trackingToken}`}>Siparişimi Takip Et</Link>
-          </Button>
-          <Button className="btn-primary" size="lg" asChild>
-            <Link href="/kadin">Alışverişe Devam Et</Link>
-          </Button>
+        {/* Buttons */}
+        <div className="mt-16 flex flex-col sm:flex-row gap-4 justify-center">
+          <Link
+            href={`/siparis/${order.trackingToken}`}
+            className="border border-v2-text-primary text-v2-text-primary bg-transparent hover:bg-v2-text-primary hover:text-white transition-colors px-8 py-3 text-sm tracking-wide font-inter text-center"
+          >
+            Siparişimi Takip Et
+          </Link>
+          <Link
+            href="/"
+            className="bg-v2-text-primary text-white hover:opacity-90 transition-colors px-8 py-3 text-sm tracking-wide font-inter text-center"
+          >
+            Alışverişe Devam Et →
+          </Link>
         </div>
 
-        {/* Order Date */}
-        <p className="text-center text-body-xs text-leather-400 mt-8">
+        {/* Footer Date */}
+        <p className="mt-12 text-center font-inter text-xs text-v2-text-muted">
           Sipariş Tarihi: {formatDate(order.createdAt)}
         </p>
       </div>
