@@ -7,7 +7,7 @@ export function EditorialCategoryBlock() {
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-12">
         {/* Women — left, no offset */}
         <Link href="/kadin" className="group block lg:col-span-7">
-          <div className="relative aspect-[4/5] overflow-hidden">
+          <div className="relative aspect-[4/5] overflow-hidden lg:aspect-auto lg:h-[620px]">
             <Image
               src="https://res.cloudinary.com/dxqmfpa8g/image/upload/v1766897985/halikarnas/home/kadin-koleksiyonu_l0rkzo.webp"
               alt="Kadın sandaletleri"
@@ -29,9 +29,9 @@ export function EditorialCategoryBlock() {
         {/* Men — right, asymmetric offset */}
         <Link
           href="/erkek"
-          className="group block lg:col-span-4 lg:col-start-9 lg:mt-48"
+          className="group block lg:col-span-4 lg:col-start-9 lg:mt-32"
         >
-          <div className="relative aspect-[4/5] overflow-hidden">
+          <div className="relative aspect-[4/5] overflow-hidden lg:aspect-auto lg:h-[440px]">
             <Image
               src="https://res.cloudinary.com/dxqmfpa8g/image/upload/v1775908098/halikarnas/home/erkek1_vki4pb.webp"
               alt="Erkek sandaletleri"

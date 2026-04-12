@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export function BrandStoryTeaser() {
   return (
@@ -25,16 +24,6 @@ export function BrandStoryTeaser() {
               hızlı moda değil, kalıcı zanaat.
             </p>
           </div>
-
-          <Link href="/hikayemiz" className="group inline-block mt-8 lg:mt-10">
-            <span className="block font-inter text-[11px] uppercase tracking-[0.2em] text-v2-text-primary">
-              Hikayenin Tamamı →
-            </span>
-            <span
-              aria-hidden
-              className="block h-px w-12 bg-v2-text-primary/40 mt-3 transition-all duration-500 ease-out group-hover:w-16 motion-reduce:transition-none"
-            />
-          </Link>
         </div>
 
         {/* Right column — detail image */}
