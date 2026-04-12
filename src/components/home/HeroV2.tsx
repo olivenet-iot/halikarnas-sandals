@@ -63,11 +63,14 @@ export function HeroV2() {
               hikayenize.
             </p>
 
-            <Link
-              href="/kadin"
-              className="inline-block mt-10 font-inter text-xs tracking-[0.15em] uppercase text-v2-text-primary link-underline-v2"
-            >
-              Koleksiyonu Gör
+            <Link href="/kadin" className="group inline-block mt-10">
+              <span className="block font-inter text-xs tracking-[0.15em] uppercase text-v2-text-primary">
+                Koleksiyonu Gör
+              </span>
+              <span
+                aria-hidden
+                className="block h-px w-12 bg-v2-text-primary/40 mt-3 transition-all duration-500 ease-out group-hover:w-16 motion-reduce:transition-none"
+              />
             </Link>
           </div>
         </div>
