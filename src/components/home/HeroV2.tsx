@@ -40,9 +40,9 @@ export function HeroV2() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[90vh] bg-v2-bg-primary mt-[-64px] md:mt-[-80px]"
+      className="relative bg-v2-bg-primary"
     >
-      <div className="grid grid-cols-1 md:grid-cols-[35fr_65fr] min-h-[90vh]">
+      <div className="grid grid-cols-1 md:grid-cols-[35fr_65fr] min-h-[calc(100vh-64px)] md:min-h-[calc(100vh-80px)]">
         {/* Left — Typography block */}
         <div className="order-2 md:order-1 flex flex-col justify-center px-8 py-24 md:py-32 md:px-16 lg:px-24 xl:px-32">
           <div

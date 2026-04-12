@@ -15,11 +15,12 @@ import { cn } from "@/lib/utils";
  * V2 DEFAULT NAVBAR — left-aligned editorial layout
  * Wordmark + Kadın/Erkek/Hikayemiz grouped left
  * Search / Heart / User / Bag grouped right
- * Transparent on homepage hero → solid after 80px
+ * Always solid v2-bg-primary; border-b appears on scroll
+ * Fixed h-16/h-20 matches (shop) layout pt-16/pt-20
  * ═══════════════════════════════════════════════ */
 function NavbarDefault() {
   const pathname = usePathname();
-  const [scrollY, setScrollY] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
   const hydrated = useHydrated();
 
   const { openCart, getTotalItems } = useCartStore();
@@ -27,24 +28,17 @@ function NavbarDefault() {
   const { isAuthenticated } = useCurrentUser();
 
   const cartItemCount = hydrated ? getTotalItems() : 0;
-  const isHomepage = pathname === "/";
-  const isScrolled = scrollY > 80;
 
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
+    const handleScroll = () => setIsScrolled(window.scrollY > 0);
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const isTransparent = isHomepage && !isScrolled;
-
   const headerClasses = cn(
-    "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-    isTransparent ? "py-5" : "py-3",
-    isTransparent
-      ? "bg-transparent"
-      : "bg-v2-bg-primary border-b border-v2-border-subtle"
+    "fixed top-0 left-0 right-0 z-50 h-16 md:h-20 bg-v2-bg-primary border-b transition-colors duration-300",
+    isScrolled ? "border-v2-border-subtle" : "border-transparent"
   );
 
   const textColor = "text-v2-text-primary";
@@ -62,8 +56,8 @@ function NavbarDefault() {
 
   return (
     <header className={headerClasses}>
-      <nav className="container-v2">
-        <div className="flex items-center justify-between h-14 md:h-16">
+      <nav className="container-v2 h-full">
+        <div className="flex items-center justify-between h-full">
           {/* LEFT CLUSTER — hamburger (mobile) + wordmark + nav links (desktop) */}
           <div className="flex items-center">
             <Button
