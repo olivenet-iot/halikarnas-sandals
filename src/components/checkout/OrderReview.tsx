@@ -7,7 +7,6 @@ import Link from "next/link";
 import { Loader2, ShoppingBag } from "lucide-react";
 import { useCartStore } from "@/stores/cart-store";
 import { useCheckoutStore, CheckoutStep } from "@/stores/checkout-store";
-import { useShippingConfig } from "@/components/providers/ShippingConfigProvider";
 import { formatPrice } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
@@ -24,12 +23,8 @@ export function OrderReview({ onBack, setStep }: OrderReviewProps) {
   const {
     items,
     coupon,
-    getSubtotal,
-    getDiscount,
     clearCart,
   } = useCartStore();
-
-  const { freeShippingThreshold, shippingCost: shippingRate } = useShippingConfig();
 
   const {
     shippingInfo,
@@ -41,12 +36,6 @@ export function OrderReview({ onBack, setStep }: OrderReviewProps) {
     setOrderCompleted,
     reset: resetCheckout,
   } = useCheckoutStore();
-
-  const subtotal = getSubtotal();
-  const discount = getDiscount();
-  const afterDiscount = subtotal - discount;
-  const shipping = items.length === 0 ? 0 : afterDiscount >= freeShippingThreshold ? 0 : shippingRate;
-  const total = afterDiscount + shipping;
 
   const canPlaceOrder = acceptedTerms && acceptedKvkk;
 
@@ -65,18 +54,17 @@ export function OrderReview({ onBack, setStep }: OrderReviewProps) {
             quantity: item.quantity,
           })),
           shippingInfo,
-          paymentMethod,
-          couponCode: coupon?.code,
-          subtotal,
-          shippingCost: shipping,
-          discount,
-          total,
+          paymentMethod:
+            paymentMethod === "cash_on_delivery" ? "cash_on_delivery" : "credit_card",
+          couponCode: coupon?.code ?? null,
+          acceptedTerms,
+          acceptedKvkk,
         }),
       });
 
       const data = await response.json();
 
-      if (data.success) {
+      if (response.ok && data.success) {
         setOrderCompleted(true);
         clearCart();
         resetCheckout();
