@@ -29,9 +29,8 @@ export function BrandStoryTeaser() {
         {/* Right column — detail image */}
         <div className="hidden md:block md:col-span-6 md:col-start-7">
           <div className="relative aspect-[4/5] overflow-hidden">
-            {/* TODO: photo — AtelierTeaser ile aynı fotoğraf; farklı bir detay fotoğrafı seçilecek */}
             <Image
-              src="https://res.cloudinary.com/dxqmfpa8g/image/upload/v1775908391/halikarnas/home/DSC08111_2_c23tu3.webp"
+              src="https://res.cloudinary.com/dxqmfpa8g/image/upload/v1776009937/halikarnas/home/-QWnmOvT97JaEBEy2D28Q_u70e5IEO_bjlbgd.jpg"
               alt="Deri işçiliği detayı"
               fill
               className="object-cover"

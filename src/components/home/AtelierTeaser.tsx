@@ -7,12 +7,11 @@ export function AtelierTeaser() {
       <div className="grid grid-cols-1 gap-0 lg:grid-cols-12 lg:items-stretch">
         {/* Left — full-bleed image */}
         <div className="relative aspect-[4/5] overflow-hidden lg:col-span-7 lg:aspect-auto lg:min-h-[640px]">
-          {/* TODO: photo — atölye teaser için ayrı bir fotoğraf seçilecek, manuel değiştirilecek */}
           <Image
-            src="https://res.cloudinary.com/dxqmfpa8g/image/upload/v1775908391/halikarnas/home/DSC08111_2_c23tu3.webp"
+            src="https://res.cloudinary.com/dxqmfpa8g/image/upload/v1776009001/halikarnas/home/RVCgNTDbiWJWbahvnuTAC_R47W5CMc_ajgq4q.jpg"
             alt="Halikarnas atölyesi"
             fill
-            className="object-cover"
+            className="object-cover object-bottom"
             sizes="(max-width: 1024px) 100vw, 58vw"
           />
         </div>
