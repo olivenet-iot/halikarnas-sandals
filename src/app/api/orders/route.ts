@@ -336,7 +336,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET /api/orders — guest lookup path (auth list implemented in Task 5)
+// GET /api/orders — authenticated user's order list, or guest lookup by orderNumber + email
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -356,11 +356,32 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      return NextResponse.json({ order });
+      return NextResponse.json({ order: serializeOrder(order) });
     }
 
-    // TODO: Implement authenticated user order list
-    return NextResponse.json({ orders: [] });
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const orders = await db.order.findMany({
+      where: { userId: session.user.id },
+      include: {
+        items: {
+          include: {
+            product: {
+              include: {
+                images: { where: { isPrimary: true }, take: 1 },
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 50,
+    });
+
+    return NextResponse.json({ orders: orders.map(serializeOrder) });
   } catch (error) {
     console.error("Error fetching orders:", error);
     return NextResponse.json(
@@ -368,4 +389,24 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+// Serialize Prisma Decimal fields to JSON-safe primitives.
+function serializeOrder(order: unknown): unknown {
+  if (!order || typeof order !== "object") return order;
+  const o = order as Record<string, unknown>;
+  const out: Record<string, unknown> = { ...o };
+  for (const key of ["subtotal", "shippingCost", "discount", "tax", "total"]) {
+    if (out[key] !== undefined && out[key] !== null) {
+      out[key] = Number(out[key]);
+    }
+  }
+  if (Array.isArray(out.items)) {
+    out.items = (out.items as Record<string, unknown>[]).map((item) => ({
+      ...item,
+      unitPrice: item.unitPrice !== undefined ? Number(item.unitPrice) : null,
+      total: item.total !== undefined ? Number(item.total) : null,
+    }));
+  }
+  return out;
 }
