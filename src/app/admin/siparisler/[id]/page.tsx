@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { formatPrice } from "@/lib/utils";
+import { formatPaymentMethod } from "@/lib/format-payment-method";
 import {
   ArrowLeft,
   User,
@@ -502,11 +503,7 @@ export default function OrderDetailPage() {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Yöntem</span>
                   <span className="font-medium">
-                    {order.paymentMethod === "credit_card"
-                      ? "Kredi Kartı"
-                      : order.paymentMethod === "bank_transfer"
-                      ? "Havale/EFT"
-                      : "Kapıda Ödeme"}
+                    {formatPaymentMethod(order.paymentMethod)}
                   </span>
                 </div>
                 <div className="flex justify-between">

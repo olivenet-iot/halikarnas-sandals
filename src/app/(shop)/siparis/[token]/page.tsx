@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/db";
 import { cn, formatPrice, formatDate } from "@/lib/utils";
+import { formatPaymentMethod } from "@/lib/format-payment-method";
 
 interface PageProps {
   params: Promise<{ token: string }>;
@@ -325,7 +326,7 @@ export default async function OrderDetailPage({ params }: PageProps) {
             <div className="text-sm text-stone-600 space-y-2">
               <div className="flex justify-between">
                 <span>Odeme Yontemi</span>
-                <span className="text-stone-800">{order.paymentMethod || "-"}</span>
+                <span className="text-stone-800">{formatPaymentMethod(order.paymentMethod)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Odeme Durumu</span>

@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn, formatPrice, formatDate } from "@/lib/utils";
+import { formatPaymentMethod } from "@/lib/format-payment-method";
 
 const trackSchema = z.object({
   email: z.string().email("Gecerli bir e-posta adresi girin"),
@@ -471,7 +472,7 @@ export default function OrderTrackingPage() {
                 <div className="text-sm text-v2-text-muted space-y-2">
                   <div className="flex justify-between">
                     <span>Odeme Yontemi</span>
-                    <span className="text-v2-text-primary">{order.paymentMethod || "-"}</span>
+                    <span className="text-v2-text-primary">{formatPaymentMethod(order.paymentMethod)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Odeme Durumu</span>

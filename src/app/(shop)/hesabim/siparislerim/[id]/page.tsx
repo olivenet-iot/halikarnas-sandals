@@ -4,6 +4,7 @@ import Image from "next/image";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { formatPrice, formatDate, getProductUrl } from "@/lib/utils";
+import { formatPaymentMethod } from "@/lib/format-payment-method";
 
 const ORDER_STATUS_LABELS: Record<string, string> = {
   PENDING: "Onay Bekliyor",
@@ -176,13 +177,7 @@ export default async function SiparisDetayPage({ params }: PageProps) {
           ÖDEME YÖNTEMİ
         </span>
         <p className="font-inter text-sm text-v2-text-muted">
-          {order.paymentMethod === "credit_card"
-            ? "Kredi Kartı"
-            : order.paymentMethod === "bank_transfer"
-            ? "Banka Havalesi"
-            : order.paymentMethod === "cash_on_delivery"
-            ? "Kapıda Ödeme"
-            : order.paymentMethod || "Belirtilmemiş"}
+          {formatPaymentMethod(order.paymentMethod)}
         </p>
       </section>
 

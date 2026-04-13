@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ShoppingBag } from "lucide-react";
 import { db } from "@/lib/db";
 import { formatPrice, formatDate } from "@/lib/utils";
+import { formatPaymentMethod } from "@/lib/format-payment-method";
 import { notFound } from "next/navigation";
 
 interface PageProps {
@@ -125,7 +126,7 @@ export default async function SiparisTamamlandiPage({ params }: PageProps) {
               Ödeme Yöntemi
             </h2>
             <p className="font-inter text-sm md:text-base text-v2-text-primary">
-              {order.paymentMethod}
+              {formatPaymentMethod(order.paymentMethod)}
             </p>
           </section>
 
