@@ -362,6 +362,13 @@ model Order {
   carrier        String?
   trackingToken  String? @unique @default(uuid())
 
+  // Consent audit trail (KVKK + Mesafeli Satis Sozlesmesi)
+  termsAcceptedAt DateTime?
+  termsVersion    String?
+  kvkkAcceptedAt  DateTime?
+  kvkkVersion     String?
+  acceptIpAddress String?
+
   // Timestamps
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
