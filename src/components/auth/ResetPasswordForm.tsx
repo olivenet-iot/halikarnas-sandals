@@ -23,7 +23,7 @@ const resetPasswordSchema = z
   .object({
     password: z
       .string()
-      .min(8, "Şifre en az 8 karakter olmalıdır")
+      .min(12, "Şifre en az 12 karakter olmalıdır")
       .regex(/[A-Z]/, "En az bir büyük harf içermelidir")
       .regex(/[a-z]/, "En az bir küçük harf içermelidir")
       .regex(/[0-9]/, "En az bir rakam içermelidir"),

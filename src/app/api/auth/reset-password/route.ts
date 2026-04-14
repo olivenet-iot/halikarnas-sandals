@@ -32,10 +32,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate password strength
-    if (password.length < 8) {
+    if (password.length < 12) {
       return NextResponse.json(
-        { error: "Şifre en az 8 karakter olmalıdır" },
+        { error: "Şifre en az 12 karakter olmalıdır" },
         { status: 400 }
       );
     }

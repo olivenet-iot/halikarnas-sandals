@@ -6,7 +6,7 @@ import { z } from "zod";
 
 const passwordSchema = z.object({
   currentPassword: z.string().min(1, "Mevcut şifre gerekli"),
-  newPassword: z.string().min(8, "Yeni şifre en az 8 karakter olmalı"),
+  newPassword: z.string().min(12, "Yeni şifre en az 12 karakter olmalı"),
   confirmPassword: z.string(),
 }).refine((data) => data.newPassword === data.confirmPassword, {
   message: "Şifreler eşleşmiyor",

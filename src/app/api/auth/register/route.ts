@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { z } from "zod";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { welcomeEmail } from "@/lib/email-templates";
 import { rateLimit, getClientIp, rateLimitResponseHeaders } from "@/lib/rate-limit";
+
+const registerSchema = z.object({
+  name: z.string().min(2, "Ad en az 2 karakter olmalıdır").max(100, "Ad en fazla 100 karakter olabilir"),
+  email: z.string().email("Geçerli bir e-posta adresi giriniz"),
+  password: z.string().min(12, "Şifre en az 12 karakter olmalıdır"),
+  acceptNewsletter: z.boolean().optional().default(false),
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,19 +33,20 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, email, password, acceptNewsletter } = body;
+    const parsed = registerSchema.safeParse(body);
 
-    // Validate required fields
-    if (!name || !email || !password) {
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Ad, e-posta ve şifre gereklidir" },
+        { error: parsed.error.issues[0]?.message || "Geçersiz veri" },
         { status: 400 }
       );
     }
 
-    // Check if email already exists
+    const { name, password, acceptNewsletter } = parsed.data;
+    const email = parsed.data.email.toLowerCase();
+
     const existingUser = await db.user.findUnique({
-      where: { email: email.toLowerCase() },
+      where: { email },
     });
 
     if (existingUser) {
@@ -47,33 +56,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate password strength
-    if (password.length < 8) {
-      return NextResponse.json(
-        { error: "Şifre en az 8 karakter olmalıdır" },
-        { status: 400 }
-      );
-    }
-
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create user
     const user = await db.user.create({
       data: {
         name,
-        email: email.toLowerCase(),
+        email,
         password: hashedPassword,
       },
     });
 
-    // Subscribe to newsletter if opted in
     if (acceptNewsletter) {
       await db.newsletterSubscriber.upsert({
-        where: { email: email.toLowerCase() },
+        where: { email },
         update: { isActive: true },
         create: {
-          email: email.toLowerCase(),
+          email,
           name,
           source: "registration",
         },
