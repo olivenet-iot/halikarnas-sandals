@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { passwordChangedEmail } from "@/lib/email-templates";
 import { rateLimit, getClientIp, rateLimitResponseHeaders } from "@/lib/rate-limit";
+import { SUPPORT_EMAIL } from "@/lib/config";
 
 export async function POST(request: NextRequest) {
   try {
@@ -92,8 +93,7 @@ export async function POST(request: NextRequest) {
       where: { id: resetToken.id },
     });
 
-    const supportEmail = process.env.SUPPORT_EMAIL || "destek@halikarnassandals.com";
-    const confirmation = passwordChangedEmail(user.name || "Değerli Müşterimiz", supportEmail);
+    const confirmation = passwordChangedEmail(user.name || "Değerli Müşterimiz", SUPPORT_EMAIL);
     try {
       await sendEmail({
         to: user.email,

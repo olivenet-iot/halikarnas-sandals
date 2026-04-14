@@ -1,9 +1,11 @@
+import { SITE_URL } from "./config";
+
 // Site Configuration
 export const siteConfig = {
   name: "Halikarnas Sandals",
   description:
     "Premium el yapımı hakiki deri sandaletler. Bodrum'un antik mirası Halikarnas'tan esinlenen, zamansız şıklık ve üstün zanaatkarlık.",
-  url: process.env.NEXT_PUBLIC_APP_URL || "https://halikarnassandals.com",
+  url: SITE_URL,
   ogImage: "/images/og-image.jpg",
   links: {
     instagram: "https://instagram.com/halikarnassandals",

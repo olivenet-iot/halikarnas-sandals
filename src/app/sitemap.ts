@@ -1,9 +1,10 @@
 import { MetadataRoute } from "next";
 import { db } from "@/lib/db";
 import { getProductUrl } from "@/lib/utils";
+import { SITE_URL } from "@/lib/config";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXTAUTH_URL || "https://halikarnassandals.com";
+  const baseUrl = SITE_URL;
 
   const staticPages = [
     "",

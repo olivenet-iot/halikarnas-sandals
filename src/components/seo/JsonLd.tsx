@@ -1,6 +1,7 @@
 import { getProductUrl } from "@/lib/utils";
+import { SITE_URL } from "@/lib/config";
 
-const BASE_URL = process.env.NEXTAUTH_URL || "https://halikarnassandals.com";
+const BASE_URL = SITE_URL;
 
 export function OrganizationJsonLd() {
   const data = {

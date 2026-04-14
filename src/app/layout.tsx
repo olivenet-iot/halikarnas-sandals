@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/components/providers";
 import { Toaster } from "@/components/ui/toaster";
 import { OrganizationJsonLd, WebsiteJsonLd } from "@/components/seo/JsonLd";
+import { SITE_URL } from "@/lib/config";
 
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
@@ -21,6 +22,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Halikarnas Sandals | El Yapımı Hakiki Deri Sandaletler",
     template: "%s | Halikarnas Sandals",
@@ -42,7 +44,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "tr_TR",
-    url: "https://halikarnassandals.com",
+    url: SITE_URL,
     siteName: "Halikarnas Sandals",
     title: "Halikarnas Sandals | El Yapımı Hakiki Deri Sandaletler",
     description:

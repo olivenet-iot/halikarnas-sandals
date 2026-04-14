@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { passwordResetEmail } from "@/lib/email-templates";
 import { rateLimit, getClientIp, rateLimitResponseHeaders } from "@/lib/rate-limit";
+import { SITE_URL } from "@/lib/config";
 
 const DUMMY_HASH = "$2b$12$C6UzMDM.H6dfI/f/IKcEeO3Ql0R8c7kk7q8pQ5g8vL9.u0Kd0F1s.";
 
@@ -72,8 +73,7 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-      const resetUrl = `${baseUrl}/sifre-sifirla/${token}`;
+      const resetUrl = `${SITE_URL}/sifre-sifirla/${token}`;
 
       const emailTemplate = passwordResetEmail(user.name || "Değerli Müşterimiz", resetUrl);
       await sendEmail({

@@ -1,4 +1,6 @@
-const BASE_URL = process.env.NEXTAUTH_URL || "https://halikarnassandals.com";
+import { SITE_URL } from "@/lib/config";
+
+const BASE_URL = SITE_URL;
 
 export interface OrderEmailData {
   orderNumber: string;
