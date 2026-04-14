@@ -1,43 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { rateLimit, getClientIp, rateLimitResponseHeaders } from "@/lib/rate-limit";
 
 const trackOrderSchema = z.object({
   email: z.string().email("Gecerli bir e-posta adresi girin"),
   orderNumber: z.string().min(1, "Siparis numarasi gerekli"),
 });
 
-// Rate limiting
-const rateLimit = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT_MAX = 5;
-const RATE_LIMIT_WINDOW = 60 * 60 * 1000; // 1 hour
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const record = rateLimit.get(ip);
-
-  if (!record || now > record.resetTime) {
-    rateLimit.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
-    return true;
-  }
-
-  if (record.count >= RATE_LIMIT_MAX) {
-    return false;
-  }
-
-  record.count++;
-  return true;
-}
-
 export async function POST(request: NextRequest) {
   try {
-    // Rate limiting
-    const ip = request.headers.get("x-forwarded-for") || "unknown";
-    if (!checkRateLimit(ip)) {
-      return NextResponse.json(
-        { success: false, error: "Cok fazla istek gonderdiniz. Lutfen daha sonra tekrar deneyin." },
-        { status: 429 }
-      );
+    const ip = getClientIp(request);
+    try {
+      const rl = await rateLimit({
+        key: `track:ip:${ip}`,
+        limit: 5,
+        windowSeconds: 60 * 60,
+      });
+      if (!rl.success) {
+        return NextResponse.json(
+          { success: false, error: "Cok fazla istek gonderdiniz. Lutfen daha sonra tekrar deneyin." },
+          { status: 429, headers: rateLimitResponseHeaders(rl) }
+        );
+      }
+    } catch (err) {
+      console.error("[rate-limit] fail-open track:", err);
     }
 
     const body = await request.json();

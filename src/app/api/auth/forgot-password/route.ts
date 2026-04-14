@@ -3,9 +3,11 @@ import crypto from "crypto";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { passwordResetEmail } from "@/lib/email-templates";
+import { rateLimit, getClientIp, rateLimitResponseHeaders } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request);
     const body = await request.json();
     const { email } = body;
 
@@ -14,6 +16,35 @@ export async function POST(request: NextRequest) {
         { error: "E-posta adresi gereklidir" },
         { status: 400 }
       );
+    }
+
+    const normalizedEmail = String(email).toLowerCase();
+
+    try {
+      const ipRl = await rateLimit({
+        key: `forgot:ip:${ip}`,
+        limit: 3,
+        windowSeconds: 60 * 60,
+      });
+      if (!ipRl.success) {
+        return NextResponse.json(
+          { error: "Çok fazla şifre sıfırlama denemesi. Lütfen biraz sonra tekrar deneyin." },
+          { status: 429, headers: rateLimitResponseHeaders(ipRl) }
+        );
+      }
+      const emailRl = await rateLimit({
+        key: `forgot:email:${normalizedEmail}`,
+        limit: 3,
+        windowSeconds: 60 * 60,
+      });
+      if (!emailRl.success) {
+        return NextResponse.json(
+          { error: "Çok fazla şifre sıfırlama denemesi. Lütfen biraz sonra tekrar deneyin." },
+          { status: 429, headers: rateLimitResponseHeaders(emailRl) }
+        );
+      }
+    } catch (err) {
+      console.error("[rate-limit] fail-open forgot-password:", err);
     }
 
     // Find user by email

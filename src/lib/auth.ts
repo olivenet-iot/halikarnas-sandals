@@ -5,6 +5,13 @@ import Google from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import { db } from "./db";
 import type { Adapter } from "next-auth/adapters";
+import { rateLimit, getClientIp } from "./rate-limit";
+
+class RateLimitError extends Error {
+  constructor() {
+    super("Çok fazla giriş denemesi. Lütfen biraz sonra tekrar deneyin.");
+  }
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(db) as Adapter,
@@ -24,7 +31,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, request) {
+        const ip = request ? getClientIp(request as unknown as Request) : "unknown";
+        try {
+          const rl = await rateLimit({
+            key: `login:ip:${ip}`,
+            limit: 10,
+            windowSeconds: 15 * 60,
+          });
+          if (!rl.success) {
+            throw new RateLimitError();
+          }
+        } catch (err) {
+          if (err instanceof RateLimitError) throw err;
+          console.error("[rate-limit] fail-open login:", err);
+        }
+
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Email ve şifre gerekli");
         }

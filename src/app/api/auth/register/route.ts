@@ -3,9 +3,27 @@ import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { welcomeEmail } from "@/lib/email-templates";
+import { rateLimit, getClientIp, rateLimitResponseHeaders } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request);
+    try {
+      const rl = await rateLimit({
+        key: `register:ip:${ip}`,
+        limit: 5,
+        windowSeconds: 60 * 60,
+      });
+      if (!rl.success) {
+        return NextResponse.json(
+          { error: "Çok fazla kayıt denemesi. Lütfen biraz sonra tekrar deneyin." },
+          { status: 429, headers: rateLimitResponseHeaders(rl) }
+        );
+      }
+    } catch (err) {
+      console.error("[rate-limit] fail-open register:", err);
+    }
+
     const body = await request.json();
     const { name, email, password, acceptNewsletter } = body;
 
