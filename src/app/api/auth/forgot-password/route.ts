@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { passwordResetEmail } from "@/lib/email-templates";
 import { rateLimit, getClientIp, rateLimitResponseHeaders } from "@/lib/rate-limit";
+
+const DUMMY_HASH = "$2b$12$C6UzMDM.H6dfI/f/IKcEeO3Ql0R8c7kk7q8pQ5g8vL9.u0Kd0F1s.";
 
 export async function POST(request: NextRequest) {
   try {
@@ -47,44 +50,38 @@ export async function POST(request: NextRequest) {
       console.error("[rate-limit] fail-open forgot-password:", err);
     }
 
-    // Find user by email
     const user = await db.user.findUnique({
-      where: { email: email.toLowerCase() },
+      where: { email: normalizedEmail },
     });
 
-    // Always return success to prevent email enumeration
-    if (!user) {
-      return NextResponse.json({ success: true });
+    await bcrypt.compare("dummy-constant-time-equalizer", user?.password ?? DUMMY_HASH);
+
+    if (user) {
+      await db.passwordResetToken.deleteMany({
+        where: { email: normalizedEmail },
+      });
+
+      const token = crypto.randomBytes(32).toString("hex");
+      const expires = new Date(Date.now() + 60 * 60 * 1000);
+
+      await db.passwordResetToken.create({
+        data: {
+          email: normalizedEmail,
+          token,
+          expires,
+        },
+      });
+
+      const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+      const resetUrl = `${baseUrl}/sifre-sifirla/${token}`;
+
+      const emailTemplate = passwordResetEmail(user.name || "Değerli Müşterimiz", resetUrl);
+      await sendEmail({
+        to: user.email,
+        subject: emailTemplate.subject,
+        html: emailTemplate.html,
+      });
     }
-
-    // Delete any existing reset tokens for this email
-    await db.passwordResetToken.deleteMany({
-      where: { email: email.toLowerCase() },
-    });
-
-    // Generate reset token
-    const token = crypto.randomBytes(32).toString("hex");
-    const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
-
-    // Save reset token
-    await db.passwordResetToken.create({
-      data: {
-        email: email.toLowerCase(),
-        token,
-        expires,
-      },
-    });
-
-    // Generate reset URL
-    const resetUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/sifre-sifirla/${token}`;
-
-    // Send password reset email
-    const emailTemplate = passwordResetEmail(user.name || "Değerli Müşterimiz", resetUrl);
-    await sendEmail({
-      to: user.email,
-      subject: emailTemplate.subject,
-      html: emailTemplate.html,
-    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

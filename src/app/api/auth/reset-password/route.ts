@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
+import { sendEmail } from "@/lib/email";
+import { passwordChangedEmail } from "@/lib/email-templates";
 import { rateLimit, getClientIp, rateLimitResponseHeaders } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
@@ -90,8 +92,17 @@ export async function POST(request: NextRequest) {
       where: { id: resetToken.id },
     });
 
-    // TODO: Send password changed confirmation email
-    console.log(`[EMAIL] Password changed confirmation would be sent to: ${user.email}`);
+    const supportEmail = process.env.SUPPORT_EMAIL || "destek@halikarnassandals.com";
+    const confirmation = passwordChangedEmail(user.name || "Değerli Müşterimiz", supportEmail);
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: confirmation.subject,
+        html: confirmation.html,
+      });
+    } catch (err) {
+      console.error("[reset-password] confirmation email send failed:", err);
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
