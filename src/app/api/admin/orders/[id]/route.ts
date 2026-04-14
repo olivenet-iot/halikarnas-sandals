@@ -110,6 +110,7 @@ export async function PATCH(
     // Check if order exists
     const existingOrder = await db.order.findUnique({
       where: { id },
+      include: { items: true },
     });
 
     if (!existingOrder) {
@@ -129,16 +130,6 @@ export async function PATCH(
       } else if (validatedData.status === "DELIVERED") {
         updateData.deliveredAt = new Date();
       }
-
-      // Create status history entry
-      await db.orderStatusHistory.create({
-        data: {
-          orderId: id,
-          status: validatedData.status,
-          note: validatedData.statusNote || null,
-          createdBy: session.user.id,
-        },
-      });
     }
 
     // Handle tracking info update
@@ -154,13 +145,62 @@ export async function PATCH(
       updateData.adminNote = validatedData.adminNote;
     }
 
-    // Update order if there's anything to update
-    if (Object.keys(updateData).length > 0) {
-      await db.order.update({
-        where: { id },
-        data: updateData,
-      });
-    }
+    // Stock + soldCount restore applies only on the FIRST transition into
+    // CANCELLED or REFUNDED — prevents double-restore on repeated writes.
+    const isNewCancellation =
+      !!validatedData.status &&
+      validatedData.status !== existingOrder.status &&
+      (validatedData.status === "CANCELLED" ||
+        validatedData.status === "REFUNDED") &&
+      existingOrder.status !== "CANCELLED" &&
+      existingOrder.status !== "REFUNDED";
+
+    await db.$transaction(async (tx) => {
+      if (validatedData.status && validatedData.status !== existingOrder.status) {
+        await tx.orderStatusHistory.create({
+          data: {
+            orderId: id,
+            status: validatedData.status,
+            note: validatedData.statusNote || null,
+            createdBy: session.user.id,
+          },
+        });
+      }
+
+      if (Object.keys(updateData).length > 0) {
+        await tx.order.update({
+          where: { id },
+          data: updateData,
+        });
+      }
+
+      if (isNewCancellation) {
+        const sortedItems = [...existingOrder.items].sort((a, b) =>
+          a.variantId.localeCompare(b.variantId)
+        );
+        for (const item of sortedItems) {
+          await tx.productVariant.update({
+            where: { id: item.variantId },
+            data: { stock: { increment: item.quantity } },
+          });
+        }
+
+        const productTotals = new Map<string, number>();
+        for (const item of existingOrder.items) {
+          productTotals.set(
+            item.productId,
+            (productTotals.get(item.productId) ?? 0) + item.quantity
+          );
+        }
+        const sortedProductIds = Array.from(productTotals.keys()).sort();
+        for (const productId of sortedProductIds) {
+          await tx.product.update({
+            where: { id: productId },
+            data: { soldCount: { decrement: productTotals.get(productId)! } },
+          });
+        }
+      }
+    });
 
     // Send shipping notification email when status changes to SHIPPED
     if (validatedData.status === "SHIPPED" && existingOrder.status !== "SHIPPED") {
