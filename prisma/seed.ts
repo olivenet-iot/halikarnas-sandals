@@ -426,7 +426,7 @@ Geniş kalıbı ve rahat yapısıyla uzun yürüyüşlerde bile konfor sağlayan
       group: "shipping",
     },
     {
-      key: "standard_shipping_cost",
+      key: "shipping_cost",
       value: "29.90",
       type: "number",
       group: "shipping",
