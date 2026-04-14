@@ -1,5 +1,7 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import fs from "fs";
+import path from "path";
 
 interface OrderItem {
   productName: string;
@@ -26,28 +28,56 @@ interface Order {
   items: OrderItem[];
 }
 
+let cachedFonts: { regular: string; bold: string } | null = null;
+
+function loadDejaVuFonts() {
+  if (cachedFonts) return cachedFonts;
+  const fontsDir = path.join(process.cwd(), "public", "fonts");
+  cachedFonts = {
+    regular: fs
+      .readFileSync(path.join(fontsDir, "DejaVuSans.ttf"))
+      .toString("base64"),
+    bold: fs
+      .readFileSync(path.join(fontsDir, "DejaVuSans-Bold.ttf"))
+      .toString("base64"),
+  };
+  return cachedFonts;
+}
+
 export async function generateInvoice(order: Order): Promise<ArrayBuffer> {
   const doc = new jsPDF();
 
+  // Embed DejaVu Sans so Turkish diacritics (ş, ğ, ı, İ, Ö, Ü, Ç) render.
+  const fonts = loadDejaVuFonts();
+  doc.addFileToVFS("DejaVuSans.ttf", fonts.regular);
+  doc.addFont("DejaVuSans.ttf", "DejaVuSans", "normal");
+  doc.addFileToVFS("DejaVuSans-Bold.ttf", fonts.bold);
+  doc.addFont("DejaVuSans-Bold.ttf", "DejaVuSans", "bold");
+  doc.setFont("DejaVuSans", "normal");
+
   // Header
+  doc.setFont("DejaVuSans", "bold");
   doc.setFontSize(24);
   doc.setTextColor(30, 95, 116); // Aegean color
   doc.text("HALIKARNAS", 20, 25);
+  doc.setFont("DejaVuSans", "normal");
 
   doc.setFontSize(10);
   doc.setTextColor(100);
-  doc.text("Premium El Yapimi Sandaletler", 20, 32);
+  doc.text("Premium El Yapımı Sandaletler", 20, 32);
 
   // Company info
   doc.setFontSize(9);
   doc.text("www.halikarnassandals.com", 20, 40);
   doc.text("info@halikarnassandals.com", 20, 45);
-  doc.text("Bodrum, Mugla, Turkiye", 20, 50);
+  doc.text("Bodrum, Muğla, Türkiye", 20, 50);
 
   // Document title
+  doc.setFont("DejaVuSans", "bold");
   doc.setFontSize(16);
   doc.setTextColor(0);
   doc.text("SİPARİŞ ÖZETİ", 150, 25);
+  doc.setFont("DejaVuSans", "normal");
 
   // Legal disclaimer — until e-arşiv integration lands
   doc.setFontSize(7);
@@ -72,7 +102,7 @@ export async function generateInvoice(order: Order): Promise<ArrayBuffer> {
   // Customer info
   doc.setFontSize(11);
   doc.setTextColor(0);
-  doc.text("Musteri Bilgileri:", 20, 65);
+  doc.text("Müşteri Bilgileri:", 20, 65);
 
   doc.setFontSize(10);
   doc.setTextColor(60);
@@ -98,16 +128,24 @@ export async function generateInvoice(order: Order): Promise<ArrayBuffer> {
 
   autoTable(doc, {
     startY: 110,
-    head: [["Urun", "Adet", "Birim Fiyat", "Toplam"]],
+    head: [["Ürün", "Adet", "Birim Fiyat", "Toplam"]],
     body: tableData,
     theme: "striped",
+    styles: {
+      font: "DejaVuSans",
+      fontStyle: "normal",
+    },
     headStyles: {
       fillColor: [30, 95, 116],
       textColor: 255,
       fontSize: 10,
+      font: "DejaVuSans",
+      fontStyle: "bold",
     },
     bodyStyles: {
       fontSize: 9,
+      font: "DejaVuSans",
+      fontStyle: "normal",
     },
     columnStyles: {
       0: { cellWidth: 90 },
@@ -140,7 +178,7 @@ export async function generateInvoice(order: Order): Promise<ArrayBuffer> {
   doc.text(
     order.shippingCost > 0
       ? `${order.shippingCost.toLocaleString("tr-TR")} TL`
-      : "Ucretsiz",
+      : "Ücretsiz",
     190,
     currentY,
     { align: "right" }
@@ -148,7 +186,7 @@ export async function generateInvoice(order: Order): Promise<ArrayBuffer> {
 
   if (order.discount > 0) {
     currentY += 7;
-    doc.text("Indirim:", totalsX, currentY);
+    doc.text("İndirim:", totalsX, currentY);
     doc.text(
       `-${order.discount.toLocaleString("tr-TR")} TL`,
       190,
@@ -163,6 +201,7 @@ export async function generateInvoice(order: Order): Promise<ArrayBuffer> {
   doc.line(totalsX, currentY, 190, currentY);
 
   currentY += 8;
+  doc.setFont("DejaVuSans", "bold");
   doc.setFontSize(12);
   doc.setTextColor(0);
   doc.text("TOPLAM:", totalsX, currentY);
@@ -172,12 +211,13 @@ export async function generateInvoice(order: Order): Promise<ArrayBuffer> {
     currentY,
     { align: "right" }
   );
+  doc.setFont("DejaVuSans", "normal");
 
   // Footer
   doc.setFontSize(8);
   doc.setTextColor(150);
   doc.text(
-    "Halikarnas Sandals - Premium El Yapimi Sandaletler",
+    "Halikarnas Sandals — Premium El Yapımı Sandaletler",
     105,
     280,
     { align: "center" }
