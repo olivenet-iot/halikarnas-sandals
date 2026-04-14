@@ -30,8 +30,7 @@ export default async function EditProductPage({ params }: PageProps) {
     sku: product.sku || "",
     basePrice: Number(product.basePrice),
     compareAtPrice: product.compareAtPrice ? Number(product.compareAtPrice) : null,
-    // Gender is required in form, fallback to KADIN if null
-    gender: product.gender ?? "KADIN" as const,
+    gender: product.gender,
     status: product.status,
     isFeatured: product.isFeatured,
     isBestSeller: product.isBestSeller,

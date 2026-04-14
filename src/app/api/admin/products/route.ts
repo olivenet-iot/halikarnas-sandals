@@ -29,7 +29,7 @@ const productSchema = z.object({
   basePrice: z.coerce.number().min(0),
   compareAtPrice: z.coerce.number().optional().nullable(),
   categoryId: z.string().nullable().optional(),
-  gender: z.enum(["KADIN", "ERKEK", "UNISEX"]).optional().nullable(),
+  gender: z.enum(["KADIN", "ERKEK", "UNISEX"]),
   status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]),
   isFeatured: z.boolean(),
   isBestSeller: z.boolean(),
