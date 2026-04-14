@@ -204,9 +204,16 @@ export async function PATCH(
 
     // Send shipping notification email when status changes to SHIPPED
     if (validatedData.status === "SHIPPED" && existingOrder.status !== "SHIPPED") {
-      const customerEmail = existingOrder.guestEmail || existingOrder.userId
-        ? (await db.user.findUnique({ where: { id: existingOrder.userId! }, select: { email: true } }))?.email
-        : null;
+      const customerEmail =
+        existingOrder.guestEmail ??
+        (existingOrder.userId
+          ? (
+              await db.user.findUnique({
+                where: { id: existingOrder.userId },
+                select: { email: true },
+              })
+            )?.email ?? null
+          : null);
 
       if (customerEmail && validatedData.trackingNumber && validatedData.carrier) {
         const emailTemplate = shippingNotificationEmail(
