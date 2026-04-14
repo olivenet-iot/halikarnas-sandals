@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { RefreshCw, Home, AlertTriangle } from "lucide-react";
+import * as Sentry from "@sentry/nextjs";
 import { Button } from "@/components/ui/button";
 
 export default function Error({
@@ -13,8 +14,10 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log the error to an error reporting service
     console.error("Application error:", error);
+    if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
+      Sentry.captureException(error);
+    }
   }, [error]);
 
   return (
@@ -28,10 +31,10 @@ export default function Error({
         </div>
 
         {/* Message */}
-        <h1 className="text-2xl md:text-3xl font-bold text-leather-900 mb-3">
+        <h1 className="text-2xl md:text-3xl font-bold text-v2-text-primary mb-3">
           Bir Hata Oluştu
         </h1>
-        <p className="text-leather-600 mb-8">
+        <p className="text-v2-text-muted mb-8">
           Üzgünüz, beklenmedik bir hata oluştu. Lütfen tekrar deneyin veya
           anasayfaya dönün.
         </p>
@@ -66,12 +69,12 @@ export default function Error({
 
         {/* Support Info */}
         <div className="mt-12 pt-8 border-t">
-          <p className="text-sm text-leather-500 mb-2">
+          <p className="text-sm text-v2-text-muted mb-2">
             Sorun devam ederse bizimle iletişime geçin
           </p>
           <a
             href="mailto:destek@halikarnassandals.com"
-            className="text-sm text-aegean-600 hover:underline"
+            className="text-sm text-v2-accent hover:underline"
           >
             destek@halikarnassandals.com
           </a>
