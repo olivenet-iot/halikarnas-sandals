@@ -44,19 +44,25 @@ export async function generateInvoice(order: Order): Promise<ArrayBuffer> {
   doc.text("info@halikarnassandals.com", 20, 45);
   doc.text("Bodrum, Mugla, Turkiye", 20, 50);
 
-  // Invoice title
-  doc.setFontSize(18);
+  // Document title
+  doc.setFontSize(16);
   doc.setTextColor(0);
-  doc.text("FATURA", 150, 25);
+  doc.text("SİPARİŞ ÖZETİ", 150, 25);
 
-  // Invoice info box
+  // Legal disclaimer — until e-arşiv integration lands
+  doc.setFontSize(7);
+  doc.setTextColor(120);
+  doc.text("Bu belge resmi fatura yerine geçmez.", 150, 30);
+  doc.text("Faturanız ayrıca tarafınıza iletilecektir.", 150, 34);
+
+  // Order info box
   doc.setFontSize(10);
   doc.setTextColor(60);
-  doc.text(`Fatura No: ${order.orderNumber}`, 150, 35);
+  doc.text(`Sipariş No: ${order.orderNumber}`, 150, 42);
   doc.text(
-    `Tarih: ${new Date(order.createdAt).toLocaleDateString("tr-TR")}`,
+    `Sipariş Tarihi: ${new Date(order.createdAt).toLocaleDateString("tr-TR")}`,
     150,
-    42
+    48
   );
 
   // Horizontal line

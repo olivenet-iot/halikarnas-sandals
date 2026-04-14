@@ -57,7 +57,7 @@ export async function GET(
     return new Response(pdfArrayBuffer, {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename=fatura-${order.orderNumber}.pdf`,
+        "Content-Disposition": `attachment; filename=siparis-ozeti-${order.orderNumber}.pdf`,
       },
     });
   } catch (error) {
