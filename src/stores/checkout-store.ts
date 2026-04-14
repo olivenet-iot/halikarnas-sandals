@@ -27,6 +27,7 @@ interface CheckoutState {
   paymentMethod: PaymentMethod;
   acceptedTerms: boolean;
   acceptedKvkk: boolean;
+  customerNote: string;
   isOrderCompleted: boolean;
 
   // Actions
@@ -37,6 +38,7 @@ interface CheckoutState {
   setPaymentMethod: (method: PaymentMethod) => void;
   setAcceptedTerms: (accepted: boolean) => void;
   setAcceptedKvkk: (accepted: boolean) => void;
+  setCustomerNote: (note: string) => void;
   setOrderCompleted: (completed: boolean) => void;
   reset: () => void;
 
@@ -52,6 +54,7 @@ const initialState = {
   paymentMethod: "cash_on_delivery" as PaymentMethod,
   acceptedTerms: false,
   acceptedKvkk: false,
+  customerNote: "",
   isOrderCompleted: false,
 };
 
@@ -94,6 +97,10 @@ export const useCheckoutStore = create<CheckoutState>()(
         set({ acceptedKvkk: accepted });
       },
 
+      setCustomerNote: (note) => {
+        set({ customerNote: note });
+      },
+
       setOrderCompleted: (completed) => {
         set({ isOrderCompleted: completed });
       },
@@ -106,6 +113,7 @@ export const useCheckoutStore = create<CheckoutState>()(
           paymentMethod: "cash_on_delivery" as PaymentMethod,
           acceptedTerms: false,
           acceptedKvkk: false,
+          customerNote: "",
           // isOrderCompleted is intentionally NOT reset here
         });
       },
@@ -136,6 +144,7 @@ export const useCheckoutStore = create<CheckoutState>()(
       partialize: (state) => ({
         shippingInfo: state.shippingInfo,
         paymentMethod: state.paymentMethod,
+        customerNote: state.customerNote,
       }),
     }
   )

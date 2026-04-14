@@ -31,8 +31,10 @@ export function OrderReview({ onBack, setStep }: OrderReviewProps) {
     paymentMethod,
     acceptedTerms,
     acceptedKvkk,
+    customerNote,
     setAcceptedTerms,
     setAcceptedKvkk,
+    setCustomerNote,
     setOrderCompleted,
     reset: resetCheckout,
   } = useCheckoutStore();
@@ -57,6 +59,7 @@ export function OrderReview({ onBack, setStep }: OrderReviewProps) {
           paymentMethod:
             paymentMethod === "cash_on_delivery" ? "cash_on_delivery" : "credit_card",
           couponCode: coupon?.code ?? null,
+          customerNote: customerNote.trim() || undefined,
           acceptedTerms,
           acceptedKvkk,
         }),
@@ -188,6 +191,31 @@ export function OrderReview({ onBack, setStep }: OrderReviewProps) {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Customer Note */}
+      <div className="border-b border-v2-border-subtle py-8">
+        <label
+          htmlFor="customerNote"
+          className="font-inter text-xs uppercase tracking-[0.15em] text-v2-text-muted block mb-4"
+        >
+          Siparis Notu{" "}
+          <span className="text-v2-text-muted normal-case tracking-normal">
+            (opsiyonel)
+          </span>
+        </label>
+        <textarea
+          id="customerNote"
+          value={customerNote}
+          onChange={(e) => setCustomerNote(e.target.value.slice(0, 500))}
+          maxLength={500}
+          rows={3}
+          placeholder="Teslimat icin ozel isteginiz varsa yazabilirsiniz..."
+          className="w-full px-4 py-3 border border-v2-border-subtle bg-white font-inter text-sm text-v2-text-primary resize-none focus:outline-none focus:border-v2-text-primary transition-colors"
+        />
+        <p className="mt-1 text-xs text-v2-text-muted text-right font-inter">
+          {customerNote.length}/500
+        </p>
       </div>
 
       {/* Terms & Conditions */}
